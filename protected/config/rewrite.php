@@ -1,6 +1,7 @@
 <?php
 
 return array(
+    /*
     'urlFormat' => 'path',
     'showScriptName' => false, //隐藏index.php
     'urlSuffix' => '.html', //后缀
@@ -10,4 +11,6 @@ return array(
         'index' => 'index/index',
         '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
     ),
+     * 
+     */
 );
