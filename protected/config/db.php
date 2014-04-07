@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'connectionString' => 'mysql:host=localhost;dbname=acopy',
+    'connectionString' => 'mysql:host=localhost;dbname=wifi',
     'emulatePrepare' => true,
     'username' => 'root',
     'password' => '056911',

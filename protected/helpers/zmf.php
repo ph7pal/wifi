@@ -241,21 +241,21 @@ class zmf {
         $_arr = array('runtime');
         $len = 40;
         $upExt = self::config("readLocalFiles");
-        echo "<ul style='font-size:12px;'>\n";        
+        echo "<ul style='font-size:12px;'>\n";
         while ($file = $mydir->read()) {
-            $_len = strlen($file);            
+            $_len = strlen($file);
             if ((is_dir("$directory/$file")) AND ($file != ".") AND ($file != "..")) {
-                $_str = '';  
+                $_str = '';
                 echo "<li><font color=\"#ff00cc\"><b>$file</b></font></li>\n";
-                self::tree("$directory/$file", $dir, $field);                
+                self::tree("$directory/$file", $dir, $field);
             } elseif (($file != ".") AND ($file != "..")) {
-                $fileDir=$directory.'/'.$file;
-                $ext_arr=pathinfo($file);
-                $ext=$ext_arr['extension'];                
+                $fileDir = $directory . '/' . $file;
+                $ext_arr = pathinfo($file);
+                $ext = $ext_arr['extension'];
                 if (preg_match('/^(' . str_replace('*.', '|', str_replace(';', '', $upExt)) . ')$/i', $ext)) {
-                    $fileDir = substr(str_replace($dir, '', $fileDir),1);
+                    $fileDir = substr(str_replace($dir, '', $fileDir), 1);
                     echo "<li><label><input type='radio' name='selectDir' onclick=\"$('#{$field}').val('{$fileDir}');\"/>$fileDir</label></li>\n";
-                } 
+                }
             }
         }
         echo "</ul>\n";
@@ -308,8 +308,9 @@ class zmf {
 
     public static function colPositions($return = '') {
         $positions = array(
-            'topbar' => '头部导航',
+            'topbar' => '导航条',
             'main' => '主页面',
+            'footer' => '页脚'
         );
         if ($return != '') {
             return $positions[$return];
@@ -320,13 +321,44 @@ class zmf {
 
     public static function colClassify($return = '') {
         $cls = array(
+            'page' => '单页展示',
+            'logo' => '仅封面',
             'thumb' => '缩略图式',
-            'page' => '单页展示'
+            'list' => '列表',
         );
         if ($return != '') {
             return $cls[$return];
         } else {
             return $cls;
+        }
+    }
+
+    public static function isSystem($return = '') {
+        $positions = array(
+            '1' => '是',
+            '0' => '否',
+        );
+        if ($return != '') {
+            return $positions[$return];
+        } else {
+            return $positions;
+        }
+    }
+
+    public static function freeOrPayed($return = '') {
+        $positions = array(
+            'free' => '免费',
+            'perHour' => '每小时',
+            'perday' => '每天',
+            'perWeek' => '每周',
+            'perMonth' => '每月',
+            'perSea' => '季度',
+            'perYear' => '每年',
+        );
+        if ($return != '') {
+            return $positions[$return];
+        } else {
+            return $positions;
         }
     }
 
@@ -355,6 +387,105 @@ class zmf {
                 exit(Yii::t('default', 'notServiced'));
             }
         }
+    }
+
+    public static function miniTopBar() {
+        $c = Yii::app()->getController()->id;
+        $a = Yii::app()->getController()->getAction()->id;
+        $t = $_GET['table'];
+        $type = $_GET['type'];
+        $uid=$_GET['uid'];
+        $longstr = '';
+        if ($c == 'all') {
+            $arr = array(
+                'posts' => '文章',
+                'comments' => '评论',
+                'attachments' => '附件',
+                'ads' => '展示',
+                'link' => '友链',
+                'users' => '用户',
+                'columns' => '栏目',
+                'questions' => '客服',
+            );
+            foreach ($arr as $k => $v) {
+                if ($t == $k) {
+                    $css = 'current';
+                } else {
+                    $css = '';
+                }
+                $arr=array();
+                $arr['table']=$k;
+                if(isset($type)){
+                    $arr['type']=$type;
+                }
+                if(isset($uid)){
+                    $arr['uid']=$uid;
+                }
+                $longstr.='<li><a class="list_btn ' . $css . '" href="' . Yii::app()->createUrl('admin/all/list', $arr) . '">' . $v . '</a></li>';
+            }
+        } elseif ($c == 'config') {
+            $arr = array(
+                'baseinfo' => '基本设置',
+                'siteinfo' => '站点信息',
+                'upload' => '上传设置',
+                'page' => '分页设置',
+                'base' => '运维设置',
+            );
+            foreach ($arr as $k => $v) {
+                if ($type == $k) {
+                    $css = 'current';
+                } else {
+                    $css = '';
+                }
+                $longstr.='<li><a class="list_btn ' . $css . '" href="' . Yii::app()->createUrl('admin/config/index', array('type' => $k)) . '">' . $v . '</a></li>';
+            }
+        } elseif ($c == 'columns') {
+            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'columns')) . '">列表</a></li>';
+            $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/users/add') . '">新增</a></li>';
+        } elseif ($c == 'users') {
+            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'users')) . '">列表</a></li>';
+            $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/users/add') . '">新增</a></li>';
+        }
+        echo $longstr;
+    }
+
+    public static function adminBar() {
+        $c = Yii::app()->getController()->id;
+        $a = Yii::app()->getController()->getAction()->id;
+        $t = $_GET['table'];
+        $type = $_GET['type'];
+        if($type=='staycheck'){
+            $css=' current';
+        }else{
+            $css='';
+        }
+        $arr['审核'] = array(
+            'url' => CHtml::link('审核',array('all/list','table'=>'posts','type'=>'staycheck'),array('class'=>'list_btn'.$css)),
+            'power'=>''
+        );
+        if($type=='passed'){
+            $css=' current';
+        }else{
+            $css='';
+        }
+        $arr['最新'] = array(
+            'url' => CHtml::link('最新',array('all/list','table'=>'posts','type'=>'passed'),array('class'=>'list_btn'.$css)),
+            'power'=>''
+        );
+        if($c=='config'){
+            $css=' current';
+        }else{
+            $css='';
+        }
+        $arr['设置'] = array(
+            'url' => CHtml::link('设置',array('config/index'),array('class'=>'list_btn'.$css)),
+            'power'=>''
+        );
+        $longstr='';
+        foreach ($arr as $k => $v) {
+            $longstr.=$v['url'];
+        }
+        echo $longstr;
     }
 
 }

@@ -167,13 +167,13 @@ class Posts extends CActiveRecord {
             return false;
         }
         $com = Yii::app()->db->createCommand($sql)->queryAll();
-        $pageSize = $params['pageSize'];
-        if ($pageSize === 0) {
+        $pageSize=$params['pageSize'];
+        if($pageSize===0){
             return $com;
         }
-
+        $criteria = new CDbCriteria();
         $pages = new CPagination(count($com));
-        $pages->pageSize = $pageSize;
+        $pages->pageSize = 3;
         $pages->applylimit($criteria);
         $com = Yii::app()->db->createCommand($sql . " LIMIT :offset,:limit");
         $com->bindValue(':offset', $pages->currentPage * $pages->pageSize);
