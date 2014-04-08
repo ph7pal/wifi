@@ -45,51 +45,53 @@ class IndexController extends T {
     }
     
     public function actionMail(){
-    	Yii::import('application.vendors.*');
-        include 'class.phpmailer.php';
-        include 'class.smtp.php';
-    	$mail  = new PHPMailer(); 
+//    	Yii::import('application.vendors.*');
+//        include 'class.phpmailer.php';
+//        include 'class.smtp.php';
+//    	$mail  = new PHPMailer(); 
+//    	
+//    	$mail->CharSet    ="UTF-8";                 //è®¾å®šé‚®ä»¶ç¼–ç ï¼Œé»˜è®¤ISO-8859-1ï¼Œå¦‚æœå‘ä¸­æ–‡æ­¤é¡¹å¿…é¡»è®¾ç½®ä¸º UTF-8
+//		$mail->IsSMTP();                            // è®¾å®šä½¿ç”¨SMTPæœåŠ¡
+//		$mail->SMTPAuth   = true;                   // å¯ç”¨ SMTP éªŒè¯åŠŸèƒ½
+//		$mail->SMTPSecure = "ssl";                  // SMTP å®‰å…¨åè®®
+//		$mail->Host       = "SMTP.163.com";       // SMTP æœåŠ¡å™¨
+//		$mail->Port       = 465;                    // SMTPæœåŠ¡å™¨çš„ç«¯å£å·
+//		$mail->Username   = "ph7pal@163.com";  // SMTPæœåŠ¡å™¨ç”¨æˆ·å
+//		$mail->Password   = "056911ph7pal";        // SMTPæœåŠ¡å™¨å¯†ç 
+//		$mail->SetFrom('ph7pal@163.com', 'é˜¿å¹´é£å°‘');    // è®¾ç½®å‘ä»¶äººåœ°å€å’Œåç§°
+//		$mail->AddReplyTo("ph7pal@163.com","ph7pal@163.com"); 
+//		                                            // è®¾ç½®é‚®ä»¶å›å¤äººåœ°å€å’Œåç§°
+//		$mail->Subject    = 'é˜¿å¹´é£å°‘';                     // è®¾ç½®é‚®ä»¶æ ‡é¢˜
+//		$mail->AltBody    = "ä¸ºäº†æŸ¥çœ‹è¯¥é‚®ä»¶ï¼Œè¯·åˆ‡æ¢åˆ°æ”¯æŒ HTML çš„é‚®ä»¶å®¢æˆ·ç«¯"; 
+//		                                            // å¯é€‰é¡¹ï¼Œå‘ä¸‹å…¼å®¹è€ƒè™‘
+//		$mail->MsgHTML('test');                         // è®¾ç½®é‚®ä»¶å†…å®¹
+//		$mail->AddAddress('ph7pal@qq.com', "é˜¿å¹´é£å°‘");
+//		 $mail->SMTPDebug = 3;
+//    	if(!$mail->Send()) {
+//		    echo "å‘é€å¤±è´¥ï¼š" . $mail->ErrorInfo;
+//		} else {
+//		    echo "æ­å–œï¼Œé‚®ä»¶å‘é€æˆåŠŸï¼";
+//		}
     	
-    	$mail->CharSet    ="UTF-8";                 //Éè¶¨ÓÊ¼ş±àÂë£¬Ä¬ÈÏISO-8859-1£¬Èç¹û·¢ÖĞÎÄ´ËÏî±ØĞëÉèÖÃÎª UTF-8
-		$mail->IsSMTP();                            // Éè¶¨Ê¹ÓÃSMTP·şÎñ
-		$mail->SMTPAuth   = true;                   // ÆôÓÃ SMTP ÑéÖ¤¹¦ÄÜ
-		$mail->SMTPSecure = "ssl";                  // SMTP °²È«Ğ­Òé
-		$mail->Host       = "smtp.163.com";       // SMTP ·şÎñÆ÷
-		$mail->Port       = 465;                    // SMTP·şÎñÆ÷µÄ¶Ë¿ÚºÅ
-		$mail->Username   = "ph7pal@163.com";  // SMTP·şÎñÆ÷ÓÃ»§Ãû
-		$mail->Password   = "056911ph7pal";        // SMTP·şÎñÆ÷ÃÜÂë
-		//$mail->SetFrom('·¢¼şÈËµØÖ·', '·¢¼şÈËÃû³Æ');    // ÉèÖÃ·¢¼şÈËµØÖ·ºÍÃû³Æ
-		//$mail->AddReplyTo("ÓÊ¼ş»Ø¸´ÈËµØÖ·","ÓÊ¼ş»Ø¸´ÈËÃû³Æ"); 
-		                                            // ÉèÖÃÓÊ¼ş»Ø¸´ÈËµØÖ·ºÍÃû³Æ
-		$mail->Subject    = '°¢Äê·ÉÉÙ';                     // ÉèÖÃÓÊ¼ş±êÌâ
-		$mail->AltBody    = "ÎªÁË²é¿´¸ÃÓÊ¼ş£¬ÇëÇĞ»»µ½Ö§³Ö HTML µÄÓÊ¼ş¿Í»§¶Ë"; 
-		                                            // ¿ÉÑ¡Ïî£¬ÏòÏÂ¼æÈİ¿¼ÂÇ
-		$mail->MsgHTML('test');                         // ÉèÖÃÓÊ¼şÄÚÈİ
-		$mail->AddAddress('ph7pal@qq.com', "°¢Äê·ÉÉÙ");
-    	if(!$mail->Send()) {
-		    echo "·¢ËÍÊ§°Ü£º" . $mail->ErrorInfo;
-		} else {
-		    echo "¹§Ï²£¬ÓÊ¼ş·¢ËÍ³É¹¦£¡";
-		}
     	
-    	
-    	
-//    	$message = 'Hello World!';
-//    	$mailer->SMTPSecure = "ssl";
-//		$mailer->Host = 'smtp.163.com';
-//		$mailer->Port  = 465;		
-//		$mailer->IsSMTP();
-//		$mailer->SMTPDebug=1;
-//		$mailer->CharSet='UTF-8';
-//		$mailer->Username = 'ph7pal@163.com';
-//		$mailer->Password = '056911ph7pal';
-//		$mailer->From = 'ph7pal@163.com';
-//		$mailer->FromName = '°¢Äê·ÉÉÙ';
-//		$mailer->AddReplyTo('ph7pal@qq.com');
-//		$mailer->AddAddress('ph7pal@qq.com');
-//		$mailer->Subject = 'Email TEST';
-//		$mailer->Body = $message;
-//		$mailer->Send();
+    	$mailer=Yii::app()->mailer;
+    	$message = 'Hello World!';
+    	$mailer->SMTPSecure = "ssl";
+		$mailer->Host = 'smtp.163.com';
+		$mailer->Username   = "ph7pal@163.com";  // SMTPæœåŠ¡å™¨ç”¨æˆ·å
+		$mailer->Password   = "056911ph7pal";        // SMTPæœåŠ¡å™¨å¯†ç 
+		$mailer->Port  = 465;		
+		$mailer->SMTPAuth   = true; 
+		$mailer->IsSMTP();
+		$mailer->SMTPDebug=2;
+		$mailer->CharSet='UTF-8';
+		$mailer->From = 'ph7pal@163.com';
+		$mailer->FromName = 'é˜¿å¹´é£å°‘';
+		$mailer->AddReplyTo('ph7pal@qq.com');
+		$mailer->AddAddress('ph7pal@qq.com');
+		$mailer->Subject = 'Email TEST';
+		$mailer->Body = $message;
+		$mailer->Send();
     	
     	}
 
