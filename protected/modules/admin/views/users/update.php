@@ -1,33 +1,7 @@
 <?php $form=$this->beginWidget('CActiveForm',array('id'=>'xform','htmlOptions'=>array('name'=>'xform'))); ?>
-<table class="form_table">
-  <tr>
-    <td class="tb_title">用户：</td>
-  </tr>
-  <tr >
-    <td >
-      <?php echo $info['username']; ?>
-      </td>
-  </tr>
-  <tr>
-    <td class="tb_title">原始密码：</td>
-  </tr>
-  <tr >
-    <td ><?php echo CHtml::passwordField('old_password'); ?></td>
-  </tr>
-  <tr>
-    <td class="tb_title">新密码：</td>
-  </tr>
-  <tr >
-    <td ><?php echo $form->passwordField($model,'password'); ?></td>
-  </tr>
-  <tr>
-    <td class="tb_title">邮箱：</td>
-  </tr>
-  <tr >
-    <td ><?php echo $info['email']; ?></td>
-  </tr>
-   <tr class="submit">
-      <td > <input name="submit" type="submit" id="submit" value="提交" class="button" /></td>
-    </tr>
-</table>
+<p><label>用户：</label><input class="form-control" name="version" id="version" value="<?php echo $info['username']; ?>" disabled/></p>
+<p><label>原始密码：</label><?php echo CHtml::passwordField('old_password','',array('class'=>'form-control')); ?></p>
+<p><label>新密码：</label><?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?></p>
+<p><label>邮箱：</label><input class="form-control" name="version" id="version" value="<?php echo $info['email']; ?>" disabled/></p>
+<?php echo CHtml::submitButton('提交',array('class'=>'btn btn-default','name'=>'')); ?>
 <?php $form=$this->endWidget(); ?>

@@ -28,6 +28,27 @@ class AllController extends H {
             case 'columns':
                 $title='所有栏目';
                 break;
+            case 'posts':
+                $title='所有文章';
+                break;
+            case 'comments':
+                $title='所有评论及留言';
+                break;
+            case 'attachments':
+                $title='所有图片';
+                break;
+            case 'ads':
+                $title='所有展示';
+                break;
+            case 'link':
+                $title='所有友链';
+                break;
+            case 'users':
+                $title='所有用户';
+                break;
+            case 'questions':
+                $title='所有咨询';
+                break;
         }
         $this->listTableTitle=$title;
         $this->currentTable=$table;
