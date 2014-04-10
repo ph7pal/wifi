@@ -18,12 +18,12 @@ class Ads extends CActiveRecord {
             array('url', 'url'),
             array('title', 'length', 'max' => 50),
             array('url, attachid, description', 'length', 'max' => 255),
-            array('width, height, hits, start_time, expired_time, order, cTime', 'length', 'max' => 10),
+            array('width, height, hits, start_time, expired_time, order, cTime , uid', 'length', 'max' => 10),
             array('position', 'length', 'max' => 40),
             array('classify', 'length', 'max' => 16),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, title, url, attachid, width, height, description, hits, start_time, expired_time, position, order, status, cTime,classify', 'safe', 'on' => 'search'),
+            array('id, title, url, attachid, width, height, description, hits, start_time, expired_time, position, order, status, cTime,classify ,uid', 'safe', 'on' => 'search'),
         );
     }
 
@@ -57,6 +57,7 @@ class Ads extends CActiveRecord {
             'status' => 'Status',
             'cTime' => '创建时间',
             'classify' => '展示样式',
+            'uid' => 'Uid',
         );
     }
 
@@ -80,6 +81,7 @@ class Ads extends CActiveRecord {
         $criteria->compare('status', $this->status);
         $criteria->compare('cTime', $this->cTime, true);
         $criteria->compare('classify', $this->classify, true);
+        $criteria->compare('uid', $this->uid, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

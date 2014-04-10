@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主机: localhost
--- 生成日期: 2014 年 04 月 07 日 15:19
+-- 生成日期: 2014 年 04 月 10 日 15:41
 -- 服务器版本: 5.0.51
 -- PHP 版本: 5.2.6
 
@@ -35,6 +35,7 @@ CREATE TABLE `pre_ads` (
   `status` tinyint(1) NOT NULL,
   `cTime` int(10) unsigned NOT NULL default '0',
   `classify` char(16) NOT NULL,
+  `uid` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
@@ -42,9 +43,6 @@ CREATE TABLE `pre_ads` (
 -- 导出表中的数据 `pre_ads`
 -- 
 
-INSERT INTO `pre_ads` VALUES (6, '全屏展示一', 'http://newsoul.cn', '14', '', '', '这里是一些描述', 0, 0, 0, 'topbar', 0, 1, 1395751264, 'flash');
-INSERT INTO `pre_ads` VALUES (7, '全屏展示二', '', '15', '', '', '这里是一些描述', 0, 0, 0, 'topbar', 0, 1, 1395751354, 'flash');
-INSERT INTO `pre_ads` VALUES (8, '全屏展示三', '', '16', '', '', '', 0, 0, 0, 'topbar', 0, 1, 1395751386, 'flash');
 
 -- --------------------------------------------------------
 
@@ -126,13 +124,18 @@ CREATE TABLE `pre_columns` (
   `cTime` int(10) unsigned NOT NULL default '0',
   `system` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 -- 
 -- 导出表中的数据 `pre_columns`
 -- 
 
-INSERT INTO `pre_columns` VALUES (20, 0, '', '', '', 'empty', '', '', 0, 0, 0, 0, 1396705594, 0);
+INSERT INTO `pre_columns` VALUES (21, 0, 'zhan shi ', '展示', '', 'logo', 'topbar', '', 0, 0, 0, 1, 1397142680, 0);
+INSERT INTO `pre_columns` VALUES (22, 0, 'liu yan ', '留言', '', 'page', 'topbar', '', 0, 0, 0, 1, 1397142710, 0);
+INSERT INTO `pre_columns` VALUES (23, 0, 'guan yu wo men ', '关于我们', '', 'page', 'topbar', '', 0, 0, 0, 1, 1397142728, 0);
+INSERT INTO `pre_columns` VALUES (20, 0, 'huo dong ', '活动', '', 'page', 'topbar', '', 0, 0, 0, 1, 1396705594, 0);
+INSERT INTO `pre_columns` VALUES (24, 0, 'cai dan ', '菜单', '', 'page', 'topbar', '', 0, 0, 0, 1, 1397142752, 0);
+INSERT INTO `pre_columns` VALUES (25, 0, 'shi yong shui ming ', '使用说明', '', 'page', 'topbar', '', 0, 0, 0, 1, 1397142761, 0);
 
 -- --------------------------------------------------------
 
@@ -289,6 +292,7 @@ CREATE TABLE `pre_link` (
   `order` int(10) unsigned NOT NULL default '0',
   `hits` int(10) unsigned NOT NULL default '0',
   `cTime` int(10) unsigned NOT NULL default '0',
+  `uid` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
@@ -412,7 +416,7 @@ CREATE TABLE `pre_user_action` (
   `cTime` int(11) unsigned NOT NULL,
   `ip` char(16) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
 
 -- 
 -- 导出表中的数据 `pre_user_action`
@@ -445,6 +449,15 @@ INSERT INTO `pre_user_action` VALUES (24, 2, 0, 'delposts', '删除文章', 1396
 INSERT INTO `pre_user_action` VALUES (25, 2, 0, 'delposts', '删除文章', 1396793513, '2130706433');
 INSERT INTO `pre_user_action` VALUES (26, 2, 0, 'setting', '更新设置', 1396852817, '2130706433');
 INSERT INTO `pre_user_action` VALUES (27, 2, 0, 'setting', '更新设置', 1396852860, '2130706433');
+INSERT INTO `pre_user_action` VALUES (28, 2, 0, 'delads', '删除展示', 1397051148, '2130706433');
+INSERT INTO `pre_user_action` VALUES (29, 2, 0, 'delads', '删除展示', 1397051151, '2130706433');
+INSERT INTO `pre_user_action` VALUES (30, 2, 0, 'delads', '删除展示', 1397051153, '2130706433');
+INSERT INTO `pre_user_action` VALUES (31, 2, 20, 'editcolumns', '编辑栏目', 1397142168, '2130706433');
+INSERT INTO `pre_user_action` VALUES (32, 2, 21, 'editcolumns', '编辑栏目', 1397142705, '2130706433');
+INSERT INTO `pre_user_action` VALUES (33, 2, 22, 'editcolumns', '编辑栏目', 1397142725, '2130706433');
+INSERT INTO `pre_user_action` VALUES (34, 2, 23, 'editcolumns', '编辑栏目', 1397142741, '2130706433');
+INSERT INTO `pre_user_action` VALUES (35, 2, 24, 'editcolumns', '编辑栏目', 1397142759, '2130706433');
+INSERT INTO `pre_user_action` VALUES (36, 2, 25, 'editcolumns', '编辑栏目', 1397142771, '2130706433');
 
 -- --------------------------------------------------------
 
@@ -478,13 +491,14 @@ CREATE TABLE `pre_user_info` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `uid` int(11) unsigned NOT NULL,
   `name` char(16) NOT NULL,
-  `value` char(16) NOT NULL,
+  `value` varchar(255) NOT NULL,
   `classify` char(16) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `uid` (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- 
 -- 导出表中的数据 `pre_user_info`
 -- 
 
+INSERT INTO `pre_user_info` VALUES (2, 2, 'column', '21,22,24', 'column');

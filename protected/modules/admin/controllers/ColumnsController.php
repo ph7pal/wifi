@@ -103,7 +103,7 @@ class ColumnsController extends H {
                 if ($model->updateByPk($thekeyid, $intoData)) {
                     UserAction::record('editcolumns', $thekeyid);
                     zmf::delFCache("notSaveColumns{$uid}");
-                    $this->redirect(array('columns/index'));
+                    $this->redirect(array('all/list','table'=>'columns'));
                 }
             }
         }

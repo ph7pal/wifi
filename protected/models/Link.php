@@ -22,10 +22,10 @@ class Link extends CActiveRecord {
             array('title', 'length', 'max' => 100),
             array('url', 'length', 'max' => 255),
             array('classify', 'length', 'max' => 32),
-            array('order, hits, cTime', 'length', 'max' => 10),
+            array('order, hits, cTime , uid', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, title, url, classify, attachid, status, order, hits, cTime', 'safe', 'on' => 'search'),
+            array('id, title, url, classify, attachid, status, order, hits, cTime ,uid', 'safe', 'on' => 'search'),
         );
     }
 
@@ -53,6 +53,7 @@ class Link extends CActiveRecord {
             'order' => '排序',
             'hits' => 'Hits',
             'cTime' => 'C Time',
+            'uid' => 'Uid',
         );
     }
 
@@ -70,6 +71,7 @@ class Link extends CActiveRecord {
         $criteria->compare('order', $this->order, true);
         $criteria->compare('hits', $this->hits, true);
         $criteria->compare('cTime', $this->cTime, true);
+        $criteria->compare('uid', $this->uid, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
