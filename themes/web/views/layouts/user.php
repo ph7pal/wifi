@@ -13,12 +13,7 @@
         <div class="nav-items">
             <ul>
                 <li><a href="/">首页</a></li>
-                <li><?php echo CHtml::link('基本',array('user/config','type'=>'base'));?></li>
-                <li><?php echo CHtml::link('分页',array('user/config','type'=>'base'));?></li>
-                <li><?php echo CHtml::link('站点',array('user/config','type'=>'base'));?></li>
-                <li><?php echo CHtml::link('上传',array('user/config','type'=>'base'));?></li>
-                <li><?php echo CHtml::link('运维',array('user/config','type'=>'base'));?></li> 
-                <li><?php echo CHtml::link('栏目',array('user/config','type'=>'column'));?></li>
+                <?php echo Users::miniTopBar();?>
             </ul>
         </div>
     </div>

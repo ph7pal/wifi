@@ -202,5 +202,23 @@ class Columns extends CActiveRecord {
         }
         return $item;
     }
+    
+    public function userColumns(){
+        if(Yii::app()->user->isGuest){
+            return false;
+        }
+        $uid=Yii::app()->user->id;
+        $items=zmf::getFCache("userColumns-{$uid}");
+        if(!$items){
+            $str=zmf::userConfig($uid,'column');
+            if(!$str){
+                return false;
+            }
+            $sql="SELECT id,title FROM {{columns}} WHERE id IN($str) ORDER BY FIELD(id,$str)";
+            $items=Yii::app()->db->createCommand($sql)->queryAll();
+            zmf::setFCache("userColumns-{$uid}", $items,86400*30);            
+        }
+        return $items;
+    }
 
 }

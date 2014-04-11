@@ -10,9 +10,10 @@
             <div class="site-info">
             </div>
             <div class="site_action config">
-                <?php echo CHtml::link('设置', array('admin/config'), array('class' => 'list_btn '.(Yii::app()->getController()->getAction()->id=='config'?'current':''))); ?>                 
-                <?php echo CHtml::link('管理', array('admin/manage'), array('class' => 'list_btn '.(Yii::app()->getController()->getAction()->id=='manage'?'current':''))); ?>
-                <?php echo CHtml::link('回收', array('admin/deled'), array('class' => 'list_btn '.(Yii::app()->getController()->getAction()->id=='deled'?'current':''))); ?>
+                <?php echo CHtml::link('设置', array('user/config'), array('class' => 'list_btn '.(Yii::app()->getController()->getAction()->id=='config'?'current':''))); ?>
+                <?php $columns=Columns::userColumns();if(!empty($columns)){foreach($columns as $val){?>
+                    <?php echo CHtml::link($val['title'], array('user/list','colid'=>$val['id']), array('class' => 'list_btn '.($_GET['colid']==$val['id']?'current':''))); ?>
+                <?php }}?>
                 <?php echo CHtml::link('表盘', array('admin/stat'), array('class' => 'list_btn '.(Yii::app()->getController()->getAction()->id=='stat'?'current':''))); ?>
             </div>
         </div>

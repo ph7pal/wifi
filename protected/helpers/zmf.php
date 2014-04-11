@@ -19,6 +19,20 @@ class zmf {
         }
     }
 
+    public static function userConfig($uid, $type = '') {
+        $settings = self::getFCache("userSettings{$uid}");
+        if (!$settings) {
+            $dataProvider = UserInfo::model()->findAllByAttributes(array('uid' => $uid));
+            $settings = CHtml::listData($dataProvider, 'name', 'value');
+            self::setFCache("userSettings{$uid}", $settings);
+        }
+        if (!empty($type)) {
+            return $settings[$type];
+        } else {
+            return $settings;
+        }
+    }
+
     public static function subStr($string, $sublen = 20, $start = 0, $separater = '...') {
         $code = 'UTF-8';
         if ($code == 'UTF-8') {
@@ -394,7 +408,7 @@ class zmf {
         $a = Yii::app()->getController()->getAction()->id;
         $t = $_GET['table'];
         $type = $_GET['type'];
-        $uid=$_GET['uid'];
+        $uid = $_GET['uid'];
         $longstr = '';
         if ($c == 'all') {
             $arr = array(
@@ -413,13 +427,13 @@ class zmf {
                 } else {
                     $css = '';
                 }
-                $arr=array();
-                $arr['table']=$k;
-                if(isset($type)){
-                    $arr['type']=$type;
+                $arr = array();
+                $arr['table'] = $k;
+                if (isset($type)) {
+                    $arr['type'] = $type;
                 }
-                if(isset($uid)){
-                    $arr['uid']=$uid;
+                if (isset($uid)) {
+                    $arr['uid'] = $uid;
                 }
                 $longstr.='<li><a class="list_btn ' . $css . '" href="' . Yii::app()->createUrl('admin/all/list', $arr) . '">' . $v . '</a></li>';
             }
@@ -454,34 +468,34 @@ class zmf {
         $a = Yii::app()->getController()->getAction()->id;
         $t = $_GET['table'];
         $type = $_GET['type'];
-        if($type=='staycheck'){
-            $css=' current';
-        }else{
-            $css='';
+        if ($type == 'staycheck') {
+            $css = ' current';
+        } else {
+            $css = '';
         }
         $arr['审核'] = array(
-            'url' => CHtml::link('审核',array('all/list','table'=>'posts','type'=>'staycheck'),array('class'=>'list_btn'.$css)),
-            'power'=>''
+            'url' => CHtml::link('审核', array('all/list', 'table' => 'posts', 'type' => 'staycheck'), array('class' => 'list_btn' . $css)),
+            'power' => ''
         );
-        if($type=='passed'){
-            $css=' current';
-        }else{
-            $css='';
+        if ($type == 'passed') {
+            $css = ' current';
+        } else {
+            $css = '';
         }
         $arr['最新'] = array(
-            'url' => CHtml::link('最新',array('all/list','table'=>'posts','type'=>'passed'),array('class'=>'list_btn'.$css)),
-            'power'=>''
+            'url' => CHtml::link('最新', array('all/list', 'table' => 'posts', 'type' => 'passed'), array('class' => 'list_btn' . $css)),
+            'power' => ''
         );
-        if($c=='config'){
-            $css=' current';
-        }else{
-            $css='';
+        if ($c == 'config') {
+            $css = ' current';
+        } else {
+            $css = '';
         }
         $arr['设置'] = array(
-            'url' => CHtml::link('设置',array('config/index'),array('class'=>'list_btn'.$css)),
-            'power'=>''
+            'url' => CHtml::link('设置', array('config/index'), array('class' => 'list_btn' . $css)),
+            'power' => ''
         );
-        $longstr='';
+        $longstr = '';
         foreach ($arr as $k => $v) {
             $longstr.=$v['url'];
         }

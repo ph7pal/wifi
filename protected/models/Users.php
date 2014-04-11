@@ -109,5 +109,36 @@ class Users extends CActiveRecord {
             return $info;
         }
     }
+    public static function miniTopBar() {
+        $c = Yii::app()->getController()->id;
+        $a = Yii::app()->getController()->getAction()->id;        
+        $type = $_GET['type'];
+        $longstr = '';
+        if ($a == 'config') {
+            $arr = array(
+                'base' => '基本',
+                'column' => '板块',
+            );
+            foreach ($arr as $k => $v) {
+                if ($type == $k) {
+                    $css = 'on';
+                } else {
+                    $css = '';
+                }
+                $arr = array();
+                $arr['type'] = $k;
+                $longstr.='<li><a class="' . $css . '" href="' . Yii::app()->createUrl('user/config', $arr) . '">' . $v . '</a></li>';
+            }
+        } elseif ($a == 'list') {
+            $colid = $_GET['colid'];
+            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('user/list', array('colid' => $colid)) . '">列表</a></li>';
+            $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/add', array('colid' => $colid)) . '">新增</a></li>';
+        } elseif ($c == 'stat') {
+            
+        } elseif ($c == 'users') {
+            
+        }
+        echo $longstr;
+    }
 
 }
