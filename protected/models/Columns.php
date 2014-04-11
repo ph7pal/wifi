@@ -56,7 +56,7 @@ class Columns extends CActiveRecord {
             'hits' => 'Hits',
             'status' => '状态',
             'cTime' => '创建时间',
-            'system'=>'是否系统默认',
+            'system' => '是否系统默认',
         );
     }
 
@@ -92,29 +92,29 @@ class Columns extends CActiveRecord {
     public function allCols($type = 1, $second = 0, $col0 = true) {
         //$type 1:读取所有一级栏目；2：某一级栏目的所有子栏目；3：某文章的栏目
         if ($type == 1) {
-            $cols = Columns::model()->findAllByAttributes(array('belongid' => 0,'status'=>1));
+            $cols = Columns::model()->findAllByAttributes(array('belongid' => 0, 'status' => 1));
         } elseif ($type == 2) {
             //此版本只能取出二级
             //$cols = Columns::model()->findAllByAttributes(array('belongid' => $second,'status'=>1));
             //此版本能取出二级、三级
-            $sql1="SELECT id FROM {{columns}} WHERE belongid={$second}";
-            $info1=Yii::app()->db->createCommand($sql1)->queryAll();
-            $ids1=array();
-            $ids2=array();
-            $ids=array();
+            $sql1 = "SELECT id FROM {{columns}} WHERE belongid={$second}";
+            $info1 = Yii::app()->db->createCommand($sql1)->queryAll();
+            $ids1 = array();
+            $ids2 = array();
+            $ids = array();
             $ids1 = array_keys(CHtml::listData($info1, 'id', ''));
-            $ids1_str=  join(',', $ids1);
-            if($ids1_str!=''){
-                $sql2="SELECT * FROM {{columns}} WHERE belongid IN($ids1_str) AND status=1";
-                $info2=Yii::app()->db->createCommand($sql2)->queryAll();
+            $ids1_str = join(',', $ids1);
+            if ($ids1_str != '') {
+                $sql2 = "SELECT * FROM {{columns}} WHERE belongid IN($ids1_str) AND status=1";
+                $info2 = Yii::app()->db->createCommand($sql2)->queryAll();
                 $ids2 = array_keys(CHtml::listData($info2, 'id', ''));
             }
-            $ids=  array_merge($ids2,$ids1);
-            $ids_str=  join(',', $ids);
-            if($ids_str!=''){
-                $sql="SELECT * FROM {{columns}} WHERE id IN($ids_str) AND status=1 ORDER BY cTime DESC";
-                $cols=Yii::app()->db->createCommand($sql)->queryAll();
-            }            
+            $ids = array_merge($ids2, $ids1);
+            $ids_str = join(',', $ids);
+            if ($ids_str != '') {
+                $sql = "SELECT * FROM {{columns}} WHERE id IN($ids_str) AND status=1 ORDER BY cTime DESC";
+                $cols = Yii::app()->db->createCommand($sql)->queryAll();
+            }
         } elseif ($type == 3) {
             $cols = Columns::model()->findByAttributes(array('id' => $second));
         }
@@ -128,7 +128,7 @@ class Columns extends CActiveRecord {
         return $cols;
     }
 
-    public function getColsByPosition($po, $second = false, $limit = 10) {
+    public function getColsByPosition($po, $second = false, $limit = 10, $system = true) {
         if (!$po) {
             return false;
         }
@@ -142,15 +142,17 @@ class Columns extends CActiveRecord {
             return $cols;
             exit();
         }
-
+        if($system){
+            $_sys=' AND system=1';
+        }
         if ($po == 'top') {
-            $where = "WHERE position='topbar' AND belongid=0 AND status=1";
+            $where = "WHERE position='topbar' AND belongid=0 AND status=1".$_sys;
         } elseif ($po == 'main') {
-            $where = "WHERE position='main' AND status=1";
+            $where = "WHERE position='main' AND status=1".$_sys;
         } elseif ($po == 'aside') {
-            $where = "WHERE position='aside' AND status=1";
+            $where = "WHERE position='aside' AND status=1".$_sys;
         } elseif ($po == 'footer') {
-            $where = "WHERE position='footer' AND status=1";
+            $where = "WHERE position='footer' AND status=1".$_sys;
         } else {
             return false;
         }
@@ -177,7 +179,7 @@ class Columns extends CActiveRecord {
     }
 
     public function getAllByOne($keyid) {
-        if(!$keyid){
+        if (!$keyid) {
             return '';
         }
         $info = Columns::model()->findByPk($keyid);
@@ -194,6 +196,7 @@ class Columns extends CActiveRecord {
             return CHtml::listData($items, 'id', 'title');
         }
     }
+
     public function getOne($keyid, $return = '') {
         $item = Columns::model()->findByPk($keyid);
         if ($return != '') {
@@ -202,21 +205,21 @@ class Columns extends CActiveRecord {
         }
         return $item;
     }
-    
-    public function userColumns(){
-        if(Yii::app()->user->isGuest){
+
+    public function userColumns() {
+        if (Yii::app()->user->isGuest) {
             return false;
         }
-        $uid=Yii::app()->user->id;
-        $items=zmf::getFCache("userColumns-{$uid}");
-        if(!$items){
-            $str=zmf::userConfig($uid,'column');
-            if(!$str){
+        $uid = Yii::app()->user->id;
+        $items = zmf::getFCache("userColumns-{$uid}");
+        if (!$items) {
+            $str = zmf::userConfig($uid, 'column');
+            if (!$str) {
                 return false;
             }
-            $sql="SELECT id,title FROM {{columns}} WHERE id IN($str) ORDER BY FIELD(id,$str)";
-            $items=Yii::app()->db->createCommand($sql)->queryAll();
-            zmf::setFCache("userColumns-{$uid}", $items,86400*30);            
+            $sql = "SELECT id,title FROM {{columns}} WHERE id IN($str) ORDER BY FIELD(id,$str)";
+            $items = Yii::app()->db->createCommand($sql)->queryAll();
+            zmf::setFCache("userColumns-{$uid}", $items, 86400 * 30);
         }
         return $items;
     }

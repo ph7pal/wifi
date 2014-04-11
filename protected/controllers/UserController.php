@@ -38,17 +38,17 @@ class UserController extends T {
     public function actionConfig() {
         $this->layout = 'config';
         $type = zmf::filterInput($_GET['type'], 't', 1);
-        if ($type == '' OR !in_array($type, array('baseinfo', 'upload', 'page', 'siteinfo', 'base', 'column'))) {
+        if ($type == '' OR !in_array($type, array('template', 'upload', 'page', 'siteinfo', 'base', 'column'))) {
             $type = 'base';
         }
         $this->selectType = $type;
         $configs = UserInfo::model()->findAllByAttributes(array('classify' => $type, 'uid' => $this->uid));
         $_c = CHtml::listData($configs, 'name', 'value');
         if ($type == 'column') {
-            $configs = Columns::model()->findAll();
-//            Column::model()->findAll(array(
-//                'condition' => 'system!=0',
-//            ));
+//            $configs = Columns::model()->findAll();
+            $configs = Columns::model()->findAll(array(
+                'condition' => 'system=0',
+            ));
             $items = CHtml::listData($configs, 'id', 'title');
         }
         $data = array(
@@ -62,7 +62,7 @@ class UserController extends T {
 
     public function actionSetConfig() {
         $type = zmf::filterInput($_POST['type'], 't', 1);
-        if ($type == '' OR !in_array($type, array('baseinfo', 'upload', 'page', 'siteinfo', 'base', 'column'))) {
+        if ($type == '' OR !in_array($type, array('template', 'page', 'siteinfo', 'base', 'column'))) {
             $this->message(0, '不允许的操作');
         }
         unset($_POST['type']);
@@ -88,6 +88,7 @@ class UserController extends T {
                     if ($v != '') {
                         $model = new UserInfo();
                         $data = array(
+                            'uid' => $this->uid,
                             'name' => zmf::filterInput($k, 't'),
                             'value' => zmf::filterInput($v, 't'),
                             'classify' => zmf::filterInput($type, 't')
@@ -213,8 +214,8 @@ class UserController extends T {
         );
         $this->render('addPost', $data);
     }
-    
-    public function actionStat(){
+
+    public function actionStat() {
         
     }
 

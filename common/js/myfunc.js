@@ -76,7 +76,7 @@ function loading(divid, type, desc) {
 }
 var tipsImgOrder = 0;
 var mystat;
-function myUploadify(placeHolder, inputId, limit) {
+function singleUploadify(placeHolder, inputId, limit) {
     var swfuploadify = $("#" + placeHolder).uploadify({
         height: 30,
         width: 120,
@@ -108,6 +108,39 @@ function myUploadify(placeHolder, inputId, limit) {
             tipsImgOrder++;
         }
     });
+}
+function myUploadify(){   
+    $("#uploadfile").uploadify({
+        height        : 44,
+        width         : 183,
+        swf           : baseUrl+'/common/uploadify/uploadify.swf',
+        queueID:'fileQueue',
+        auto:true,
+        multi:true,        
+        fileObjName:'filedata',
+        uploadLimit:perAddImgNum,
+        fileSizeLimit:allowImgPerSize,
+        fileTypeExts:allowImgTypes,
+        fileTypeDesc:'Image Files',
+        uploader:tipImgUploadUrl,        
+        buttonText:' ',
+        debug:false,
+        formData:{
+            'PHPSESSID':currentSessionId
+        },
+        onUploadSuccess:function(file,data,response){
+            data=eval("("+data+")");            
+            if(data['state']=='SUCCESS'){
+                var img="<p><img src='"+data['url']+"'/></p><br/>";
+                myeditor.execCommand("inserthtml",img);
+            ///addimage(data['url']);
+            }else{
+                var longstr='<div class="flash-error" style="float:left" id="tip_error_'+tipsImgOrder+'"><div style="float:left;width:540px"><span>'+file.name+'</span><br/><span>'+data['state']+'</span></div><div style="width:20px;float:right"><a href="javascript:" onclick="closeDiv(\'tip_error_'+tipsImgOrder+'\')">X</a></div></div>';
+                $("#tipsimgerrors").append(longstr);
+            }
+            tipsImgOrder++;
+        }
+    }); 
 }
 function minDelImg(a, b, c, d) {
     $("#" + a).remove();

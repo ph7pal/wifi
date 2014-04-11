@@ -28,8 +28,8 @@ class UserInfo extends CActiveRecord {
         return array(
             array('uid, name, value, classify', 'required'),
             array('uid', 'length', 'max' => 11),
-            array('name, value, classify', 'length', 'max' => 16),
-            array('value', 'length', 'max' => 255),
+            array('classify', 'length', 'max' => 16),
+            array('name, value', 'length', 'max' => 255),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, uid, name, value, classify', 'safe', 'on' => 'search'),

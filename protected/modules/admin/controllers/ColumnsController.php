@@ -93,8 +93,8 @@ class ColumnsController extends H {
                 'attachid' => zmf::filterInput($_POST['Columns']['attachid']),
                 'order' => zmf::filterInput($_POST['Columns']['order']),
                 'url' => zmf::filterInput($_POST['Columns']['url'], 't', 1),
-                'status' => 1
-//            ''=>zmf::filterInput($_POST['']['']),
+                'status' => 1,
+                'system'=>zmf::filterInput($_POST['Columns']['system']),
 //            ''=>zmf::filterInput($_POST['']['']),
 //            ''=>zmf::filterInput($_POST['']['']),
             );

@@ -27,7 +27,7 @@
         var imgUploadUrl="<?php echo Yii::app()->createUrl('attachments/upload',array('id'=>$info['id'],'type'=>'coverimg'));?>";  	
         $(document).ready(
         function(){    	
-            //myUploadify('<?php echo CHtml::activeId($model,"attachid");?>_upload','<?php echo CHtml::activeId($model,"attachid");?>',1);
+            singleUploadify('<?php echo CHtml::activeId($model,"attachid");?>_upload','<?php echo CHtml::activeId($model,"attachid");?>',1);
         });  
     </script>
     <div class="form-group">
@@ -64,7 +64,7 @@
     </div>
     <div class="form-group">
     <?php echo $form->labelEx($model,'content'); ?>
-    <?php echo $form->textArea($model,'content',array('class'=>'form-control','value'=>$info['content'])); ?>
+    <?php $this->renderPartial('//common/editor',array('model'=>$model,'content'=>$info['content'],'scenicid'=>$scenicid,'tiptype'=>$tiptype));?> 
      <p class="help-block"><?php echo $form->error($model,'content'); ?></p>
     </div>
     <?php echo CHtml::submitButton('提交',array('class'=>'btn btn-default')); ?>

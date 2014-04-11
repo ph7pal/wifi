@@ -7,10 +7,14 @@
         <link rel="stylesheet" href="<?php echo Yii::app()->baseUrl; ?>/common/css/bootstrap.css">
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl ?>/css/newsoul.css">
         <link rel="stylesheet" href="<?php echo Yii::app()->baseUrl; ?>/common/css/dialog.css">
-        
+        <link href="<?php echo Yii::app()->baseUrl; ?>/common/uploadify/uploadify.css" rel="stylesheet">
         <link rel="shortcut icon" href="<?php echo Yii::app()->baseUrl; ?>/favicon.ico" type="image/x-icon" />
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>        
-        <?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>        
+        <?php 
+        Yii::app()->clientScript->registerCoreScript('jquery'); 
+        Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/common/uploadify/jquery.uploadify-3.1.min.js', CClientScript::POS_END);
+Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/myfunc.js", CClientScript::POS_END);
+        ?>        
         <?php if((Yii::app()->getController()->id=='posts' AND Yii::app()->getController()->getAction()->id=='index')){?>
         <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/lazyload.js", CClientScript::POS_END); ?> 
         <?php }?>

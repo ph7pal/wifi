@@ -117,6 +117,8 @@ class Users extends CActiveRecord {
         if ($a == 'config') {
             $arr = array(
                 'base' => '基本',
+                'siteinfo'=>'站点',
+                'template'=>'模板',
                 'column' => '板块',
             );
             foreach ($arr as $k => $v) {
@@ -131,10 +133,12 @@ class Users extends CActiveRecord {
             }
         } elseif ($a == 'list') {
             $colid = $_GET['colid'];
+            $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/list', array('colid' => $colid)) . '">列表</a></li>';
+            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('user/add', array('colid' => $colid)) . '">新增</a></li>';
+        } elseif ($a == 'add') {
+            $colid = $_GET['colid'];
             $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('user/list', array('colid' => $colid)) . '">列表</a></li>';
             $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/add', array('colid' => $colid)) . '">新增</a></li>';
-        } elseif ($c == 'stat') {
-            
         } elseif ($c == 'users') {
             
         }
