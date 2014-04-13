@@ -17,9 +17,9 @@ class T extends CController {
         if (!zmf::config('closeSite')) {
             self::_closed();
         }        
-        if ($this->checkmobile()) {
-            Yii::app()->theme = 'mobile';
-        }
+//        if ($this->checkmobile()) {
+//            Yii::app()->theme = 'mobile';
+//        }
         $this->_theme = Yii::app()->theme;
         $this->_themePath = str_replace(array('\\', '\\\\'), '/', Yii::app()->theme->basePath);
         $this->_gets = Yii::app()->request;

@@ -58,6 +58,11 @@
      <p class="help-block"><?php echo $form->error($model,'copy_url'); ?></p>
     </div>
     <div class="form-group">
+    <?php echo $form->labelEx($model,'reply_allow'); ?>
+    <?php echo $form->dropDownList($model,'reply_allow',tools::allowOrNot(),array('class'=>'form-control','options' => array($info['reply_allow']=>array('selected'=>true)))); ?>
+     <p class="help-block"><?php echo $form->error($model,'reply_allow'); ?></p>
+    </div>
+    <div class="form-group">
     <?php echo $form->labelEx($model,'intro'); ?>
     <?php echo $form->textArea($model,'intro',array('class'=>'form-control','value'=>$info['intro'])); ?>
      <p class="help-block"><?php echo $form->error($model,'intro'); ?></p>

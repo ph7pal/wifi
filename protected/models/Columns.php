@@ -206,11 +206,12 @@ class Columns extends CActiveRecord {
         return $item;
     }
 
-    public function userColumns() {
-        if (Yii::app()->user->isGuest) {
+    public function userColumns($uid='') {
+        if (Yii::app()->user->isGuest && !$uid) {
             return false;
-        }
-        $uid = Yii::app()->user->id;
+        }elseif($uid==''){
+            $uid = Yii::app()->user->id;
+        }        
         $items = zmf::getFCache("userColumns-{$uid}");
         if (!$items) {
             $str = zmf::userConfig($uid, 'column');

@@ -83,6 +83,7 @@ class UserController extends T {
                     $model->attributes = $data;
                     $model->save();
                 }
+                zmf::delFCache("userColumns-{$this->uid}");
             } else {
                 foreach ($configs as $k => $v) {
                     if ($v != '') {
@@ -98,8 +99,8 @@ class UserController extends T {
                     }
                 }
             }
-
-            //tools::writeSet(array());
+            zmf::delFCache("userSettings{$this->uid}");
+            
         }
         $this->redirect(array('user/config', 'type' => $type));
     }

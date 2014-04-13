@@ -8,7 +8,7 @@ return array(
 'email'=> 'admin@admin.com',
 'beian'=> '渝备12345678',
 'copyright'=> '2012-2013',
-'baseurl'=> 'http://localhost/wifi/',
+'baseurl'=> 'http://192.168.1.104/wifi/',
 'version'=> 'Alpha 1.0',
 'imgUploadNum'=> '1',
 'imgMinWidth'=> '300',
