@@ -18,7 +18,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/common/upload
 <textarea id="input_tmp" name="input_tmp" style="display: none"></textarea>
 <input id="textareaid" type="hidden" value="<?php echo CHtml::activeId($model,$attri);?>"/>
 <script>
-   var tipImgUploadUrl="<?php echo Yii::app()->createUrl('attachments/addTipImg',array('keyid'=>$scenicid,'imgtype'=>$tiptype));?>";      
+   var tipImgUploadUrl="<?php echo Yii::app()->createUrl('attachments/upload',array('id'=>$keyid,'type'=>$type));?>";      
   $(function(){    
     myeditor=UM.getEditor('<?php echo CHtml::activeId($model,$attri);?>', {
        //UMEDITOR_HOME_URL : URL, 
@@ -61,22 +61,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/common/upload
                     return '您输入的内容可能未保存，确定离开此页面吗？';
                 });
             }
-            if(parseInt($("#Tips_score").val())==0){
-                $(".buttons > input[type='submit']").removeAttr("disabled").addClass("disabled");
-                $(".tisSub").html('(你还没有打分)');
-                $(".tisSub").css({display:"inline"});
-            } else if(WordLength(inputstr)>=0){
-                    $(".buttons > input[type='submit']").removeAttr("disabled").addClass("disabled");
-                    $(".tisSub").html('(点评需大于30字)');
-                    $(".tisSub").css({display:"inline"});
-            }else{
-                $(".buttons > input[type='submit']").removeAttr("disabled").removeClass("disabled");
-                    $(".tisSub").html('');
-                    $(".tisSub").css({display:"none"});
-           }
           });  
- if(typeof tips_score!='undefined'){
-        Score(tips_score);  
-    } 
   });
 </script>

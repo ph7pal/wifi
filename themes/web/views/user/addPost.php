@@ -64,7 +64,7 @@
     </div>
     <div class="form-group">
     <?php echo $form->labelEx($model,'content'); ?>
-    <?php $this->renderPartial('//common/editor',array('model'=>$model,'content'=>$info['content'],'scenicid'=>$scenicid,'tiptype'=>$tiptype));?> 
+    <?php $this->renderPartial('//common/editor',array('model'=>$model,'content'=>$info['content'],'keyid'=>$info['id'],'type'=>'posts'));?> 
      <p class="help-block"><?php echo $form->error($model,'content'); ?></p>
     </div>
     <?php echo CHtml::submitButton('提交',array('class'=>'btn btn-default')); ?>

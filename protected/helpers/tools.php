@@ -79,7 +79,7 @@ class tools {
         return $arr;
     }
 
-    public function writeSet($array) {
+    public static function writeSet($array) {
         $dir = Yii::app()->basePath . "/config/zmfconfig.php";
         $values = array_values($array);
         $keys = array_keys($array);
@@ -99,6 +99,40 @@ class tools {
         } else {
             fclose($fp);
             return true;
+        }
+    }
+    public static function jiaMi($plain_text) {
+        $key = zmf::config('authorCode');
+        $plain_text = trim($plain_text);
+        Yii::import('application.vendors.*');
+        require_once 'rc4crypt.php';
+        $rc4 = new Crypt_RC4();
+        $rc4->setKey($key);
+        $text = $plain_text;
+        $x = $rc4->encrypt($text);
+        return $x;
+        exit();
+    }
+
+    public static function jieMi($string) {
+        $key = zmf::config('authorCode');
+        $plain_text = trim($string);
+        Yii::import('application.vendors.*');
+        require_once 'rc4crypt.php';
+        $rc4 = new Crypt_RC4();
+        $rc4->setKey($key);
+        $text = $plain_text;
+        $x = $rc4->decrypt($text);
+        return $x;
+        exit();
+    }
+    
+    public static function columnDesc($type){
+        $_t=zmf::colClassify($type);
+        if($type=='page'){            
+            return '板块的显示方式为“'.$_t.'”,仅能添加一篇文章';
+        }else{
+            return '板块的显示方式为“'.$_t.'”';
         }
     }
 

@@ -1,5 +1,6 @@
 <div class="mod">
 <h3><?php echo $this->listTableTitle;?></h3>
+<h6><?php echo $this->columnDesc;?></h6>
 <table class="table table-hover table-condensed">
 <tr>
     <td>标题</td>    

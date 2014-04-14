@@ -71,6 +71,11 @@ class AttachmentsController extends H {
         unset($dirs['origin']);
         if (move_uploaded_file($_FILES["filedata"]["tmp_name"], $origin . $fileName)) {
             $data = array();
+            if($uptype=='posts'){
+                $status=Posts::STATUS_DELED;
+            }else{
+                $status=Posts::STATUS_PASSED;
+            }
             $data['uid'] = Yii::app()->user->id;
             $data['logid'] = $logid;
             $data['filePath'] = $fileName;
@@ -78,7 +83,7 @@ class AttachmentsController extends H {
             $data['classify'] = $uptype;
             $data['covered'] = '0';
             $data['cTime'] = time();
-            $data['status'] = 1;
+            $data['status'] = $status;
             $model->attributes = $data;
             if ($model->validate()) {
                 if ($model->save()) {
@@ -89,12 +94,17 @@ class AttachmentsController extends H {
                         $image->resize($dk, $dk)->quality($quality);
                         $image->save($_dir . '/' . $fileName,false);
                     }
-                    $returnimg = zmf::uploadDirs($logid, 'site', $uptype, 124) . '/' . $fileName;
+                    if($uptype=='posts'){
+                        $imgsize=600;
+                    }else{
+                        $imgsize=124;
+                    }                    
+                    $returnimg = zmf::uploadDirs($logid, 'site', $uptype, $imgsize) . '/' . $fileName;
                     //zmf::delCache("attachTotal{$logid}");
                     //UserController::recordAction($model->id,'uploadimg','client');                                         
                     $outPutData = array(
                         'status' => 1,
-                        'attachid' => $model->id,
+                        'attachid' => tools::jiaMi($model->id),
                         'imgsrc' => $returnimg
                     );
                     $json = CJSON::encode($outPutData);

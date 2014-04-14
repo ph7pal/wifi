@@ -99,6 +99,7 @@ class Users extends CActiveRecord {
             exit();
         }
         $info = Users::model()->findByPk($uid);
+        unset($info['password']);
         if (!$info) {
             return false;
             exit();
@@ -141,6 +142,8 @@ class Users extends CActiveRecord {
             $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/add', array('colid' => $colid)) . '">新增</a></li>';
         } elseif ($c == 'users') {
             
+        }elseif($a=='index'){
+            $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/update') . '">修改资料</a></li>';
         }
         echo $longstr;
     }
