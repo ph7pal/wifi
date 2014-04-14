@@ -8,6 +8,7 @@ class UserController extends T {
     public $mySelf;
     public $selectType;
     public $listTableTitle;
+    public $columnDesc;
 
     public function actions() {
         return array(
@@ -32,6 +33,12 @@ class UserController extends T {
 
     public function actionIndex() {
         $this->layout = 'user';
+        if($this->uid){
+            $info=Users::getUserInfo($this->uid);
+        }
+        $data=array(
+            'info'=>$info,
+        );
         $this->render('index', $data);
     }
 
@@ -110,8 +117,10 @@ class UserController extends T {
         $colid = zmf::filterInput($_GET['colid']);
         $where = '';
         if ($colid) {
-            $colinfo = Columns::getOne($colid, 'title');
-            $this->listTableTitle = $colinfo;
+            $colinfo = Columns::getOne($colid);
+            $this->listTableTitle = $colinfo['title'];
+            $_d=tools::columnDesc($colinfo['classify']);        
+            $this->columnDesc='【'.$colinfo['title'].'】'.$_d;
             $where.=' colid=' . $colid;
         }
         if ($where != '') {
@@ -124,7 +133,8 @@ class UserController extends T {
         $data = array(
             'colid' => $colid,
             'pages' => $pages,
-            'posts' => $items
+            'posts' => $items,
+            'table' => 'posts'
         );
         $this->render("posts", $data);
     }
@@ -135,6 +145,7 @@ class UserController extends T {
         if (!$colid) {
             $this->message(0, '请选择栏目', Yii::app()->createUrl('user/index'));
         }
+        Columns::checkWritable($colid,$uid);
         $model = new Posts();
         $_info = $model->findByAttributes(array('uid' => $uid, 'colid' => $colid), 'status=0');
         $keyid = zmf::getFCache("notSavePosts{$uid}");
@@ -193,14 +204,50 @@ class UserController extends T {
             }
             $intoKeyid = zmf::filterInput($_POST['Posts']['id'], 't', 1);
             $intoData['status'] = 1;
+            $content = $_POST['Posts']['content']; 
+            $pattern = "/<[img|IMG].*?data=[\'|\"](.*?)[\'|\"].*?[\/]?>/i";
+            preg_match_all($pattern, $content, $match);
+            if (!empty($match[0])) {
+                $arr = array();
+                foreach ($match[0] as $key => $val) {
+                    if(!is_numeric($match[1][$key])){
+                        $_key = tools::jieMi($match[1][$key]);
+                    }else{
+                        $_key=$match[1][$key];
+                    }
+                    if (!$_key || !is_numeric($_key)) {
+                        continue;
+                    }
+                    $arr[$_key] = $val;
+                }
+                if (!empty($arr)) {
+                    foreach ($arr as $thekey => $imgsrc) {
+                        $content = str_ireplace("{$imgsrc}", '[attach]' . $thekey . '[/attach]', $content);
+                    }
+                }
+            }
+            $intoData['content']=$content;
             $model->attributes = $intoData;
             if ($model->validate()) {
                 if ($model->updateByPk($intoKeyid, $intoData)) {
-                    UserAction::record('editposts', $intoKeyid);
+                    //UserAction::record('editposts', $intoKeyid);
+                    if (!empty($arr)) {
+                        $ids=join(',',array_keys($arr));
+                        if($ids!=''){
+                            Attachments::model()->updateAll(array('status'=>  Posts::STATUS_DELED), "logid=$keyid AND uid={$uid}");
+                            Attachments::model()->updateAll(array('status'=>  Posts::STATUS_PASSED), "id IN($ids)");
+                        }                        
+                    }
                     zmf::delFCache("notSavePosts{$uid}");
                     $this->redirect(array('user/list', 'colid' => $colid));
+                }else{
+                    $info=$_POST['Posts'];
                 }
+            }else{
+                $info=$_POST['Posts'];
             }
+        }else{
+           $info['content']=zmf::text(array('keyid'=>$keyid,'imgwidth'=>'530'), $info['content'], false, 600); 
         }
         $colinfo = Columns::getOne($colid);
         $this->listTableTitle = '新增【' . $colinfo['title'] . '】';
@@ -215,9 +262,18 @@ class UserController extends T {
         );
         $this->render('addPost', $data);
     }
+    
+    public function actionQuestion(){
+        $this->render('question', $data);
+    }
 
     public function actionStat() {
-        
+        $data = array(
+            'postNum'=>'',
+            'attachNum'=>'',
+            'visits'=>''
+        );
+        $this->render('stat', $data);
     }
 
 }

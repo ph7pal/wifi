@@ -22,8 +22,8 @@ class ColorPicker extends CInputWidget {
 
         $this->htmlOptions['id'] = $id;
         $this->htmlOptions['name'] = $name;
-        $this->htmlOptions['size'] = !isset($this->htmlOptions['size']) ? 6 : $this->htmlOptions['size'];
-        $this->htmlOptions['maxlength'] = !isset($this->htmlOptions['maxlength']) ? 6 : $this->htmlOptions['maxlength'];
+        $this->htmlOptions['size'] = !isset($this->htmlOptions['size']) ? 10 : $this->htmlOptions['size'];
+        $this->htmlOptions['maxlength'] = !isset($this->htmlOptions['maxlength']) ? 10 : $this->htmlOptions['maxlength'];
 
         $jsOptions = CJavaScript::encode($this->options);
 

@@ -224,5 +224,25 @@ class Columns extends CActiveRecord {
         }
         return $items;
     }
+    
+    public function checkWritable($colid,$uid){
+        if(!$colid){
+            T::message(0,'请选择栏目');
+        }
+        if(!$uid){
+            T::message(0,'请设置用户ID');
+        }
+        $info=  Columns::getOne($colid);
+        if(!$info){
+            T::message(0,'该栏目不存在');
+        }
+        $_d=  tools::columnDesc($info['classify']);        
+        if($info['classify']=='page'){
+            $count=Posts::model()->count("colid={$colid} AND uid={$uid}");            
+            if($count>1){                
+                T::message(0,'【'.$info['title'].'】'.$_d.'，您可以去操作或修改');
+            }
+        }
+    }
 
 }
