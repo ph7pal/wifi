@@ -114,6 +114,7 @@ class Users extends CActiveRecord {
         $c = Yii::app()->getController()->id;
         $a = Yii::app()->getController()->getAction()->id;        
         $type = $_GET['type'];
+        $table = $_GET['table'];
         $longstr = '';
         if ($a == 'config') {
             $arr = array(
@@ -133,9 +134,15 @@ class Users extends CActiveRecord {
                 $longstr.='<li><a class="' . $css . '" href="' . Yii::app()->createUrl('user/config', $arr) . '">' . $v . '</a></li>';
             }
         } elseif ($a == 'list') {
-            $colid = $_GET['colid'];
-            $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/list', array('colid' => $colid)) . '">列表</a></li>';
-            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('user/add', array('colid' => $colid)) . '">新增</a></li>';
+            $colid = $_GET['colid'];            
+            if($table=='ads'){
+                $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/list', array('table' => 'ads')) . '">列表</a></li>';
+                $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('user/addads') . '">新增</a></li>';
+            }else{
+                $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/list', array('colid' => $colid)) . '">列表</a></li>';
+                $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('user/add', array('colid' => $colid)) . '">新增</a></li>';
+            }
+            
         } elseif ($a == 'add') {
             $colid = $_GET['colid'];
             $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('user/list', array('colid' => $colid)) . '">列表</a></li>';
@@ -144,6 +151,9 @@ class Users extends CActiveRecord {
             
         }elseif($a=='index'){
             $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/update') . '">修改资料</a></li>';
+        }elseif ($a == 'addads') {
+            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('user/list', array('table' => 'ads')) . '">列表</a></li>';
+            $longstr.='<li><a class="list_btn on" href="' . Yii::app()->createUrl('user/addads') . '">新增</a></li>';
         }
         echo $longstr;
     }

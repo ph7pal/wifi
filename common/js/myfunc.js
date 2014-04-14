@@ -81,7 +81,7 @@ function singleUploadify(placeHolder, inputId, limit) {
         height: 30,
         width: 120,
         swf: baseUrl + '/common/uploadify/uploadify.swf',
-        queueID: 'fileQueue',
+        queueID: 'singleFileQueue',
         auto: true,
         multi: true,
         uploadLimit: limit,

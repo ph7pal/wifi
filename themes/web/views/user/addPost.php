@@ -9,7 +9,6 @@
 	'enableAjaxValidation'=>true,
 )); ?>
     <?php echo $form->errorSummary($model); ?>
-    <?php echo $form->errorSummary($model); ?>
     <?php echo $form->hiddenField($model,'id',array('value'=>$keyid)); ?>
     <?php echo Chtml::hiddenField('colid',$info['colid']); ?>
      <div class="form-group">
@@ -33,10 +32,10 @@
     <div class="form-group">
     <?php echo $form->labelEx($model,'attachid'); ?>
     <div id="<?php echo CHtml::activeId($model,"attachid");?>_upload"></div>
-    <div id="fileQueue" style="clear:both;"></div>
+    <div id="singleFileQueue" style="clear:both;"></div>
     <div id="fileSuccess" style="clear:both;"></div>    
     <?php if($info['attachid']>0){    
-        $attachinfo=  Attachments::getFaceImg($info['id']);
+        $attachinfo=  Attachments::getOne($info['attachid']);
         if($attachinfo){
             echo '<div id="uploadAttach'.$info['attachid'].'"><img src="'.zmf::imgurl($info['id'],$attachinfo['filePath'],124,$attachinfo['classify']).'"/>'
                     .CHtml::link('删除','javascript:;',array('onclick'=>"delUploadImg({$info['attachid']},'".CHtml::activeId($model,"attachid")."')",'confirm'=>'不可恢复，确认删除？'))

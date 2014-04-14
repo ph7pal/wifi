@@ -347,7 +347,7 @@ class zmf {
         //$content = tools::addcontentlink($content);
         //$content = self::keywordsUrl($content);
         if (stripos($content, 'attach') !== false) {
-            preg_match_all("/\[attach\](\d+)\[\/attach\]/i", $content, $match);
+            preg_match_all("/\[attach\]([^\[]+?)\[\/attach\]/i", $content, $match);
             $imgs = array();
             if (empty($match)) {
                 //$content = self::keywordsUrl($content);
@@ -359,9 +359,11 @@ class zmf {
             return $content;
         }
         foreach ($match[1] as $key => $val) {
-            $thekey = $match[0][$key];
-            $src = Attachments::model()->findByPk($val);
-            if ($src) {
+            $thekey = tools::jieMi($match[1][$key]);            
+            if(is_numeric($thekey)){
+                $src = Attachments::model()->findByPk($thekey);
+            }            
+            if ($src) {                
                 if($src['status']!=Posts::STATUS_PASSED){
                     continue;
                 }
@@ -379,13 +381,13 @@ class zmf {
                 }                
                 if ($lazyload) {
                     //$imginfo = getimagesize($_imgurl);                    
-                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='" . self::config('baseurl') . "common/images/grey.gif' class='lazy' data-original='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='".tools::jiaMi($val)."'/></a>";
+                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='" . self::config('baseurl') . "common/images/grey.gif' class='lazy' data-original='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='".$match[1][$key]."'/></a>";
                 } else {
-                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='".tools::jiaMi($val)."'/></a>";
+                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='".$match[1][$key]."'/></a>";
                 }
-                $content = str_ireplace("{$thekey}", $imgurl, $content);
+                $content = str_ireplace("{$match[0][$key]}", $imgurl, $content);
             } else {
-                $content = str_ireplace("{$thekey}", '', $content);
+                $content = str_ireplace("{$match[0][$key]}", '', $content);
             }
         }
         $_c = stripslashes($content);

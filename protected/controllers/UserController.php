@@ -27,17 +27,17 @@ class UserController extends T {
 
     public function init() {
         parent::init();
-        $this->uid = Yii::app()->user->id;
+        if(Yii::app()->user->isGuest){
+            $this->message(0, Yii::t('default','loginfirst'), Yii::app()->createUrl('site/login'));
+        }
+        $this->uid = Yii::app()->user->id;     
+        $this->userInfo=Users::getUserInfo($this->uid);
         $this->layout = 'user';
     }
 
-    public function actionIndex() {
-        $this->layout = 'user';
-        if($this->uid){
-            $info=Users::getUserInfo($this->uid);
-        }
-        $data=array(
-            'info'=>$info,
+    public function actionIndex() {      
+        $data = array(
+            'info' => $this->userInfo,
         );
         $this->render('index', $data);
     }
@@ -107,7 +107,6 @@ class UserController extends T {
                 }
             }
             zmf::delFCache("userSettings{$this->uid}");
-            
         }
         $this->redirect(array('user/config', 'type' => $type));
     }
@@ -115,12 +114,13 @@ class UserController extends T {
     public function actionList() {
         $this->layout = 'user';
         $colid = zmf::filterInput($_GET['colid']);
+        $table = zmf::filterInput($_GET['table'], 't', 1);
         $where = '';
         if ($colid) {
             $colinfo = Columns::getOne($colid);
             $this->listTableTitle = $colinfo['title'];
-            $_d=tools::columnDesc($colinfo['classify']);        
-            $this->columnDesc='【'.$colinfo['title'].'】'.$_d;
+            $_d = tools::columnDesc($colinfo['classify']);
+            $this->columnDesc = '【' . $colinfo['title'] . '】' . $_d;
             $where.=' colid=' . $colid;
         }
         if ($where != '') {
@@ -128,24 +128,32 @@ class UserController extends T {
         } else {
             $_where = '';
         }
-        $sql = "SELECT * FROM {{posts}} {$_where} ORDER BY id DESC";
+        if ($table == '' || !in_array($table, array('posts', 'ads', 'questions'))) {
+            $table = 'posts';
+        }
+        if ($table == 'ads') {
+            $this->listTableTitle = '轮播展示';
+        } elseif ($table == 'questions') {
+            $this->listTableTitle = '在线提问';
+        }
+        $sql = "SELECT * FROM {{{$table}}} {$_where} ORDER BY id DESC";
         Posts::getAll(array('sql' => $sql), $pages, $items);
         $data = array(
             'colid' => $colid,
             'pages' => $pages,
             'posts' => $items,
-            'table' => 'posts'
+            'table' => $table
         );
-        $this->render("posts", $data);
+        $this->render($table, $data);
     }
 
     public function actionAdd() {
-        $uid = Yii::app()->user->id;
+        $uid = $this->uid;
         $colid = zmf::filterInput($_GET['colid']);
         if (!$colid) {
             $this->message(0, '请选择栏目', Yii::app()->createUrl('user/index'));
         }
-        Columns::checkWritable($colid,$uid);
+        Columns::checkWritable($colid, $uid);
         $model = new Posts();
         $_info = $model->findByAttributes(array('uid' => $uid, 'colid' => $colid), 'status=0');
         $keyid = zmf::getFCache("notSavePosts{$uid}");
@@ -188,66 +196,15 @@ class UserController extends T {
             Yii::app()->end();
         }
         if (isset($_POST['Posts'])) {
-            $colid = zmf::filterInput($_POST['Posts']['colid']);
-            $_colid = zmf::filterInput($_POST['colid']);
-            $columnid = zmf::filterInput($_POST['columnid']);
-            if ($colid == '0' OR !$colid) {
-                $colid = $columnid;
+            $info = Publish::addPost($this->uid);
+            if ($info === TRUE) {
+                $this->redirect(array('user/list', 'colid' => $colid));
             }
-            if (!$columnid) {
-                $colid = $_colid;
+        } else {
+            if ($info['attachid']) {
+                $info['attachid'] = tools::jiaMi($info['attachid']);
             }
-            $_POST['Posts']['colid'] = $colid;
-            $intoData = $_POST['Posts'];
-            if (!empty($_POST['tagname'])) {
-                $tagNames = array_unique(array_filter($_POST['tagname']));
-            }
-            $intoKeyid = zmf::filterInput($_POST['Posts']['id'], 't', 1);
-            $intoData['status'] = 1;
-            $content = $_POST['Posts']['content']; 
-            $pattern = "/<[img|IMG].*?data=[\'|\"](.*?)[\'|\"].*?[\/]?>/i";
-            preg_match_all($pattern, $content, $match);
-            if (!empty($match[0])) {
-                $arr = array();
-                foreach ($match[0] as $key => $val) {
-                    if(!is_numeric($match[1][$key])){
-                        $_key = tools::jieMi($match[1][$key]);
-                    }else{
-                        $_key=$match[1][$key];
-                    }
-                    if (!$_key || !is_numeric($_key)) {
-                        continue;
-                    }
-                    $arr[$_key] = $val;
-                }
-                if (!empty($arr)) {
-                    foreach ($arr as $thekey => $imgsrc) {
-                        $content = str_ireplace("{$imgsrc}", '[attach]' . $thekey . '[/attach]', $content);
-                    }
-                }
-            }
-            $intoData['content']=$content;
-            $model->attributes = $intoData;
-            if ($model->validate()) {
-                if ($model->updateByPk($intoKeyid, $intoData)) {
-                    //UserAction::record('editposts', $intoKeyid);
-                    if (!empty($arr)) {
-                        $ids=join(',',array_keys($arr));
-                        if($ids!=''){
-                            Attachments::model()->updateAll(array('status'=>  Posts::STATUS_DELED), "logid=$keyid AND uid={$uid}");
-                            Attachments::model()->updateAll(array('status'=>  Posts::STATUS_PASSED), "id IN($ids)");
-                        }                        
-                    }
-                    zmf::delFCache("notSavePosts{$uid}");
-                    $this->redirect(array('user/list', 'colid' => $colid));
-                }else{
-                    $info=$_POST['Posts'];
-                }
-            }else{
-                $info=$_POST['Posts'];
-            }
-        }else{
-           $info['content']=zmf::text(array('keyid'=>$keyid,'imgwidth'=>'530'), $info['content'], false, 600); 
+            $info['content'] = zmf::text(array('keyid' => $keyid, 'imgwidth' => '530'), $info['content'], false, 600);
         }
         $colinfo = Columns::getOne($colid);
         $this->listTableTitle = '新增【' . $colinfo['title'] . '】';
@@ -262,16 +219,126 @@ class UserController extends T {
         );
         $this->render('addPost', $data);
     }
+
+    public function actionAddAds() {
+        $model = new Ads();
+        $uid = $this->uid;
+        $_info = $model->findByAttributes(array('status' => 0), 'classify=:classify', array(':classify' => 'empty'));
+        $keyid = zmf::getFCache("notSaveAds{$uid}");
+        $forupdate = zmf::filterInput($_GET['edit'], 't', 1);
+        $_keyid = zmf::filterInput($_GET['id']);
+        if (!$keyid AND !$_keyid) {
+            $_info = $model->findByAttributes(array('status' => 0), 'classify=:classify', array(':classify' => 'empty'));
+            if (!$_info) {
+                $model->attributes = array(
+                    'status' => 0,
+                    'classify' => 'empty',
+                    'cTime' => time()
+                );
+                $model->save(false);
+                $keyid = $model->id;
+            } else {
+                $keyid = $_info['id'];
+            }
+            zmf::setFCache("notSaveAds{$uid}", $keyid, 3600);
+            $this->redirect(array('user/addads', 'id' => $keyid));
+        } elseif ($keyid != $_keyid AND $forupdate != 'yes') {
+            if (!$keyid) {
+                zmf::delFCache("notSaveAds{$uid}");
+                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('user/addads'));
+            } else {
+                $this->redirect(array('user/addads', 'id' => $keyid));
+            }
+        } else {
+            $keyid = $_keyid;
+        }
+        $info = $model->findByPk($keyid);
+        if (!$info) {
+            zmf::delFCache("notSaveAds{$uid}");
+            $this->message(0, '非常抱歉，您查看的页面不存在');
+        }
+
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'ads-addAds-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+        if (isset($_POST['Ads'])) {
+            $info = Publish::addAds($this->uid);
+            if (is_bool($info)) {
+                $this->redirect(array('user/list', 'table' => 'ads'));
+            }
+        } else {
+            if ($info['attachid']) {
+                $info['attachid'] = tools::jiaMi($info['attachid']);
+            }
+        }
+        $data = array(
+            'info' => $info,
+            'table' => 'ads',
+            'model' => $model,
+        );
+        $this->listTableTitle = '新增[轮播展示]';
+        $this->render('addAds', $data);
+    }
+
+    public function actionAddQuestions() {
+        $model = new Questions;
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'questions-addQuestions-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+        if (isset($_POST['Questions'])) {
+            $info = Publish::addQuestions($this->uid); 
+            if (is_bool($info)) {
+                $url=Yii::app()->createUrl('user/list',array('table'=>'questions'));
+                $this->message(1,'问题已提交，我们会尽快回复您！');
+            }
+        }
+        $this->listTableTitle='在线提问';
+        $this->render('addQuestions', array('model' => $model));
+    }
     
-    public function actionQuestion(){
-        $this->render('question', $data);
+    public function actionUpdate(){    
+        
+        
+        if (isset($_POST) AND !empty($_POST)) {
+            $type=zmf::filterInput($_POST['type'],'t',1);
+            $model=new Users();
+            if($type=='info'){
+                unset($_POST['btn']);
+                unset($_POST['type']);
+                unset($_POST['csrfToken']);
+                $intoData=$_POST;
+            }elseif($type=='passwd'){
+                $old=zmf::filterInput($_POST['old_password'],'t',1);
+                $info=Users::model()->findByPk($this->uid);
+                if(!$old){
+                    $this->message(0, '请输入原始密码');
+                }elseif(md5($old)!=$info['password']){
+                    $this->message(0, '原始密码不正确');
+                }
+                if(!$_POST['password']){
+                    $this->message(0, '数据不全，请重新输入');
+                }elseif(strlen($_POST['password'])<5){
+                    $this->message(0, '新密码过短，请重新输入');
+                }     
+                $intoData['password']=md5($_POST['password']);
+            }
+            if ($model->updateByPk($this->uid, $intoData)) {
+                $this->message(1, '修改成功',Yii::app()->createUrl('user/update'));
+            }
+        } 
+        $data=array(
+            'info'=>$this->userInfo,
+        );
+        $this->render('update',$data);
     }
 
     public function actionStat() {
         $data = array(
-            'postNum'=>'',
-            'attachNum'=>'',
-            'visits'=>''
+            'postNum' => '',
+            'attachNum' => '',
+            'visits' => ''
         );
         $this->render('stat', $data);
     }

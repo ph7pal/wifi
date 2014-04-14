@@ -133,7 +133,7 @@ html,body,div,p,a,h3{margin:0;padding:0;}
 
         exit($header . $body . $footer);
     }
-
+    
     
     public function _closed($reason = '') {
         if ($reason == '') {

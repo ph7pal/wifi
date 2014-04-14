@@ -22,8 +22,9 @@
 </table>
 <h4>快捷功能</h4>
 <p>
-  <button type="button" class="btn btn-info btn-xs">查看统计</button>
-  <button type="button" class="btn btn-primary btn-xs">系统设置</button>
-  <button type="button" class="btn btn-warning btn-xs">意见反馈或咨询</button>
+  <a href="<?php echo Yii::app()->createUrl('mobile/index',array('uid'=>$this->uid));?>"><button type="button" class="btn btn-danger btn-xs">查看手机效果</button></a>
+  <a href="<?php echo Yii::app()->createUrl('user/stat');?>"><button type="button" class="btn btn-info btn-xs">查看统计</button></a>
+  <a href="<?php echo Yii::app()->createUrl('user/config');?>"><button type="button" class="btn btn-primary btn-xs">系统设置</button></a>
+  <a href="<?php echo Yii::app()->createUrl('user/list',array('table'=>'questions'));?>"><button type="button" class="btn btn-warning btn-xs">意见反馈或咨询</button></a>
 </p>
 </div>

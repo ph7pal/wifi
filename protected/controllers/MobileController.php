@@ -91,7 +91,7 @@ class MobileController extends T {
             $ip = Yii::app()->request->userHostAddress; 
             $inputData['ip'] = ip2long($ip);
             if($inputData['email']!=''){
-                //$inputData['email']=  tools::jiaMi($inputData['email']);
+                $inputData['email']=  tools::jiaMi($inputData['email']);
             }
             $model->attributes = $inputData;
             if ($model->validate()) {

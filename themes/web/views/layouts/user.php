@@ -5,14 +5,14 @@
     ?>
     <div class="sp-nav">
         <div class="sp-logo">
-            <a href="<?php echo Yii::app()->createUrl('users/index',array('id'=>$this->uid));?>" class="logo">
+            <a href="<?php echo Yii::app()->createUrl('user/index',array('id'=>$this->uid));?>" class="logo">
                 <img style="background:url(http://www.newsoul.cn/themes/web/images/logo.png) no-repeat 0 0;" width="48" height="48" alt="呵呵の小馆">
                 呵呵の小馆
             </a>
         </div>
         <div class="nav-items">
             <ul>
-                <li><a href="/">首页</a></li>
+                <li><a href="<?php echo Yii::app()->createUrl('user/index');?>">首页</a></li>
                 <?php echo Users::miniTopBar();?>
             </ul>
         </div>

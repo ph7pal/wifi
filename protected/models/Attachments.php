@@ -116,6 +116,7 @@ class Attachments extends CActiveRecord
             if(!$keyid){
                 return false;
             }
+            $keyid=  tools::jieMi($keyid);
             $info=  Attachments::model()->findByPk($keyid);
             if($info){
                 return $info;
