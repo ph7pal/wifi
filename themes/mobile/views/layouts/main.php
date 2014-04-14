@@ -2,6 +2,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="keywords" content="<?php echo $this->keywords;?>" />
+        <meta name="description" content="<?php echo $this->pageDescription;?>" />
+
         <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
         <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
         <meta content="yes" name="apple-mobile-web-app-capable" />

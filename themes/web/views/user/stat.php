@@ -1,77 +1,49 @@
-<div class="row"> 
-    <div class="span6" >  
+<div class="mod">   
         <?php
 //very useful google chart
         $this->widget('ext.googlechart.HzlVisualizationChart', array('visualization' => 'PieChart',
             'data' => array(
-                array('Task', 'Hours per Day'),
-                array('Work', 11),
-                array('Eat', 2),
-                array('Commute', 2),
-                array('Watch TV', 2),
-                array('Sleep', 7)
+                array('Task', '统计'),
+                array('文章', intval($postNum)),
+                array('图片', intval($attachNum)),
+                array('评论', 2),
+                array('用户',30)
             ),
-            'options' => array('title' => 'My Daily Activity')));
+            'options' => array('title' => '总量统计')));
  
         $this->widget('ext.googlechart.HzlVisualizationChart', array('visualization' => 'LineChart',
             'data' => array(
-                array('Task', 'Hours per Day'),
-                array('Work', 11),
-                array('Eat', 2),
-                array('Commute', 2),
-                array('Watch TV', 2),
-                array('Sleep', 7)
+                array('Task', '次数'),
+                array('周一', intval($weekly['1'])),
+                array('周二', intval($weekly['2'])),
+                array('周三', intval($weekly['3'])),
+                array('周四', intval($weekly['4'])),
+                array('周五', intval($weekly['5'])),
+                array('周六', intval($weekly['6'])),
+                array('周日', intval($weekly['7']))
             ),
-            'options' => array('title' => 'My Daily Activity')));
+            'options' => array('title' => '近一周访问')));
         ?>
- 
-    </div>
-</div>
- 
- 
-<div class="row"> 
-    <div class="span6" >  
-        <?php
-        $this->widget('ext.googlechart.HzlVisualizationChart', array('visualization' => 'Gauge', 'packages' => 'gauge',
-            'data' => array(
-                array('Label', 'Value'),
-                array('Memory', 80),
-                array('CPU', 55),
-                array('Network', 68),
-            ),
-            'options' => array(
-                'width' => 400,
-                'height' => 120,
-                'redFrom' => 90,
-                'redTo' => 100,
-                'yellowFrom' => 75,
-                'yellowTo' => 90,
-                'minorTicks' => 5
-            )
-        ));
+     <?php
+        $this->widget('ext.googlechart.HzlVisualizationChart', array('visualization' => 'LineChart',
+                    'data' => array(
+                        array('Year', 'Sales'),
+                        array('2004', 1000),
+                        array('2005', 1170),
+                        array('2006', 660),
+                        array('2007', 1030),
+                    ),
+                    'options' => array(
+                        'title' => '近一年访问量',
+                        'titleTextStyle' => array('color' => '#FF0000'),
+                        'vAxis' => array(
+                            'title' => 'Scott vAxis',
+                            'gridlines' => array(
+                                'color' => 'transparent'  //set grid line transparent
+                            )),
+                        'hAxis' => array('title' => 'Scott hAixs'),
+                        'curveType' => 'function', //smooth curve or not
+                        'legend' => array('position' => 'bottom'),
+                )));
         ?>
-    </div>
 </div>
- <?php
-//New Example:
-$this->widget('ext.googlechart.HzlVisualizationChart', array('visualization' => 'LineChart',
-            'data' => array(
-                array('Year', 'Sales', 'Expenses'),
-                array('2004', 1000, 400),
-                array('2005', 1170, 460),
-                array('2006', 660, 1120),
-                array('2007', 1030, 540),
-            ),
-            'options' => array(
-                'title' => 'My Company Performance2',
-                'titleTextStyle' => array('color' => '#FF0000'),
-                'vAxis' => array(
-                    'title' => 'Scott vAxis',
-                    'gridlines' => array(
-                        'color' => 'transparent'  //set grid line transparent
-                    )),
-                'hAxis' => array('title' => 'Scott hAixs'),
-                'curveType' => 'function', //smooth curve or not
-                'legend' => array('position' => 'bottom'),
-        )));
-?>

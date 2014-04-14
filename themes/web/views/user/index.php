@@ -5,7 +5,7 @@
     <td>这是您的第<?php echo $info['login_count'];?>次登陆，上次登陆<?php echo date('Y-m-d H:i:s',$info['last_login_time']);?>/<?php echo long2ip($info['last_login_ip']);?>。</td>    
 </tr>
 <tr>
-    <td>当前状态：<?php echo UserGroup::getInfo($info['groupid'],'title');?></td>    
+    <td>当前用户组：<?php echo UserGroup::getInfo($info['groupid'],'title');?></td>    
 </tr>
 <tr>
     <td>邮箱：<?php echo $info['email'];?></td>    

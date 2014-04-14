@@ -27,15 +27,15 @@ class UserController extends T {
 
     public function init() {
         parent::init();
-        if(Yii::app()->user->isGuest){
-            $this->message(0, Yii::t('default','loginfirst'), Yii::app()->createUrl('site/login'));
+        if (Yii::app()->user->isGuest) {
+            $this->message(0, Yii::t('default', 'loginfirst'), Yii::app()->createUrl('site/login'));
         }
-        $this->uid = Yii::app()->user->id;     
-        $this->userInfo=Users::getUserInfo($this->uid);
+        $this->uid = Yii::app()->user->id;
+        $this->userInfo = Users::getUserInfo($this->uid);
         $this->layout = 'user';
     }
 
-    public function actionIndex() {      
+    public function actionIndex() {
         $data = array(
             'info' => $this->userInfo,
         );
@@ -128,13 +128,15 @@ class UserController extends T {
         } else {
             $_where = '';
         }
-        if ($table == '' || !in_array($table, array('posts', 'ads', 'questions'))) {
+        if ($table == '' || !in_array($table, array('posts', 'ads', 'questions', 'comments'))) {
             $table = 'posts';
         }
         if ($table == 'ads') {
             $this->listTableTitle = '轮播展示';
         } elseif ($table == 'questions') {
             $this->listTableTitle = '在线提问';
+        } elseif ($table == 'comments') {
+            $this->listTableTitle = '用户评论或留言';
         }
         $sql = "SELECT * FROM {{{$table}}} {$_where} ORDER BY id DESC";
         Posts::getAll(array('sql' => $sql), $pages, $items);
@@ -288,57 +290,65 @@ class UserController extends T {
             Yii::app()->end();
         }
         if (isset($_POST['Questions'])) {
-            $info = Publish::addQuestions($this->uid); 
+            $info = Publish::addQuestions($this->uid);
             if (is_bool($info)) {
-                $url=Yii::app()->createUrl('user/list',array('table'=>'questions'));
-                $this->message(1,'问题已提交，我们会尽快回复您！');
+                $url = Yii::app()->createUrl('user/list', array('table' => 'questions'));
+                $this->message(1, '问题已提交，我们会尽快回复您！');
             }
         }
-        $this->listTableTitle='在线提问';
+        $this->listTableTitle = '在线提问';
         $this->render('addQuestions', array('model' => $model));
     }
-    
-    public function actionUpdate(){    
-        
-        
+
+    public function actionUpdate() {
         if (isset($_POST) AND !empty($_POST)) {
-            $type=zmf::filterInput($_POST['type'],'t',1);
-            $model=new Users();
-            if($type=='info'){
+            $type = zmf::filterInput($_POST['type'], 't', 1);
+            $model = new Users();
+            if ($type == 'info') {
                 unset($_POST['btn']);
                 unset($_POST['type']);
                 unset($_POST['csrfToken']);
-                $intoData=$_POST;
-            }elseif($type=='passwd'){
-                $old=zmf::filterInput($_POST['old_password'],'t',1);
-                $info=Users::model()->findByPk($this->uid);
-                if(!$old){
+                $intoData = $_POST;
+            } elseif ($type == 'passwd') {
+                $old = zmf::filterInput($_POST['old_password'], 't', 1);
+                $info = Users::model()->findByPk($this->uid);
+                if (!$old) {
                     $this->message(0, '请输入原始密码');
-                }elseif(md5($old)!=$info['password']){
+                } elseif (md5($old) != $info['password']) {
                     $this->message(0, '原始密码不正确');
                 }
-                if(!$_POST['password']){
+                if (!$_POST['password']) {
                     $this->message(0, '数据不全，请重新输入');
-                }elseif(strlen($_POST['password'])<5){
+                } elseif (strlen($_POST['password']) < 5) {
                     $this->message(0, '新密码过短，请重新输入');
-                }     
-                $intoData['password']=md5($_POST['password']);
+                }
+                $intoData['password'] = md5($_POST['password']);
             }
             if ($model->updateByPk($this->uid, $intoData)) {
-                $this->message(1, '修改成功',Yii::app()->createUrl('user/update'));
+                $this->message(1, '修改成功', Yii::app()->createUrl('user/update'));
             }
-        } 
-        $data=array(
-            'info'=>$this->userInfo,
+        }
+        $data = array(
+            'info' => $this->userInfo,
         );
-        $this->render('update',$data);
+        $this->render('update', $data);
     }
 
     public function actionStat() {
+        $posts = Posts::model()->count('uid=' . $this->uid);
+        $images = Attachments::model()->count('uid=' . $this->uid);
+        //过去一周访问
+        $_weekly = UserInfo::model()->findAllByAttributes(array('classify' => 'weekly', 'uid' => $this->uid));
+        $weekly=CHtml::listData($_weekly,'name','value');     
+        echo date('n');
+        exit();
+        //这一年的访问
+        $yearly = UserInfo::model()->findAllByAttributes(array('classify' => 'yearly', 'uid' => $this->uid));
         $data = array(
-            'postNum' => '',
-            'attachNum' => '',
-            'visits' => ''
+            'postNum' => $posts,
+            'attachNum' => $images,
+            'visits' => '',
+            'weekly'=>$weekly,
         );
         $this->render('stat', $data);
     }

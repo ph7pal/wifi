@@ -14,8 +14,23 @@ class MobileController extends T {
         if(!$this->uid){
             $this->message(0, '请选择需要查看的商铺');
         }
+        $uid=$this->uid;
+        $_close=zmf::userConfig($uid,'closeSite');
+        if(!$_close){
+            $this->renderPartial('/error/close', array('message' => zmf::userConfig($uid,'closeSiteReason')));
+            Yii::app()->end();
+        }
         $cols=Columns::userColumns($this->uid);
         $this->userCols=$cols;
+        $this->pageTitle =zmf::userConfig($this->uid, 'sitename'). ' - '.zmf::userConfig($this->uid,'shortTitle');
+        $this->keywords =zmf::userConfig($this->uid,'siteKeywords');
+        $this->pageDescription =zmf::userConfig($this->uid,'siteDesc');
+        if(date('w')<1){
+            $week=7;
+        }else{
+            $week=date('w');
+        }
+        UserInfo::updateCounter($this->uid,'weekly',$week,1);
     }
 
     public function actionIndex() {

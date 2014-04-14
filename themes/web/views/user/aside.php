@@ -15,6 +15,7 @@
                 <?php $columns=Columns::userColumns();if(!empty($columns)){foreach($columns as $val){?>
                     <?php echo CHtml::link($val['title'], array('user/list','colid'=>$val['id']), array('class' => 'list_btn '.($_GET['colid']==$val['id']?'current':''))); ?>
                 <?php }}?>
+                <?php echo CHtml::link('评论', array('user/list','table'=>'comments'), array('class' => 'list_btn '.($_GET['table']=='comments'?'current':''))); ?>
                 <?php echo CHtml::link('客服', array('user/list','table'=>'questions'), array('class' => 'list_btn '.($_GET['table']=='questions'?'current':''))); ?>
                 <?php echo CHtml::link('表盘', array('user/stat'), array('class' => 'list_btn '.(Yii::app()->getController()->getAction()->id=='stat'?'current':''))); ?>
                 <?php echo CHtml::link('查看', array('mobile/index','uid'=>$this->uid), array('class' => 'list_btn ','target'=>'_blank')); ?>

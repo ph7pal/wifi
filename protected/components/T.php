@@ -12,6 +12,8 @@ class T extends CController {
     protected $currentColId;
     protected $platform;
     protected $zmf=false;
+    public $pageDescription;
+    public $keywords;
 
     public function init() {
         if (!zmf::config('closeSite')) {

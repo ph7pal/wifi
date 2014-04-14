@@ -6,8 +6,8 @@
     <div class="sp-nav">
         <div class="sp-logo">
             <a href="<?php echo Yii::app()->createUrl('user/index',array('id'=>$this->uid));?>" class="logo">
-                <img style="background:url(http://www.newsoul.cn/themes/web/images/logo.png) no-repeat 0 0;" width="48" height="48" alt="呵呵の小馆">
-                呵呵の小馆
+                <img style="background:url(http://www.newsoul.cn/themes/web/images/logo.png) no-repeat 0 0;" width="48" height="48" alt="<?php echo $this->userInfo['truename'];?>">
+                <?php echo $this->userInfo['truename'];?>
             </a>
         </div>
         <div class="nav-items">

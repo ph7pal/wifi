@@ -97,4 +97,25 @@ class UserInfo extends CActiveRecord {
         return parent::model($className);
     }
 
+    public static function updateCounter($uid, $type, $name, $value) {
+        if (!$uid || !$type || !$name || !$value) {
+            return false;
+        }
+        $info = UserInfo::model()->findAll("uid=$uid AND classify='$type' AND name='$name'");
+        if (!$info) {
+            $data = array(
+                'uid' => $uid,
+                'classify' => $type,
+                'name' => $name,
+                'value' => $value
+            );
+            $model = new UserInfo;
+            $model->attributes = $data;
+            $model->save();
+        } else {
+            UserInfo::model()->updateCounters(
+                    array('value' => $value), array('condition' => "uid =$uid AND classify='$type' AND `name`='$name'"));
+        }
+    }
+
 }
