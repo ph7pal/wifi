@@ -8,7 +8,7 @@ return array(
 'email'=> 'admin@admin.com',
 'beian'=> '渝备12345678',
 'copyright'=> '2012-2013',
-'baseurl'=> 'http://localhost/wifi/',
+'baseurl'=> 'http://192.168.1.104/wifi/',
 'version'=> 'Alpha 1.0',
 'imgUploadNum'=> '1',
 'imgMinWidth'=> '300',
@@ -28,5 +28,6 @@ return array(
 'closeSiteReason'=> '系统正在维护中，请稍后再访问！',
 'readLocalDir'=> 'C:\\AppServ\\www\\wifi\\protected/../attachments/',
 'downloadLocalDir'=> 'C:\\AppServ\\www\\wifi\\protected/../attachments/',
+'noticeall'=> '近期收到举报，有部分网站有不良信息，望各位店家及时处理！',
 );
 ?>

@@ -1,5 +1,47 @@
-<h3>自定义样式</h3>
+<h3>模板选择</h3>
 <?php echo CHtml::hiddenField('type', $type); ?>
+<div class="row">
+    <div class="col-xs-4 col-sm-4">
+      <p><img src="http://localhost/acopy/common/images/noimg.png" class="img-responsive"/></p>
+      <p class="radio">
+          <label>
+            <input type="radio" name="skin" id="skin" value="default">
+            default
+          </label>
+      </p>
+  </div>
+  <div class="col-xs-4 col-sm-4">
+        <p><img src="http://localhost/acopy/common/images/noimg.png" class="img-responsive"/></p>
+        <p class="radio">
+          <label>
+            <input type="radio" name="skin" id="skin" value="default">
+            default
+          </label>
+      </p>
+  </div>
+  <div class="col-xs-4 col-sm-4">
+      <p><img src="http://localhost/acopy/common/images/noimg.png" class="img-responsive"/></p>
+      <p class="radio">
+          <label>
+            <input type="radio" name="skin" id="skin" value="default">
+            default
+          </label>
+      </p>
+  </div>
+</div>
+<div class="row">    
+    <div class="col-xs-4 col-sm-4">
+      <p><img src="http://localhost/acopy/common/images/noimg.png" class="img-responsive"/></p>
+      <p class="radio">
+          <label>
+            <input type="radio" name="skin" id="skin" value="default">
+            default
+          </label>
+      </p>
+  </div>
+</div>
+
+
 <p><label>背景图片：</label>
 </p>
 
@@ -15,83 +57,18 @@
     </label>
 </p>
 
-
-<p><label>页面背景色：</label>
-    <?php
-    $this->widget('ext.colorpicker.ColorPicker', array(
-        'name' => 'bgcolor',
-        'htmlOptions' => array(
-            'class' => 'form-control',
-        ),
-        'options' => array(// Optional
-            'pickerDefault' => isset($c['bgcolor'])?$c['bgcolor']:'#FFFFFF', // Configuration Object for JS
-        ),
-    ));
-    ?>
-</p>
-<p><label>内容背景色：</label>
-    <?php
-    $this->widget('ext.colorpicker.ColorPicker', array(
-        'name' => 'contentcolor',
-        'htmlOptions' => array(
-            'class' => 'form-control',
-        ),
-        'options' => array(// Optional
-            'pickerDefault' => isset($c['contentcolor'])?$c['contentcolor']:'#FFFFFF', // Configuration Object for JS
-        ),
-    ));
-    ?>
+<p><label>页面背景色：</label><input class="form-control" name="bgcolor" id="bgcolor" value="<?php echo $c['bgcolor'];?>"/></p>
+<p><label>内容背景色：</label><input class="form-control" name="contentcolor" id="contentcolor" value="<?php echo $c['contentcolor'];?>"/>    
 </p>
 <p><label>导航条背景色：</label>
-    <?php
-    $this->widget('ext.colorpicker.ColorPicker', array(
-        'name' => 'barcolor',
-        'htmlOptions' => array(
-            'class' => 'form-control',
-        ),
-        'options' => array(// Optional
-            //'pickerDefault' => isset($c['barcolor'])?$c['barcolor']:'#FFFFFF', // Configuration Object for JS
-        ),
-    ));
-    ?>
+    <input class="form-control" name="barcolor" id="barcolor" value="<?php echo $c['barcolor'];?>"/>
 </p>
 <p><label>主文字色：</label>
-    <?php
-    $this->widget('ext.colorpicker.ColorPicker', array(
-        'name' => 'fontcolor',
-        'htmlOptions' => array(
-            'class' => 'form-control',
-        ),
-        'options' => array(// Optional
-            //'pickerDefault' => isset($c['fontcolor'])?$c['fontcolor']:'#000', // Configuration Object for JS
-        ),
-    ));
-    ?>
+    <input class="form-control" name="fontcolor" id="fontcolor" value="<?php echo $c['fontcolor'];?>"/>    
 </p>
 <p><label>主链接色：</label>
-    <?php
-    $this->widget('ext.colorpicker.ColorPicker', array(
-        'name' => 'linkcolor',
-        'htmlOptions' => array(
-            'class' => 'form-control',
-        ),
-        'options' => array(// Optional
-            'pickerDefault' => isset($c['linkcolor'])?$c['linkcolor']:'#000', // Configuration Object for JS
-        ),
-    ));
-    ?>
+    <input class="form-control" name="linkcolor" id="linkcolor" value="<?php echo $c['linkcolor'];?>"/>    
 </p>
 <p><label>次链接色：</label>
-    <?php
-    $this->widget('ext.colorpicker.ColorPicker', array(
-        'name' => 'ahover_color',
-        'htmlOptions' => array(
-            'class' => 'form-control',
-        ),
-        'options' => array(// Optional
-            'pickerDefault' => isset($c['ahover_color'])?$c['ahover_color']:'#000', // Configuration Object for JS
-            'addColors'=>"['444444']",
-        ),
-    ));
-    ?>
+    <input class="form-control" name="ahover_color" id="ahover_color" value="<?php echo $c['ahover_color'];?>"/>
 </p>

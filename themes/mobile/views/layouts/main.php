@@ -15,41 +15,10 @@
         <meta name="format-detection" content="address=no">
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl ?>/css/bootstrap.min.css">
+        <link rel="stylesheet" href="<?php echo Yii::app()->baseUrl ?>/skins/default/default.css">
         <?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
     </head>
     <body>
-        <style>
-            ul{
-                margin: 0;
-                padding:0;
-            }
-            ul li{
-                list-style: none;
-                margin: 0;
-                padding:0;
-            }
-            .cols-bar{
-                text-align: center;
-            }
-            .cols-bar .cols-list{
-                padding:5px 0;
-                background: #efefef;
-                border-left: 1px solid #FFF;
-            }
-            .face img{
-                float:  right
-            }
-            .listItem{
-                margin-bottom: 10px;
-            }
-            .buttons{
-                margin-top: 10px;
-            }
-            .navbar{
-                margin-bottom: 0px;
-            }
-        </style>
-        
         <div class="navbar navbar-default" role="navigation">
             <div class="container">
               <div class="navbar-header">
@@ -59,7 +28,20 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>  
-                <a class="navbar-brand" href="<?php echo Yii::app()->createUrl('mobile/index',array('uid'=>$this->uid));?>">某某餐厅南坪店</a>
+                <a class="navbar-brand logo" href="<?php echo Yii::app()->createUrl('mobile/index',array('uid'=>$this->uid));?>">
+                <?php 
+                $logo=zmf::userConfig($this->uid,'logo');
+                if($logo){    
+                    $attachinfo=  Attachments::getOne($logo);
+                    if($attachinfo){
+                        echo '<img src="'.zmf::imgurl($attachinfo['logid'],$attachinfo['filePath'],124,$attachinfo['classify']).'"/>';
+                    }else{
+                        echo zmf::userConfig($this->uid,'company'); 
+                    }
+                }else{ 
+                    echo zmf::userConfig($this->uid,'company');                    
+                }?>
+                </a>
               </div>
               <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -71,18 +53,12 @@
                         <?php }?>
                     <?php }?>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                  <li><a href="#">登录</a></li>
-                  <li><a href="#">注册</a></li>
+                <!--ul class="nav navbar-nav navbar-right">                  
                   <li class="active"><a href="./">管理</a></li>
-                </ul>
+                </ul-->
               </div><!--/.nav-collapse -->
             </div>
           </div>
-        
-        
-        
-        
         <div class="container">
             <!--nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
                 <ul class="nav nav-pills nav-justified">
@@ -100,7 +76,12 @@
             </div>
             <hr>
             <footer>
-                <p><span class="glyphicon glyphicon-user"></span> gg© Company 2013</p>
+                <p>
+                    <?php echo zmf::userConfig($this->uid,'address').'&nbsp;&nbsp;'.zmf::userConfig($this->uid,'phone');?>
+                </p>
+                <p>
+                    <?php echo zmf::userConfig($this->uid,'company').zmf::userConfig($this->uid,'copyright').'&nbsp;&nbsp;'.zmf::userConfig($this->uid,'beian');?>
+                </p>
             </footer>
         </div>
         <?php $this->renderPartial('/common/footer'); ?>

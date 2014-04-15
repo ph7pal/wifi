@@ -1,0 +1,32 @@
+ul{
+    margin: 0;
+    padding:0;
+}
+ul li{
+    list-style: none;
+    margin: 0;
+    padding:0;
+}
+.cols-bar{
+    text-align: center;
+}
+.cols-bar .cols-list{
+    padding:5px 0;
+    background: #efefef;
+    border-left: 1px solid #FFF;
+}
+.logo img{
+    max-height: 50px;
+}
+.face img{
+    
+}
+.listItem{
+    margin-bottom: 10px;
+}
+.buttons{
+    margin-top: 10px;
+}
+.navbar{
+    margin-bottom: 0px;
+}

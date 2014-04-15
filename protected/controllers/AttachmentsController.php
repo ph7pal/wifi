@@ -40,24 +40,7 @@ class AttachmentsController extends H {
         $upExt = zmf::config("imgAllowTypes");
         if (!preg_match('/^(' . str_replace('*.', '|', str_replace(';', '', $upExt)) . ')$/i', $ext)) {
             $this->jsonOutPut(0, '上传文件扩展名必需为：' . $upExt);
-        }        
-        if($uptype=='logo'){
-        	$logoDir=Yii::app()->basePath."/../common/images/logo.png";
-        	$returnimg=zmf::config('baseurl')."common/images/logo.png";
-        	if (move_uploaded_file($_FILES["filedata"]["tmp_name"], $logoDir)) {
-        		$outPutData = array(
-                      'status' => 1,
-                      'attachid' => "common/images/logo.png",
-                      'imgsrc' => $returnimg
-                  );
-                  $json = CJSON::encode($outPutData);
-                  echo $json;                  
-                  Yii::app()->end();
-        		}else{
-        			$this->jsonOutPut(0, "保存到附件目录失败");
-        			}
-        			$this->jsonOutPut(0, '上传文件扩展名必需为：' . $uptype);
-        	}
+        }
         $sizeinfo = getimagesize($_FILES["filedata"]["tmp_name"]);
         if ($sizeinfo['0'] < zmf::config('imgMinWidth') OR $sizeinfo[1] < zmf::config('imgMinHeight')) {
             $this->jsonOutPut(0, "要求上传的图片尺寸，宽不能不小于" . zmf::config('imgMinWidth') . "px，高不能小于" . zmf::config('imgMinHeight') . "px.");
@@ -118,8 +101,9 @@ class AttachmentsController extends H {
         if (!empty($_attachid)) {
             $attachid = $_attachid;            
         } else {
-            $attachid = zmf::filterInput($_POST['attachid']);
+            $attachid = zmf::filterInput($_POST['attachid'],'t',1);
         }
+        $attachid=tools::jieMi($attachid);
         if(H::checkPower('delattachments')){
             $admin=true;
         }else{
