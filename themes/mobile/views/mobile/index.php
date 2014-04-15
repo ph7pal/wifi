@@ -1,3 +1,24 @@
+<?php 
+$topads=Ads::getAllByPo('topbar','flash',$this->uid);
+if(!empty($topads)){?>
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">        
+    <div class="carousel-inner">
+<?php foreach($topads as $key=>$_topad){
+$_topad_img=Attachments::getFaceImg($_topad['id'],'ads');        
+?>    
+    <div class="item <?php if($key==0){ echo 'active';}?>">
+      <img alt="First slide" src="<?php echo zmf::uploadDirs($_topad_img['logid'], 'site', $_topad_img['classify'], 'origin').'/'.$_topad_img['filePath'];?>">
+    </div>
+<?php }?>
+    </div>
+    <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+</div>
+<?php }?>
 <?php if(!empty($posts)){?>
 <?php if($colinfo['classify']!='page'){?>
 <h3><?php echo $colinfo['title'];?></h3>

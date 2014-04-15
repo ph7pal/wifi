@@ -92,8 +92,11 @@ class Ads extends CActiveRecord {
         return parent::model($className);
     }
 
-    public function getAllByPo($po, $type = 'img', $limit = 10) {
-        $where = "AND classify='{$type}' AND attachid!=0";
+    public function getAllByPo($po, $type = 'img', $uid, $limit = 10) {
+        if(!$po || !$type || !$uid){
+            return false;
+        }        
+        $where = "AND classify='{$type}' AND attachid!=0 AND uid=$uid";
         $sql = "SELECT * FROM {{ads}} WHERE position='{$po}' {$where} AND status=1 ORDER BY `order` DESC  LIMIT {$limit}";
         $items = Yii::app()->db->createCommand($sql)->queryAll();
         return $items;

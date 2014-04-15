@@ -340,8 +340,6 @@ class UserController extends T {
         //过去一周访问
         $_weekly = UserInfo::model()->findAllByAttributes(array('classify' => 'weekly', 'uid' => $this->uid));
         $weekly=CHtml::listData($_weekly,'name','value');     
-        echo date('n');
-        exit();
         //这一年的访问
         $yearly = UserInfo::model()->findAllByAttributes(array('classify' => 'yearly', 'uid' => $this->uid));
         $data = array(
@@ -349,6 +347,7 @@ class UserController extends T {
             'attachNum' => $images,
             'visits' => '',
             'weekly'=>$weekly,
+            'yearly'=>$yearly
         );
         $this->render('stat', $data);
     }

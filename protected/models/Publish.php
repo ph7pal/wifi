@@ -67,6 +67,9 @@ class Publish extends CFormModel {
     }
 
     public static function addAds($uid) {
+        if(!$uid){
+            return false;
+        }
         $model=new Ads();
         $thekeyid = zmf::filterInput($_POST['Ads']['id']);
         $attachid = zmf::filterInput($_POST['Ads']['attachid'], 't', 1);
@@ -76,6 +79,7 @@ class Publish extends CFormModel {
         $intoData = $_POST['Ads'];
         $intoData['attachid'] = $attachid;
         $intoData['status'] = 1;
+        $intoData['uid'] = $uid;
         $model->attributes = $intoData;
         if ($model->validate()) {
             if ($model->updateByPk($thekeyid, $intoData)) {
