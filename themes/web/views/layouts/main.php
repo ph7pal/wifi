@@ -50,7 +50,7 @@ background: url(<?php echo zmf::config('baseurl').zmf::config('logo');?>) no-rep
       </div>
     </div>      
       <div class="subnav">
-          <span> 客服电话：12345678 </span>
+          <span> 客服电话：<?php echo zmf::config('phone');?> </span>
           <span>
               <?php if(Yii::app()->user->isGuest){?>
               <?php echo CHtml::link('登录',array('site/login'));?>

@@ -35,10 +35,10 @@ class SiteController extends T {
             $model->attributes = $_POST['LoginForm'];
             if ($model->validate() && $model->login()) {
                 $id = Yii::app()->user->id;
-                $ip = Yii::app()->request->userHostAddress; 
-                $info=Users::model()->findByPk($id);
-                $info->last_login_ip=ip2long($ip);
-                $info->last_login_time=time();
+                $ip = Yii::app()->request->userHostAddress;
+                $info = Users::model()->findByPk($id);
+                $info->last_login_ip = ip2long($ip);
+                $info->last_login_time = time();
                 $info->login_count+=1;
                 $info->save();
                 $this->redirect(Yii::app()->createUrl('user/index'));
@@ -68,16 +68,21 @@ class SiteController extends T {
         if (isset($_POST['Users'])) {
             $username = zmf::filterInput($_POST['Users']['username'], 't', 1);
             $truename = zmf::filterInput($_POST['Users']['truename'], 't', 1);
+            $ip = Yii::app()->request->userHostAddress;
             $inputData = array(
                 'username' => $username,
                 'truename' => $truename,
                 'password' => md5($_POST['Users']['password']),
-                'email' => zmf::filterInput($_POST['Users']['email'], 't', 1),               
+                'email' => zmf::filterInput($_POST['Users']['email'], 't', 1),
                 'qq' => zmf::filterInput($_POST['Users']['qq'], 't', 1),
                 'telephone' => zmf::filterInput($_POST['Users']['telephone'], 't', 1),
                 'groupid' => zmf::config('userDefaultGroup'),
                 'cTime' => time(),
-                'status' => 1
+                'status' => 1,
+                'ip' => ip2long($ip),
+                'last_login_ip' => ip2long($ip),
+                'last_login_time' => time(),
+                'login_count' => 1
             );
             $model->attributes = $inputData;
             if ($model->validate()) {

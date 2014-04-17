@@ -2,13 +2,13 @@
 return array(
 'sitename'=> '新灵旅行',
 'shortTitle'=> '带上新的生活去旅行',
-'domain'=> 'http://192.168.1.187',
+'domain'=> 'http://www.newsoul.cn',
 'address'=> '重庆市江北观音桥',
 'phone'=> '023-12345678',
 'email'=> 'admin@admin.com',
 'beian'=> '渝备12345678',
 'copyright'=> '2012-2013',
-'baseurl'=> 'http://192.168.1.187/wifi/',
+'baseurl'=> 'http://localhost/wifi/',
 'version'=> 'Alpha 1.0',
 'imgUploadNum'=> '1',
 'imgMinWidth'=> '300',
@@ -28,9 +28,6 @@ return array(
 'closeSiteReason'=> '系统正在维护中，请稍后再访问！',
 'readLocalDir'=> 'C:\\AppServ\\www\\wifi\\protected/../attachments/',
 'downloadLocalDir'=> 'C:\\AppServ\\www\\wifi\\protected/../attachments/',
-'officalUid'=> '2',
-'shopGroupId'=> '4',
-'forbidnotshop'=> '0',
-'validateEmail'=> '1',
+'noticeall'=> '近期收到举报，有部分网站有不良信息，望各位店家及时处理！',
 );
 ?>

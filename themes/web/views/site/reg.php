@@ -1,8 +1,12 @@
 <?php $this->renderPartial('/common/topdesc');?>
 <div class="wrap clear">
-    <?php $this->renderPartial('/posts/aside',array('colid'=>$info['logid'],'type'=>'album'));?>
-    <div class="mainBox">
-        <div class="postWrap">
+    <style>
+        .center-block{
+            width:320px;
+            margin: 0 auto;
+        }
+    </style>
+        <div class="center-block">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'users-addUser-form',	
 	'enableAjaxValidation'=>true,
@@ -11,46 +15,45 @@
 	<?php echo $form->errorSummary($model); ?>
 	<?php echo $form->hiddenField($model,'id',array('value'=>$info['id'])); ?>
         <tr>
-            <td class="post_title"><?php echo $form->labelEx($model,'username'); ?></td><td>&nbsp;</td>
+            <td class="post_title"><?php echo $form->labelEx($model,'username'); ?></td>
         </tr>
         <tr>
-            <td><?php echo $form->textField($model,'username',array('class'=>'form-control','value'=>$info['username'])); ?></td><td><?php echo $form->error($model,'username'); ?></td>
+            <td><?php echo $form->textField($model,'username',array('class'=>'form-control','value'=>$info['username'])); ?></td>
         </tr>
         <tr>
-            <td class="post_title"><?php echo $form->labelEx($model,'truename'); ?></td><td>&nbsp;</td>
+            <td class="post_title"><?php echo $form->labelEx($model,'truename'); ?></td>
         </tr>
         <tr>
-            <td><?php echo $form->textField($model,'truename',array('class'=>'form-control','value'=>$info['truename'])); ?></td><td><?php echo $form->error($model,'truename'); ?></td>
+            <td><?php echo $form->textField($model,'truename',array('class'=>'form-control','value'=>$info['truename'])); ?></td>
         </tr>
         <tr>
-            <td class="post_title"><?php echo $form->labelEx($model,'password'); ?></td><td>&nbsp;</td>
+            <td class="post_title"><?php echo $form->labelEx($model,'password'); ?></td>
         </tr>
         <tr>
-            <td><?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?></td><td><?php echo $form->error($model,'password'); ?></td>
+            <td><?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?></td>
         </tr>
         <tr>
-            <td class="post_title"><?php echo $form->labelEx($model,'email'); ?></td><td>&nbsp;</td>
+            <td class="post_title"><?php echo $form->labelEx($model,'email'); ?></td>
         </tr>
         <tr>
-            <td><?php echo $form->textField($model,'email',array('class'=>'form-control','value'=>$info['email'])); ?></td><td><?php echo $form->error($model,'email'); ?></td>
+            <td><?php echo $form->textField($model,'email',array('class'=>'form-control','value'=>$info['email'])); ?></td>
         </tr>        
         <tr>
-            <td class="post_title"><?php echo $form->labelEx($model,'qq'); ?></td><td>&nbsp;</td>
+            <td class="post_title"><?php echo $form->labelEx($model,'qq'); ?></td>
         </tr>
         <tr>
-            <td><?php echo $form->textField($model,'qq',array('class'=>'form-control','value'=>$info['qq'])); ?></td><td><?php echo $form->error($model,'qq'); ?></td>
+            <td><?php echo $form->textField($model,'qq',array('class'=>'form-control','value'=>$info['qq'])); ?></td>
         </tr>        
         <tr>
-            <td class="post_title"><?php echo $form->labelEx($model,'telephone'); ?></td><td>&nbsp;</td>
+            <td class="post_title"><?php echo $form->labelEx($model,'telephone'); ?></td>
         </tr>
         <tr>
-            <td><?php echo $form->textField($model,'telephone',array('class'=>'form-control','value'=>$info['telephone'])); ?></td><td><?php echo $form->error($model,'telephone'); ?></td>
+            <td><?php echo $form->textField($model,'telephone',array('class'=>'form-control','value'=>$info['telephone'])); ?></td>
         </tr>
          <tr>
-            <td class="post_title"><?php echo CHtml::submitButton('立即注册',array('class'=>'btn btn-primary')); ?></td><td>&nbsp;</td>
+            <td class="post_title"><?php echo CHtml::submitButton('立即注册',array('class'=>'btn btn-primary')); ?></td>
         </tr>   
     </table>
     <?php $this->endWidget(); ?>
    </div>
-    </div>
 </div>
