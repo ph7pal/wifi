@@ -9,10 +9,15 @@ class MobileController extends T {
     
     public function init() {
         parent::init();
-        Yii::app()->theme = 'mobile';
         $this->uid=zmf::filterInput($_GET['uid']);
         if(!$this->uid){
             $this->message(0, '请选择需要查看的商铺');
+        }
+        if(zmf::checkmobile()){
+            Yii::app()->theme = 'mobile';
+        }else{
+            Yii::app()->theme = 'mobile';
+            //$this->_closed();
         }
         $uid=$this->uid;
         $_close=zmf::userConfig($uid,'closeSite');
@@ -30,7 +35,18 @@ class MobileController extends T {
         }else{
             $week=date('w');
         }
+        $month=date('n');
+        //更新每天访问次数
         UserInfo::updateCounter($this->uid,'weekly',$week,1);
+        //更新每月访问次数
+        UserInfo::updateCounter($this->uid,'yearly',$month,1);
+    }
+    
+    public function _closed($reason = '') {
+        $url=zmf::config('domain') . Yii::app()->createUrl('mobile/index', array('uid' => $this->uid));
+        $qrcodeUrl = zmf::qrcode($url, 'users', $this->uid);
+        $reason = '为达到更真实的访问效果，建议手机访问<br/>"'.$url.'",<br/>或扫描二维码：<br/><img src="'.$qrcodeUrl.'"/>';
+        parent::_closed($reason);
     }
 
     public function actionIndex() {
@@ -107,7 +123,7 @@ class MobileController extends T {
             $inputData['ip'] = ip2long($ip);
             if($inputData['email']!=''){
                 $inputData['email']=  tools::jiaMi($inputData['email']);
-            }
+            }            
             $model->attributes = $inputData;
             if ($model->validate()) {
                 $model->attributes = $inputData;

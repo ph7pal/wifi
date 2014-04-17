@@ -20,8 +20,7 @@ class Comments extends CActiveRecord {
             array('status', 'numerical', 'integerOnly' => true),
             array('logid, uid, cTime', 'length', 'max' => 10),
             array('nickname', 'length', 'max' => 60),
-            array('email', 'length', 'max' => 50),
-            array('email', 'email'),
+            array('email', 'length', 'max' => 50),            
             array('ip,classify', 'length', 'max' => 16),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -81,13 +80,13 @@ class Comments extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public static function all(&$pages, &$comLists,$keyid,$type){
-        if(!$keyid || !$type){
+
+    public static function all(&$pages, &$comLists, $keyid, $type) {
+        if (!$keyid || !$type) {
             return false;
         }
-        $sql="SELECT * FROM {{comments}} WHERE logid={$keyid} AND classify='{$type}'";
-        Posts::getAll(array('sql'=>$sql), $pages, $comLists);
+        $sql = "SELECT * FROM {{comments}} WHERE logid={$keyid} AND classify='{$type}'";
+        Posts::getAll(array('sql' => $sql), $pages, $comLists);
     }
 
 }

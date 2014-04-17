@@ -4,7 +4,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="keywords" content="<?php echo $this->keywords;?>" />
         <meta name="description" content="<?php echo $this->pageDescription;?>" />
-
         <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
         <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
         <meta content="yes" name="apple-mobile-web-app-capable" />
@@ -15,7 +14,7 @@
         <meta name="format-detection" content="address=no">
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl ?>/css/bootstrap.min.css">
-        <link rel="stylesheet" href="<?php echo Yii::app()->baseUrl ?>/skins/default/default.css">
+        <link rel="stylesheet" href="<?php echo zmf::userSkin($this->uid) ?>">
         <?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
     </head>
     <body>
@@ -28,9 +27,9 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>  
-                <a class="navbar-brand logo" href="<?php echo Yii::app()->createUrl('mobile/index',array('uid'=>$this->uid));?>">
-                <?php 
-                $logo=zmf::userConfig($this->uid,'logo');
+                <?php $logo=zmf::userConfig($this->uid,'logo');?>  
+                <a class="navbar-brand <?php if($logo){ echo 'logo';}?>" href="<?php echo Yii::app()->createUrl('mobile/index',array('uid'=>$this->uid));?>">
+                <?php                 
                 if($logo){    
                     $attachinfo=  Attachments::getOne($logo);
                     if($attachinfo){

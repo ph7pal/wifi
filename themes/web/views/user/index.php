@@ -5,6 +5,16 @@
     <?php echo $notice;?>
 </div>
 <?php }?>
+<?php if($this->noticeInfo!=''){?>
+<div class="alert alert-danger">
+    <?php echo $this->noticeInfo;?>
+</div>
+<?php }?>
+<?php if($this->validateEmail!=''){?>
+<div class="alert alert-danger">
+    <?php echo $this->validateEmail;?>
+</div>
+<?php }?>
 <table class="table table-hover">
 <tr>
     <td>这是您的第<?php echo $info['login_count'];?>次登陆，上次登陆<?php echo date('Y-m-d H:i:s',$info['last_login_time']);?>/<?php echo long2ip($info['last_login_ip']);?>。</td>    
@@ -13,7 +23,30 @@
     <td>当前用户组：<?php echo UserGroup::getInfo($info['groupid'],'title');?></td>    
 </tr>
 <tr>
-    <td>邮箱：<?php echo $info['email'];?></td>    
+    <td>邮箱：<?php echo $info['email'];?>
+        <?php if(!$info['emailstatus']){?>
+        <?php
+        echo CHtml::ajaxSubmitButton('发送验证信息',$this->createUrl('email/send',array('type'=>'validate')),
+        array(
+            'beforeSend'=>'function(){
+            $("#miniComSubmit").attr("disabled","true");
+            }',
+            'success'=>"function(data){
+                data = eval('('+data+')');
+                if(data['status']=='0'){
+                alert(data['msg']);
+                setTimeout(\"$('#miniComSubmit').removeAttr('disabled');\",10000);
+                }else{
+                alert(data['msg']);
+                }
+            }",
+        ),
+       array('id'=>'miniComSubmit','class'=>'btn btn-danger btn-xs'));
+        ?>
+        <?php }else{?>
+            <button type="button" class="btn btn-success btn-xs">已验证</button>
+        <?php }?>
+    </td>    
 </tr>
 <tr>
     <td>QQ：<?php echo $info['qq'];?></td>    

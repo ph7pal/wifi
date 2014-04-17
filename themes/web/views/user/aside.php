@@ -2,7 +2,9 @@
     <div class="mod" id="aside_face">
         <div class="bd">
             <div class="site_pic">
-                <img alt="的头像" src="http://www.newsoul.cn/attachments/posts/600/1021/531efc64c162f.jpeg">
+                <?php if($this->logoImg!=''){?>
+                <img src="<?php echo $this->logoImg;?>" alt="<?php echo $this->userInfo['truename'];?>">
+                <?php }?>
             </div>
             <div class="desc">
                 

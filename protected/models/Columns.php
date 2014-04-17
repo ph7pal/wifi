@@ -89,15 +89,22 @@ class Columns extends CActiveRecord {
         return parent::model($className);
     }
 
-    public function allCols($type = 1, $second = 0, $col0 = true) {
+    public function allCols($type = 1, $second = 0, $col0 = true, $system = true) {
         //$type 1:读取所有一级栏目；2：某一级栏目的所有子栏目；3：某文章的栏目
+        if ($system) {
+            $_sys = 'system=1';
+            $sys = ' AND system=1';
+        } else {
+            $_sys = '';
+            $sys = '';
+        }
         if ($type == 1) {
-            $cols = Columns::model()->findAllByAttributes(array('belongid' => 0, 'status' => 1));
+            $cols = Columns::model()->findAllByAttributes(array('belongid' => 0, 'status' => 1), $_sys);
         } elseif ($type == 2) {
             //此版本只能取出二级
             //$cols = Columns::model()->findAllByAttributes(array('belongid' => $second,'status'=>1));
             //此版本能取出二级、三级
-            $sql1 = "SELECT id FROM {{columns}} WHERE belongid={$second}";
+            $sql1 = "SELECT id FROM {{columns}} WHERE belongid={$second}{$sys}";
             $info1 = Yii::app()->db->createCommand($sql1)->queryAll();
             $ids1 = array();
             $ids2 = array();
@@ -105,18 +112,18 @@ class Columns extends CActiveRecord {
             $ids1 = array_keys(CHtml::listData($info1, 'id', ''));
             $ids1_str = join(',', $ids1);
             if ($ids1_str != '') {
-                $sql2 = "SELECT * FROM {{columns}} WHERE belongid IN($ids1_str) AND status=1";
+                $sql2 = "SELECT * FROM {{columns}} WHERE belongid IN($ids1_str) AND status=1{$sys}";
                 $info2 = Yii::app()->db->createCommand($sql2)->queryAll();
                 $ids2 = array_keys(CHtml::listData($info2, 'id', ''));
             }
             $ids = array_merge($ids2, $ids1);
             $ids_str = join(',', $ids);
             if ($ids_str != '') {
-                $sql = "SELECT * FROM {{columns}} WHERE id IN($ids_str) AND status=1 ORDER BY cTime DESC";
+                $sql = "SELECT * FROM {{columns}} WHERE id IN($ids_str) AND status=1{$sys} ORDER BY cTime DESC";
                 $cols = Yii::app()->db->createCommand($sql)->queryAll();
             }
         } elseif ($type == 3) {
-            $cols = Columns::model()->findByAttributes(array('id' => $second));
+            $cols = Columns::model()->findByAttributes(array('id' => $second), $_sys);
         }
         if ($type != 3) {
             if ($col0) {
@@ -142,27 +149,29 @@ class Columns extends CActiveRecord {
             return $cols;
             exit();
         }
-        if($system){
-            $_sys=' AND system=1';
+        if ($system) {
+            $_sys = ' AND system=1';
         }
         if ($po == 'top') {
-            $where = "WHERE position='topbar' AND belongid=0 AND status=1".$_sys;
+            $where = "WHERE position='topbar' AND belongid=0 AND status=1" . $_sys;
         } elseif ($po == 'main') {
-            $where = "WHERE position='main' AND status=1".$_sys;
+            $where = "WHERE position='main' AND status=1" . $_sys;
         } elseif ($po == 'aside') {
-            $where = "WHERE position='aside' AND status=1".$_sys;
+            $where = "WHERE position='aside' AND status=1" . $_sys;
         } elseif ($po == 'footer') {
-            $where = "WHERE position='footer' AND status=1".$_sys;
+            $where = "WHERE position='footer' AND status=1" . $_sys;
         } else {
             return false;
         }
         $sql = "SELECT * FROM {{columns}} {$where} ORDER BY `cTime` DESC LIMIT {$limit}";
+        //echo $sql;exit();
         $cols = Yii::app()->db->createCommand($sql)->queryAll();
         if (!$second) {
             zmf::setFCache("getColsBy{$po}{$ext}", $cols);
             return $cols;
             exit();
         }
+
         $return = array();
         if (!empty($cols)) {
             foreach ($cols as $c) {
@@ -178,7 +187,7 @@ class Columns extends CActiveRecord {
         exit();
     }
 
-    public function getAllByOne($keyid) {
+    public function getAllByOne($keyid, $system = true) {
         if (!$keyid) {
             return '';
         }
@@ -187,9 +196,14 @@ class Columns extends CActiveRecord {
             return false;
             exit();
         }
+        if ($system) {
+            $_sys = 'system=1';
+        } else {
+            $_sys = '';
+        }
         if ($info['belongid'] > 0) {
             //取出同级栏目
-            $items = Columns::model()->findAllByAttributes(array('belongid' => $info['belongid']));
+            $items = Columns::model()->findAllByAttributes(array('belongid' => $info['belongid']), $_sys);
             return CHtml::listData($items, 'id', 'title');
         } else {
             $items = Columns::allCols(1, 0, 0);
@@ -206,12 +220,12 @@ class Columns extends CActiveRecord {
         return $item;
     }
 
-    public function userColumns($uid='') {
+    public function userColumns($uid = '') {
         if (Yii::app()->user->isGuest && !$uid) {
             return false;
-        }elseif($uid==''){
+        } elseif ($uid == '') {
             $uid = Yii::app()->user->id;
-        }        
+        }
         $items = zmf::getFCache("userColumns-{$uid}");
         if (!$items) {
             $str = zmf::userConfig($uid, 'column');
@@ -224,23 +238,23 @@ class Columns extends CActiveRecord {
         }
         return $items;
     }
-    
-    public function checkWritable($colid,$uid){
-        if(!$colid){
-            T::message(0,'请选择栏目');
+
+    public function checkWritable($colid, $uid) {
+        if (!$colid) {
+            T::message(0, '请选择栏目');
         }
-        if(!$uid){
-            T::message(0,'请设置用户ID');
+        if (!$uid) {
+            T::message(0, '请设置用户ID');
         }
-        $info=  Columns::getOne($colid);
-        if(!$info){
-            T::message(0,'该栏目不存在');
+        $info = Columns::getOne($colid);
+        if (!$info) {
+            T::message(0, '该栏目不存在');
         }
-        $_d=  tools::columnDesc($info['classify']);        
-        if($info['classify']=='page'){
-            $count=Posts::model()->count("colid={$colid} AND uid={$uid}");            
-            if($count>1){                
-                T::message(0,'【'.$info['title'].'】'.$_d.'，您可以去操作或修改');
+        $_d = tools::columnDesc($info['classify']);
+        if ($info['classify'] == 'page') {
+            $count = Posts::model()->count("colid={$colid} AND uid={$uid}");
+            if ($count > 1) {
+                T::message(0, '【' . $info['title'] . '】' . $_d . '，您可以去操作或修改');
             }
         }
     }

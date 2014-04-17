@@ -101,6 +101,7 @@ class tools {
             return true;
         }
     }
+
     public static function jiaMi($plain_text) {
         $key = zmf::config('authorCode');
         $plain_text = trim($plain_text);
@@ -126,14 +127,39 @@ class tools {
         return $x;
         exit();
     }
-    
-    public static function columnDesc($type){
-        $_t=zmf::colClassify($type);
-        if($type=='page'){            
-            return '板块的显示方式为“'.$_t.'”,仅能添加一篇文章';
-        }else{
-            return '板块的显示方式为“'.$_t.'”';
+
+    public static function columnDesc($type) {
+        $_t = zmf::colClassify($type);
+        if ($type == 'page') {
+            return '板块的显示方式为“' . $_t . '”,仅能添加一篇文章';
+        } else {
+            return '板块的显示方式为“' . $_t . '”';
         }
+    }
+
+    /**
+     * 遍历目录下所有文件
+     * @param type $dir
+     * @return type
+     */
+    public static function readDir($dir, $name = true) {
+        $name_arr = array();
+        if (is_dir($dir)) {
+            if ($dh = opendir($dir)) {
+                while (($file = readdir($dh)) !== false) {
+                    if ($file != "." && $file != "..") {
+                        if ($name) {
+                            $_tmp = explode('.', $file);
+                            $name_arr[] = $_tmp[0];
+                        } else {
+                            $name_arr[] = $file;
+                        }
+                    }
+                }
+                closedir($dh);
+            }
+        }
+        return $name_arr;
     }
 
 }

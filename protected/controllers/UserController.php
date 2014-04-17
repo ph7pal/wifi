@@ -9,6 +9,10 @@ class UserController extends T {
     public $selectType;
     public $listTableTitle;
     public $columnDesc;
+    public $logoImg;
+    //一些通知
+    public $validateEmail;
+    public $noticeInfo;
 
     public function actions() {
         return array(
@@ -31,8 +35,43 @@ class UserController extends T {
             $this->message(0, Yii::t('default', 'loginfirst'), Yii::app()->createUrl('site/login'));
         }
         $this->uid = Yii::app()->user->id;
-        $this->userInfo = Users::getUserInfo($this->uid);
-        $this->layout = 'user';
+        if ($this->uid) {
+            $this->layout = 'user';
+            $this->userInfo = Users::getUserInfo($this->uid);
+            $logo = zmf::userConfig($this->uid, 'logo');
+            if ($logo) {
+                $attachinfo = Attachments::getOne($logo);
+                if ($attachinfo) {
+                    $this->logoImg = zmf::imgurl($attachinfo['logid'], $attachinfo['filePath'], 124, $attachinfo['classify']);
+                }
+            }
+            $this->checkUser(true);
+        } else {
+            
+        }
+    }
+
+    public function checkUser($from = false) {
+        $redirect = false;
+        $a = Yii::app()->getController()->getAction()->id;
+        if ($this->userInfo['groupid'] != zmf::config('shopGroupId')) {
+            if(zmf::config('forbidnotshop')){
+                $this->message(0,'该页面仅商家可访问哦',Yii::app()->baseUrl);
+            }else{
+                $info = '您还不是商家，请联系：' . zmf::config('phone') . '或者' . zmf::config('email');
+                $this->noticeInfo = $info;
+                $redirect = true;
+            }
+        }
+        if (!$this->userInfo['emailstatus']) {
+            if (zmf::config('validateEmail')) {
+                $this->validateEmail = '请验证您的邮箱';
+                $redirect = true;
+            }
+        }
+        if ($redirect && !$from) {
+            $this->redirect(array('user/index'));
+        }
     }
 
     public function actionIndex() {
@@ -43,6 +82,7 @@ class UserController extends T {
     }
 
     public function actionConfig() {
+        $this->checkUser();
         $this->layout = 'config';
         $type = zmf::filterInput($_GET['type'], 't', 1);
         if ($type == '' OR !in_array($type, array('template', 'upload', 'page', 'siteinfo', 'base', 'column'))) {
@@ -68,6 +108,7 @@ class UserController extends T {
     }
 
     public function actionSetConfig() {
+        $this->checkUser();
         $type = zmf::filterInput($_POST['type'], 't', 1);
         if ($type == '' OR !in_array($type, array('template', 'page', 'siteinfo', 'base', 'column'))) {
             $this->message(0, '不允许的操作');
@@ -112,6 +153,7 @@ class UserController extends T {
     }
 
     public function actionList() {
+        $this->checkUser();
         $this->layout = 'user';
         $colid = zmf::filterInput($_GET['colid']);
         $table = zmf::filterInput($_GET['table'], 't', 1);
@@ -150,6 +192,7 @@ class UserController extends T {
     }
 
     public function actionAdd() {
+        $this->checkUser();
         $uid = $this->uid;
         $colid = zmf::filterInput($_GET['colid']);
         if (!$colid) {
@@ -223,6 +266,7 @@ class UserController extends T {
     }
 
     public function actionAddAds() {
+        $this->checkUser();
         $model = new Ads();
         $uid = $this->uid;
         $_info = $model->findByAttributes(array('status' => 0), 'classify=:classify', array(':classify' => 'empty'));
@@ -335,21 +379,65 @@ class UserController extends T {
     }
 
     public function actionStat() {
+        $this->checkUser();
         $posts = Posts::model()->count('uid=' . $this->uid);
         $images = Attachments::model()->count('uid=' . $this->uid);
         //过去一周访问
         $_weekly = UserInfo::model()->findAllByAttributes(array('classify' => 'weekly', 'uid' => $this->uid));
-        $weekly=CHtml::listData($_weekly,'name','value');     
+        $weekly = CHtml::listData($_weekly, 'name', 'value');
         //这一年的访问
-        $yearly = UserInfo::model()->findAllByAttributes(array('classify' => 'yearly', 'uid' => $this->uid));
+        $_yearly = UserInfo::model()->findAllByAttributes(array('classify' => 'yearly', 'uid' => $this->uid));
+        $yearly = CHtml::listData($_yearly, 'name', 'value');
         $data = array(
             'postNum' => $posts,
             'attachNum' => $images,
             'visits' => '',
-            'weekly'=>$weekly,
-            'yearly'=>$yearly
+            'weekly' => $weekly,
+            'yearly' => $yearly
         );
         $this->render('stat', $data);
+    }
+
+    public function actionProfile() {
+        $code = zmf::filterInput($_GET['code'], 't', 1);
+        if (!$code) {
+            $this->message(0, '数据格式有误');
+        }
+        $code = tools::jieMi($code);
+        $arr = explode('#', $code);
+        if (empty($arr)) {
+            //数据格式有误
+            $this->message(0, '数据格式有误');
+        }
+        if ($arr[0] != $this->uid) {
+            //请操作自己的
+            $this->message(0, '请操作自己的');
+        }
+        if ((time() - $arr[2]) > 86400) {
+            //链接已经过时
+            $this->message(0, '链接已经过时');
+        }
+        //验证邮箱
+        if ($arr[1] == 'validate') {
+            $code = zmf::userConfig($this->uid, 'code');
+            if (!$code) {
+                //未检测到曾经有过该操作
+                $this->message(0, '未检测到曾经有过该操作');
+            } elseif ($arr[3] != $code) {
+                //数据验证错误
+                $this->message(0, '数据验证错误');
+            } else {
+                $info=Users::model()->updateByPk($this->uid, array('emailstatus'=>1));
+                if($info){                    
+                    $this->message(1, '验证成功',Yii::app()->createUrl('user/index'));
+                }else{
+                    $this->message(0, '验证失败');
+                }
+            }
+        }else{
+            //不允许的操作
+            $this->message(0, '不允许的操作');
+        }        
     }
 
 }

@@ -1,4 +1,8 @@
-<div class="form">
+<?php $this->renderPartial('/common/topdesc');?>
+<div class="wrap clear">
+    <?php $this->renderPartial('/posts/aside',array('colid'=>$info['logid'],'type'=>'album'));?>
+    <div class="mainBox">
+        <div class="postWrap">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'users-addUser-form',	
 	'enableAjaxValidation'=>true,
@@ -45,7 +49,8 @@
          <tr>
             <td class="post_title"><?php echo CHtml::submitButton('立即注册',array('class'=>'btn btn-primary')); ?></td><td>&nbsp;</td>
         </tr>   
-</table>
-<?php $this->endWidget(); ?>
-
-</div><!-- form -->
+    </table>
+    <?php $this->endWidget(); ?>
+   </div>
+    </div>
+</div>

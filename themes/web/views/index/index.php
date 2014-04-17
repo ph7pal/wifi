@@ -1,5 +1,5 @@
 <div class="banner">
-<?php $topads=Ads::getAllByPo('topbar','flash');
+<?php $topads=Ads::getAllByPo('topbar','flash',$this->uid);
 if(!empty($topads)){
 ?>  
 <div class="bd">
@@ -10,8 +10,7 @@ if(!empty($topads)){
     <li _src="url(<?php echo zmf::uploadDirs($_topad_img['logid'], 'site', $_topad_img['classify'], 'origin').'/'.$_topad_img['filePath'];?>)" style="background:#607a89 center 0 no-repeat;"></li>     
     <?php }?>
     </ul>
-</div>
-   
+</div>   
 <div class="hd">
     <ul>       
     </ul>
@@ -31,20 +30,19 @@ jQuery(".banner").hover(function(){jQuery(this).find(".prev,.next").stop(true,tr
 <div class="module clear">    
   <div class="wrap clear">
      <?php if(!empty($mainCols)){?> 
-     <?php foreach($mainCols as $mc){
-         if(!empty($seconds)){
-             $this->renderPartial('/posts/column',array('listposts'=>$seconds,'info'=>$mc));
-         }elseif($mc['classify']!='thumb'){?>     
+     <?php foreach($mainCols as $mc){?> 
+     <?php if($mc['first']['classify']!='thumb'){?>     
      <div class="moduleBox about">
       <div class="col">
         <div>
-            <h2><?php echo $mc['title'];?></h2>
+            <h2><?php echo $mc['first']['title'];?><em><?php echo strtoupper($mc['first']['name']);?></em></h2>
+            <?php echo CHtml::link('更多',array('posts/index','colid'=>$mc['first']['id']),array('target'=>'_blank','class'=>'move'));?>          
         </div>
       </div>
       <div class="con">
-        <?php if($mc['classify']=='page'){
-            //$page=Posts::getPage($mc['id']);    
-            //$faceimg=  Attachments::getFaceImg($page['id']);
+        <?php if($mc['first']['classify']=='page'){
+            $page=Posts::getPage($mc['first']['id']);    
+            $faceimg=  Attachments::getFaceImg($page['id']);
             if(!empty($faceimg)){
                 $dir=zmf::uploadDirs($faceimg['logid'], 'site', $faceimg['classify'], '124').'/'.$faceimg['filePath'];
             echo '<img src="'.$dir.'"/>';
@@ -67,7 +65,7 @@ jQuery(".banner").hover(function(){jQuery(this).find(".prev,.next").stop(true,tr
   <?php $this->renderPartial('/posts/flash',array('info'=>$mc)); ?>     
   <?php }?>
      <?php }?> 
-     <?php }?>
+     <?php }?>  
       <div class="pagebar clear"><?php  $this->renderPartial('/common/pager',array('pages'=>$pages)); ?></div>
   </div>    
 </div>

@@ -2,7 +2,7 @@
 
 class SiteController extends T {
 
-    public $layout = 'login';
+    //public $layout = 'login';
 
     public function actions() {
         return array(
@@ -72,8 +72,7 @@ class SiteController extends T {
                 'username' => $username,
                 'truename' => $truename,
                 'password' => md5($_POST['Users']['password']),
-                'email' => zmf::filterInput($_POST['Users']['email'], 't', 1),
-                'email' => zmf::filterInput($_POST['Users']['email'], 't', 1),
+                'email' => zmf::filterInput($_POST['Users']['email'], 't', 1),               
                 'qq' => zmf::filterInput($_POST['Users']['qq'], 't', 1),
                 'telephone' => zmf::filterInput($_POST['Users']['telephone'], 't', 1),
                 'groupid' => zmf::config('userDefaultGroup'),

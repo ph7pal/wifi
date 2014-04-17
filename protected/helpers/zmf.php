@@ -13,7 +13,7 @@ class zmf {
             return 'b93154b988e33fdf0d144fde73028b77';
         } elseif ($type == 'authorCode') {
             return '2014@zmf';
-        }elseif (empty(Yii::app()->params['c'])) {
+        } elseif (empty(Yii::app()->params['c'])) {
             $_c = Config::model()->findAll();
             $configs = CHtml::listData($_c, 'name', 'value');
             tools::writeSet($configs);
@@ -96,22 +96,42 @@ class zmf {
             exit;
         }
         $dir = array();
-        if ($base === 'site') {
-            //根据网站
-            $baseUrl = self::config('baseurl');
-        } elseif ($base === 'app') {
-            //根据应用来
-            $baseUrl = Yii::app()->basePath . "/../";
-        } else {
-            $baseUrl = '';
-        }
+        $baseUrl = self::attachBase($base);
         foreach ($sizes as $size) {
-            $dir[$size] = $baseUrl . "attachments/" . $type . '/' . $size . '/' . $logid;
+            $dir[$size] = $baseUrl . $type . '/' . $size . '/' . $logid;
         }
         if (!empty($return)) {
             $dir = $dir[$return];
         }
         return $dir;
+    }
+
+    public static function attachBase($base) {
+        if ($base === 'site') {
+            //根据网站          
+            if (zmf::config('imgVisitUrl') != '') {
+                $baseUrl = zmf::config('imgVisitUrl') . '/';
+            } else {
+                $baseUrl = zmf::config('baseurl') . 'attachments/';
+            }
+        } elseif ($base === 'app') {
+            //根据应用来
+            if (zmf::config('imgUploadUrl') != '') {
+                $baseUrl = zmf::config('imgUploadUrl') . '/';
+            } else {
+                $baseUrl = Yii::app()->basePath . "/../attachments/";
+            }
+        } elseif ($base == 'upload') {
+            //解决imagick open图片问题
+            if (zmf::config('imgUploadUrl') != '') {
+                $baseUrl = zmf::config('imgUploadUrl') . '/';
+            } else {
+                $baseUrl = zmf::config('baseurl') . 'attachments/';
+            }
+        } else {
+            $baseUrl = '';
+        }
+        return $baseUrl;
     }
 
     public static function imgurl($logid, $filepath, $imgtype, $type = 'scenic') {
@@ -323,7 +343,7 @@ class zmf {
         $str = self::keywordsUrl($str);
         return $str;
     }
-    
+
     public static function text($logid, $content, $lazyload = true, $size = 600) {
         if (is_array($logid)) {
             $_width = $logid['imgwidth'];
@@ -332,10 +352,10 @@ class zmf {
             $logid = $logid['keyid'];
         }
         if ($tipid) {
-            if(self::checkmobile()){
-                $_extra='mobile';
-            }else{
-                $_extra='';
+            if (self::checkmobile()) {
+                $_extra = 'mobile';
+            } else {
+                $_extra = '';
             }
             $cacheKey = "detailPost_{$_extra}{$tipid}";
             $_detail = self::getFCache($cacheKey);
@@ -355,21 +375,21 @@ class zmf {
                 exit;
             }
         }
-        if(empty($match[1])){            
+        if (empty($match[1])) {
             return $content;
         }
         foreach ($match[1] as $key => $val) {
-            $thekey = tools::jieMi($match[1][$key]);            
-            if(is_numeric($thekey)){
+            $thekey = tools::jieMi($match[1][$key]);
+            if (is_numeric($thekey)) {
                 $src = Attachments::model()->findByPk($thekey);
-            }            
-            if ($src) {                
-                if($src['status']!=Posts::STATUS_PASSED){
+            }
+            if ($src) {
+                if ($src['status'] != Posts::STATUS_PASSED) {
                     continue;
                 }
                 $url = $src['filePath'];
                 $imgurl = self::imgurl($logid, $url, $size, $src['classify']);
-                $_imgurl = self::imgurl($logid, $url, $size, $src['classify'],'upload');
+                $_imgurl = self::imgurl($logid, $url, $size, $src['classify'], 'upload');
                 $imginfo = self::myGetImageSize($_imgurl);
                 if ($_width != '' AND $_width > 0 AND $_width < $size) {
                     $rate = $_width / $size;
@@ -378,12 +398,12 @@ class zmf {
                 } else {
                     $width = $imginfo['width'] . 'px';
                     $height = $imginfo['height'] . 'px';
-                }                
+                }
                 if ($lazyload) {
                     //$imginfo = getimagesize($_imgurl);                    
-                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='" . self::config('baseurl') . "common/images/grey.gif' class='lazy' data-original='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='".$match[1][$key]."'/></a>";
+                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='" . self::config('baseurl') . "common/images/grey.gif' class='lazy' data-original='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "'/></a>";
                 } else {
-                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='".$match[1][$key]."'/></a>";
+                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "'/></a>";
                 }
                 $content = str_ireplace("{$match[0][$key]}", $imgurl, $content);
             } else {
@@ -396,7 +416,7 @@ class zmf {
         }
         return $_c;
     }
-    
+
     public static function colPositions($return = '') {
         $positions = array(
             'topbar' => '导航条',
@@ -578,7 +598,7 @@ class zmf {
         }
         echo $longstr;
     }
-    
+
     public static function myGetImageSize($url, $type = 'curl', $isGetFilesize = false) {
         // 若需要获取图片体积大小则默认使用 fread 方式
         $type = $isGetFilesize ? 'fread' : $type;
@@ -631,7 +651,7 @@ class zmf {
             fclose($handle);
         return $result;
     }
-    
+
     //判断是平板电脑还是手机
     public static function checkmobile() {
         if (!self::config("mobile")) {
@@ -652,14 +672,13 @@ class zmf {
         if (self::dstrpos($useragent, $pad_list)) {
             return false;
         }
-        if (($v = self::dstrpos($useragent, $mobilebrowser_list, true))) {            
+        if (($v = self::dstrpos($useragent, $mobilebrowser_list, true))) {
             return true;
         }
         $brower = array('mozilla', 'chrome', 'safari', 'opera', 'm3gate', 'winwap', 'openwave', 'myop');
         if (self::dstrpos($useragent, $brower))
             return false;
     }
-
 
     public static function dstrpos($string, &$arr, $returnvalue = false) {
         if (empty($string))
@@ -671,6 +690,35 @@ class zmf {
             }
         }
         return false;
+    }
+
+    public static function qrcode($content, $origin, $keyid) {
+        if (!$content || !$origin || !$keyid) {
+            return false;
+        }
+        $filename = 'qrcode.png';
+        $siteUrl = self::attachBase('site') . 'qrcode/' . $origin . '/' . $keyid . '/';
+        $appUrl = self::attachBase('app') . '/qrcode/' . $origin . '/' . $keyid . '/';
+        self::createUploadDir($appUrl);
+        if (file_exists($appUrl . $filename)) {
+            return $siteUrl . $filename;
+        } else {
+            Yii::import('ext.qrcode.QRCode');
+            $code = new QRCode($content);
+            $code->create($appUrl . $filename);
+            return $siteUrl . $filename;
+        }
+    }
+    
+    public static function userSkin($uid){
+        if(!$uid){
+            return false;
+        }
+        $skin=self::userConfig($uid,'skin');
+        if(!$skin){
+            $skin='default';
+        }
+        return Yii::app()->baseUrl.'/skins/'.$skin.'/'.$skin.'.css';
     }
 
 }

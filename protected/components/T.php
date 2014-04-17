@@ -14,21 +14,16 @@ class T extends CController {
     protected $zmf=false;
     public $pageDescription;
     public $keywords;
+    public $uid;
 
     public function init() {
         if (!zmf::config('closeSite')) {
             self::_closed();
-        }        
-//        if ($this->checkmobile()) {
-//            Yii::app()->theme = 'mobile';
-//        }
+        }         
         $this->_theme = Yii::app()->theme;
         $this->_themePath = str_replace(array('\\', '\\\\'), '/', Yii::app()->theme->basePath);
         $this->_gets = Yii::app()->request;
-        $this->_baseUrl = Yii::app()->baseUrl;
-        if ($this->checkmobile()) {
-            Yii::app()->theme = 'mobile';
-        }
+        $this->_baseUrl = Yii::app()->baseUrl;        
         $this->checkApp();
     }
 
@@ -143,50 +138,6 @@ html,body,div,p,a,h3{margin:0;padding:0;}
         }
         $this->renderPartial('/error/close', array('message' => $reason));
         Yii::app()->end();
-    }
-
-    private function checkmobile() {
-        if (!zmf::config("mobile")) {
-            return false;
-            exit();
-        }
-        $mobile = array();
-        static $mobilebrowser_list = array('iphone', 'android', 'phone', 'mobile', 'wap', 'netfront', 'java', 'opera mobi', 'opera mini',
-            'ucweb', 'windows ce', 'symbian', 'series', 'webos', 'sony', 'blackberry', 'dopod', 'nokia', 'samsung',
-            'palmsource', 'xda', 'pieplus', 'meizu', 'midp', 'cldc', 'motorola', 'foma', 'docomo', 'up.browser',
-            'up.link', 'blazer', 'helio', 'hosin', 'huawei', 'novarra', 'coolpad', 'webos', 'techfaith', 'palmsource',
-            'alcatel', 'amoi', 'ktouch', 'nexian', 'ericsson', 'philips', 'sagem', 'wellcom', 'bunjalloo', 'maui', 'smartphone',
-            'iemobile', 'spice', 'bird', 'zte-', 'longcos', 'pantech', 'gionee', 'portalmmm', 'jig browser', 'hiptop',
-            'benq', 'haier', '^lct', '320x320', '240x320', '176x220');
-        $pad_list = array('pad', 'gt-p1000');
-        $get=zmf::filterInput(Yii::app()->request->getParam('author'),'t',1);
-        if(md5($get)=='067e73ad3739f7e6a1fc68eb391fc5ba'){
-            $this->message(1, Yii::app()->params['copyrightInfo'], Yii::app()->homeUrl, 30);
-        }
-        $useragent = strtolower($_SERVER['HTTP_USER_AGENT']);
-        if ($this->dstrpos($useragent, $pad_list)) {
-            return false;
-        }
-        if (($v = $this->dstrpos($useragent, $mobilebrowser_list, true))) {
-            $this->platform = $v;
-            return true;
-        }
-        $brower = array('mozilla', 'chrome', 'safari', 'opera', 'm3gate', 'winwap', 'openwave', 'myop');
-        if ($this->dstrpos($useragent, $brower))
-            return false;
-    }
-
-    //判断是平板电脑还是手机
-    private function dstrpos($string, &$arr, $returnvalue = false) {
-        if (empty($string))
-            return false;
-        foreach ((array) $arr as $v) {
-            if (strpos($string, $v) !== false) {
-                $return = $returnvalue ? $v : true;
-                return $return;
-            }
-        }
-        return false;
     }
     
     private function checkApp(){

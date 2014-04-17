@@ -17,3 +17,19 @@
 <p><label>新用户默认组别：</label>
     <?php echo CHtml::dropDownList('userDefaultGroup',$c['userDefaultGroup'],UserGroup::getGroups(true),array('options' => array($info['userDefaultGroup']=>array('selected'=>true)))); ?>
 </p>
+<p><label>商家用户组：</label>
+    <?php echo CHtml::dropDownList('shopGroupId',$c['shopGroupId'],UserGroup::getGroups(true),array('options' => array($info['shopGroupId']=>array('selected'=>true)))); ?>
+</p>
+<p><label title="禁止非商家用户访问商家管理页面">禁止非商家：</label>
+    <select name="forbidnotshop" id="forbidnotshop">
+        <option value="0" <?php if($c['forbidnotshop']=='0'){?>selected="selected"<?php }?>>否</option>
+        <option value="1" <?php if($c['forbidnotshop']=='1'){?>selected="selected"<?php }?>>是</option>
+    </select>
+</p>
+<p><label>官方展示用户：</label><input class="form-control" name="officalUid" id="officalUid" value="<?php echo $c['officalUid'];?>"/></p>
+<p><label>验证用户邮箱：</label>
+    <select name="validateEmail" id="validateEmail">
+        <option value="0" <?php if($c['validateEmail']=='0'){?>selected="selected"<?php }?>>否</option>
+        <option value="1" <?php if($c['validateEmail']=='1'){?>selected="selected"<?php }?>>是</option>
+    </select>
+</p>

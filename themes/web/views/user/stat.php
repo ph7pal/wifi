@@ -27,21 +27,29 @@
      <?php
         $this->widget('ext.googlechart.HzlVisualizationChart', array('visualization' => 'LineChart',
                     'data' => array(
-                        array('Year', 'Sales'),
-                        array('2004', 1000),
-                        array('2005', 1170),
-                        array('2006', 660),
-                        array('2007', 1030),
+                        array('Year', '访问'),//
+                        array('一月', intval($yearly[1])),
+                        array('二月', intval($yearly[2])),
+                        array('三月', intval($yearly[3])),
+                        array('四月', intval($yearly[4])),
+                        array('五月', intval($yearly[5])),
+                        array('六月', intval($yearly[6])),
+                        array('七月', intval($yearly[7])),
+                        array('八月', intval($yearly[8])),
+                        array('九月', intval($yearly[9])),
+                        array('十月', intval($yearly[10])),
+                        array('十一月', intval($yearly[11])),
+                        array('十二月', intval($yearly[12])),
                     ),
                     'options' => array(
                         'title' => '近一年访问量',
                         'titleTextStyle' => array('color' => '#FF0000'),
                         'vAxis' => array(
-                            'title' => 'Scott vAxis',
+                            'title' => '访问',
                             'gridlines' => array(
                                 'color' => 'transparent'  //set grid line transparent
                             )),
-                        'hAxis' => array('title' => 'Scott hAixs'),
+                        'hAxis' => array('title' => '月份'),
                         'curveType' => 'function', //smooth curve or not
                         'legend' => array('position' => 'bottom'),
                 )));

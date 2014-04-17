@@ -29,24 +29,43 @@
                     
                     <?php $attachinfo=  Attachments::getFaceImg($page['id']);if($attachinfo){?>
                     <div class="clear cfaceimg">
-                        <a href="<?php echo zmf::imgurl($page['id'],$attachinfo['filePath'],'origin',$attachinfo['classify']);?>">
                         <?php echo '<img src="'.zmf::imgurl($page['id'],$attachinfo['filePath'],'600',$attachinfo['classify']).'" alt="'.$page['title'].'的封面" title="'.$page['title'].'"/>';?>
-                        </a>
                     </div>    
                     <?php }?>
+                    
+                        
+                    
+                                     
 			<div class="clear cdata">
-                            <p class="intro"><?php echo $page['intro'];?></p>
                             <p><?php echo $page['content'];?></p>
-                            <p class="link-btn">
-                                <?php        
-                                if($page['redirect_url']!=''){
-                                    echo CHtml::link('阅读',zmf::config('readAttachDir').$page['redirect_url'],array('class'=>'btn-link red','target'=>'_blank'));
-                                }                
-                                if($page['copy_url']!=''){
-                                    echo CHtml::link('下载',zmf::config('downloadAttachDir').$page['copy_url'],array('class'=>'btn-link black','target'=>'_blank'));
-                                }
-                                ?>       
-                            </p>
+                            <?php if($page['albumid']>0){
+                                $albuminfo=  Album::getOne($page['albumid']);
+                                if($albuminfo){
+                                $imgs=Attachments::getAlbumImgs($page['albumid']);                                
+                            }}
+                            if(!empty($imgs)){
+                                ?>                           
+                            <span class="albumtitle"><?php echo CHtml::link($albuminfo['title'],array('posts/images','id'=>$albuminfo['id']));?></span>
+                            <span class="albumdesc clear"></span>
+                            <div class="albumImgs clear">
+                                <?php foreach($imgs as $img){?>
+                                  <img src="<?php echo zmf::uploadDirs($img['logid'], 'site', $img['classify'], '124').'/'.$img['filePath'];?>"/>  
+                                <?php }?>
+                            </div>
+                            <?php }?>
+                            <div class="postTags clear">
+                              <?php $tags=Tags::getPostTags($page['id'],true);
+                                if(!empty($tags)){?>  
+                                <p class="tagsTitle floatL">标签：</p>
+                                <ul class="tagsList clear">
+                                  <?php  
+                                        foreach($tags as $_tag){                            
+                                    ?>                            
+                                    <li><?php echo CHtml::link($_tag,array('posts/index','tag'=>$_tag));?></li>
+                                    <?php }?>
+                                </ul>
+                            <?php }?>
+                            </div>
 			</div>                        
                         <div class="preNext clear">
                             <em class="floatL">上一篇：
@@ -64,6 +83,10 @@
                                 <?php }?> 
                             </em>
                         </div>
+                    
 		</div>
+            <?php if($page['reply_allow']){?>
+            <?php $this->renderPartial('/common/comments',array('keyid'=>$page['id'],'type'=>'posts','coms'=>$coms,'pages'=>$pages));?>            
+            <?php }?>
 	</div>	
 </div>

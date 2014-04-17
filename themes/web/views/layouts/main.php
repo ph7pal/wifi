@@ -49,8 +49,18 @@ background: url(<?php echo zmf::config('baseurl').zmf::config('logo');?>) no-rep
         </dl>
       </div>
     </div>      
-    <div class="subnav">        
-    </div>
+      <div class="subnav">
+          <span> 客服电话：12345678 </span>
+          <span>
+              <?php if(Yii::app()->user->isGuest){?>
+              <?php echo CHtml::link('登录',array('site/login'));?>
+              <?php echo CHtml::link('注册',array('site/reg'));?>
+              <?php }else{?>
+              <?php echo CHtml::link(Yii::app()->user->name,array('user/index'));?>
+              <?php echo CHtml::link('退出',array('site/logout'));?>
+              <?php }?>
+          </span>
+      </div>
   </div>
 </div>
 <div id="page">
@@ -60,7 +70,9 @@ background: url(<?php echo zmf::config('baseurl').zmf::config('logo');?>) no-rep
   <div class="wrap clear">
     <div class="act">        
         <div class="box paddLeft">
-            <?php $links=Link::allLinks();if(!empty($links)){?>
+            <?php 
+            $links=Link::allLinks();
+            if(!empty($links)){?>
             <p>友链：
             <?php foreach($links as $link){?>            
                 <a href="<?php echo $link['url'];?>" target="_blank"><?php echo $link['title'];?></a>            

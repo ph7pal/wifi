@@ -17,7 +17,7 @@ class Users extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('username, password, truename, groupid, status', 'required'),
-            array('groupid, last_login_time, status, cTime', 'numerical', 'integerOnly' => true),
+            array('groupid, last_login_time, status, cTime ,emailstatus', 'numerical', 'integerOnly' => true),
             array('username', 'length', 'max' => 50),
             array('password', 'length', 'max' => 32),
             array('truename, email', 'length', 'max' => 100),
@@ -28,7 +28,7 @@ class Users extends CActiveRecord {
             array('login_count', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, username, password, truename, groupid, email, qq, mobile, telephone, last_login_ip, last_login_time, login_count, status, cTime', 'safe', 'on' => 'search'),
+            array('id, username, password, truename, groupid, email, qq, mobile, telephone, last_login_ip, last_login_time, login_count, status, cTime , emailstatus', 'safe', 'on' => 'search'),
         );
     }
 
@@ -61,6 +61,7 @@ class Users extends CActiveRecord {
             'login_count' => '登录次数',
             'status' => 'Status',
             'cTime' => '创建时间',
+            'emailstatus'=>'邮箱状态'
         );
     }
 
@@ -83,6 +84,7 @@ class Users extends CActiveRecord {
         $criteria->compare('login_count', $this->login_count, true);
         $criteria->compare('status', $this->status);
         $criteria->compare('cTime', $this->cTime);
+        $criteria->compare('emailstatus', $this->emailstatus);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

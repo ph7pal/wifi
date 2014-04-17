@@ -5,7 +5,7 @@
     <td>操作</td>
 </tr>
 <?php foreach ($posts as $row): ?> 
-    <tr>
+    <tr <?php if($row['system']){ echo 'class="warning"';}?>>
         <td><label class="checkbox-inline"><?php echo CHtml::checkBox('ids[]', '', array('value' => $row['id'])); ?></label><?php echo $row['title']; ?></td>
         <td><?php echo zmf::colPositions($row['position']); ?></td>
         <td><?php echo zmf::colClassify($row['classify']); ?></td>
