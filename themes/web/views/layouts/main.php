@@ -6,6 +6,7 @@
 <meta name="keywords" content="<?php echo zmf::config('siteKeywords');?>" />
 <meta name="description" content="<?php echo zmf::config('siteDesc');?>" />
 <title><?php echo CHtml::encode($this->pageTitle); ?></title>
+<link rel="stylesheet" href="<?php echo Yii::app()->baseUrl ?>/common/css/bootstrap.min.css">
 <link rel="stylesheet" href="<?php echo $this->_theme->baseUrl?>/css/style.css">
 <?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/jquery.SuperSlide.2.1.js");?>
