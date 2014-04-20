@@ -38,6 +38,10 @@ class UserController extends T {
         if ($this->uid) {
             $this->layout = 'user';
             $this->userInfo = Users::getUserInfo($this->uid);
+            if ($this->userInfo['status'] != Posts::STATUS_PASSED) {
+                $this->renderPartial('/error/close', array('message' => '您的账号暂不能访问，如有疑问请咨询'. zmf::config('phone') . '或者' . zmf::config('email')));
+                Yii::app()->end();
+            }
             $logo = zmf::userConfig($this->uid, 'logo');
             if ($logo) {
                 $attachinfo = Attachments::getOne($logo);
@@ -55,9 +59,9 @@ class UserController extends T {
         $redirect = false;
         $a = Yii::app()->getController()->getAction()->id;
         if ($this->userInfo['groupid'] != zmf::config('shopGroupId')) {
-            if(zmf::config('forbidnotshop')){
-                $this->message(0,'该页面仅商家可访问哦',Yii::app()->baseUrl);
-            }else{
+            if (zmf::config('forbidnotshop')) {
+                $this->message(0, '该页面仅商家可访问哦', Yii::app()->baseUrl);
+            } else {
                 $info = '您还不是商家，请联系：' . zmf::config('phone') . '或者' . zmf::config('email');
                 $this->noticeInfo = $info;
                 $redirect = true;
@@ -427,17 +431,17 @@ class UserController extends T {
                 //数据验证错误
                 $this->message(0, '数据验证错误');
             } else {
-                $info=Users::model()->updateByPk($this->uid, array('emailstatus'=>1));
-                if($info){                    
-                    $this->message(1, '验证成功',Yii::app()->createUrl('user/index'));
-                }else{
+                $info = Users::model()->updateByPk($this->uid, array('emailstatus' => 1));
+                if ($info) {
+                    $this->message(1, '验证成功', Yii::app()->createUrl('user/index'));
+                } else {
                     $this->message(0, '验证失败');
                 }
             }
-        }else{
+        } else {
             //不允许的操作
             $this->message(0, '不允许的操作');
-        }        
+        }
     }
 
 }

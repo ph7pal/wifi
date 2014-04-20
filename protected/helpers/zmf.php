@@ -556,6 +556,15 @@ class zmf {
         } elseif ($c == 'users') {
             $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'users')) . '">列表</a></li>';
             $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/users/add') . '">新增</a></li>';
+        }elseif ($c == 'ads') {
+            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'ads')) . '">列表</a></li>';
+            $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/ads/add') . '">新增</a></li>';
+        }elseif ($c == 'posts') {
+            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'posts')) . '">列表</a></li>';
+            $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/posts/add') . '">新增</a></li>';
+        }elseif ($c == 'link') {
+            $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'link')) . '">列表</a></li>';
+            $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/link/add') . '">新增</a></li>';
         }
         echo $longstr;
     }

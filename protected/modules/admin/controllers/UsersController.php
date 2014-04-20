@@ -65,8 +65,7 @@ class UsersController extends H {
         if (isset($_POST['Users'])) {
             $thekeyid = zmf::filterInput($_POST['Users']['id']);
             $intoData = array(
-                'username' => zmf::filterInput($_POST['Users']['username'], 't', 1),
-                'password' => md5(zmf::filterInput($_POST['Users']['password'], 't', 1)),
+                'username' => zmf::filterInput($_POST['Users']['username'], 't', 1),                
                 'truename' => zmf::filterInput($_POST['Users']['truename'], 't', 1),
                 'groupid' => zmf::filterInput($_POST['Users']['groupid']),
                 'email' => zmf::filterInput($_POST['Users']['email'], 't', 1),
@@ -76,12 +75,16 @@ class UsersController extends H {
                 'last_login_ip' => ip2long(Yii::app()->request->userHostAddress),
                 'status' => 1
             );
+            $pass=zmf::filterInput($_POST['Users']['password'], 't', 1);
+            if($pass!=''){
+                $intoData['password'] = md5($pass);
+            }
             $model->attributes = $intoData;
             if ($model->validate()) {
                 if ($model->updateByPk($thekeyid, $intoData)) {
                     UserAction::record('editusers', $thekeyid);
                     zmf::delFCache("notSaveUsers{$uid}");
-                    $this->redirect(array('users/index'));
+                    $this->redirect(array('all/list','table'=>'users'));
                 }
             }
         }
@@ -120,7 +123,7 @@ class UsersController extends H {
         } elseif ($keyid != $_keyid AND $forupdate != 'yes') {
             if (!$keyid) {
                 zmf::delFCache("notSaveGroup{$uid}");
-                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('users/addgroup'));
+                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('admin/users/addgroup'));
             } else {
                 $this->redirect(array('users/addgroup', 'id' => $keyid));
             }
@@ -159,10 +162,12 @@ class UsersController extends H {
                             $model->attributes = $_data;
                             $model->save();
                         }
+                    }else{
+                        GroupPowers::model()->deleteAll("gid=$thekeyid");
                     }
                     UserAction::record('editusergroup', $thekeyid);
                     zmf::delFCache("notSaveGroup{$uid}");
-                    $this->redirect(array('users/group'));
+                    $this->redirect(array('all/list','table'=>'user_group'));
                 }else{
                     if (!empty($powers)) {
                         GroupPowers::model()->deleteAll("gid=$thekeyid");
@@ -175,6 +180,8 @@ class UsersController extends H {
                             $model->attributes = $_data;
                             $model->save();
                         }
+                    }else{
+                        GroupPowers::model()->deleteAll("gid=$thekeyid");
                     }
                     UserAction::record('editusergroup', $thekeyid);
                 }

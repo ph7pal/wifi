@@ -81,7 +81,7 @@ class PostsController extends H {
             'table' => 'posts',
             'model' => $model,
         );
-        $this->render('addPost', $data);
+        $this->render('//posts/addPost', $data);
     }
     
 }

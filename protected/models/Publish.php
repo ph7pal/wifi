@@ -56,7 +56,7 @@ class Publish extends CFormModel {
                     }
                 }
                 zmf::delFCache("notSavePosts{$uid}");
-                return true;                
+                return true;
             } else {
                 $info = $_POST['Posts'];
             }
@@ -67,10 +67,10 @@ class Publish extends CFormModel {
     }
 
     public static function addAds($uid) {
-        if(!$uid){
+        if (!$uid) {
             return false;
         }
-        $model=new Ads();
+        $model = new Ads();
         $thekeyid = zmf::filterInput($_POST['Ads']['id']);
         $attachid = zmf::filterInput($_POST['Ads']['attachid'], 't', 1);
         if ($attachid != '') {
@@ -88,7 +88,7 @@ class Publish extends CFormModel {
                     Attachments::model()->updateAll(array('status' => Posts::STATUS_DELED), "logid=$thekeyid AND uid={$uid} AND classify='ads'");
                     Attachments::model()->updateAll(array('status' => Posts::STATUS_PASSED), "id=$attachid");
                 }
-                return true;                
+                return true;
             } else {
                 $info = $_POST['Ads'];
             }
@@ -97,19 +97,29 @@ class Publish extends CFormModel {
         }
         return $info;
     }
-    
-    public static function addQuestions($uid){
-        $model=new Questions();        
+
+    public static function addQuestions($uid) {
+        $model = new Questions();
+        $thekeyid = zmf::filterInput($_POST['Questions']['id']);
         $intoData = $_POST['Questions'];
         $intoData['uid'] = $uid;
         $intoData['cTime'] = time();
         $intoData['status'] = Posts::STATUS_STAYCHECK;
         $model->attributes = $intoData;
         if ($model->validate()) {
-            if ($model->save()) {                
-                return true;                
+            if (isset($thekeyid)) {
+                $intoData['status'] = Posts::STATUS_PASSED;
+                if ($model->updateByPk($thekeyid, $intoData)) {
+                    return true;
+                } else {
+                    $info = $_POST['Questions'];
+                }
             } else {
-                $info = $_POST['Questions'];
+                if ($model->save()) {
+                    return true;
+                } else {
+                    $info = $_POST['Questions'];
+                }
             }
         } else {
             $info = $_POST['Questions'];

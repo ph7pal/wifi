@@ -17,7 +17,7 @@ class Users extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('username, password, truename, groupid, status', 'required'),
-            array('groupid, last_login_time, status, cTime ,emailstatus', 'numerical', 'integerOnly' => true),
+            array('groupid, last_login_time, status, cTime ,emailstatus,system', 'numerical', 'integerOnly' => true),
             array('username', 'length', 'max' => 50),
             array('password', 'length', 'max' => 32),
             array('truename, email', 'length', 'max' => 100),
@@ -61,7 +61,8 @@ class Users extends CActiveRecord {
             'login_count' => '登录次数',
             'status' => 'Status',
             'cTime' => '创建时间',
-            'emailstatus'=>'邮箱状态'
+            'emailstatus'=>'邮箱状态',
+            'system'=>'是否系统'
         );
     }
 
@@ -85,6 +86,7 @@ class Users extends CActiveRecord {
         $criteria->compare('status', $this->status);
         $criteria->compare('cTime', $this->cTime);
         $criteria->compare('emailstatus', $this->emailstatus);
+        $criteria->compare('system', $this->system);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

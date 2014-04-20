@@ -4,11 +4,11 @@ class DelController extends H {
 
     public function actionSth() {
         if (isset($_POST['YII_CSRF_TOKEN'])) {
-            $table = zmf::filterInput($_POST['table'], 't', 1);
+            $table = zmf::filterInput($_POST['Manage']['table'], 't', 1);
             if (!empty($_POST['ids'])) {
                 $ids = array_unique(array_filter($_POST['ids']));
             }
-            $type = zmf::filterInput($_POST['type'], 't', 1);
+            $type = zmf::filterInput($_POST['Manage']['type'], 't', 1);
             $multi = true;
         } else {
             $keyid = zmf::filterInput($_GET['id']);
@@ -28,17 +28,20 @@ class DelController extends H {
                 $this->message(0, '请选择需要操作的对象');
             }
         }
-        if (!in_array($table, array('ads','columns',  'posts', 'link', 'users', 'usergroup'))) {
+        if (!in_array($table, array('ads', 'album', 'attachments', 'columns', 'comments', 'questions', 'tags', 'posts', 'link', 'users', 'usergroup'))) {
             $this->message(0, '不被允许的操作，请核实');
         }
         $this->checkPower('del' . $table);
         UserAction::record('del' . $table);
-        $ads = new Ads();        
+        $ads = new Ads();
+        $album = new Album();
+        $columns = new Columns();
         $posts = new Posts();
         $link = new Link();
         $users = new Users();
         $usergroup = new UserGroup();
-        $columns=new Columns();
+        $comments = new Comments;
+        $attachments=new Attachments;
         if ($multi) {
             foreach ($ids as $val) {
                 $info = $$table->findByPk($val);
@@ -49,7 +52,7 @@ class DelController extends H {
             if ($table == 'usergroup') {
                 $this->redirect(array('users/group'));
             } else {
-                $this->redirect(array( 'all/list','table'=>$table));
+                $this->redirect(array('all/list','table'=>$table));
             }
         } else {
             $info = $$table->findByPk($keyid);
@@ -61,13 +64,15 @@ class DelController extends H {
     }
 
     private function _sth($keyid, $table, $info, $multi = false) {
-        $ads = new Ads();        
+        $ads = new Ads();
+        $album = new Album();
         $columns = new Columns();
         $posts = new Posts();
         $link = new Link();
         $users = new Users();
         $usergroup = new UserGroup();
-        if (in_array($table, array('ads', 'columns', 'link', 'users', 'usergroup'))) {
+        $comments = new Comments;
+        if (in_array($table, array('ads', 'columns', 'link', 'comments', 'questions', 'tags', 'users', 'usergroup'))) {
             if (isset($info['attachid']) AND $info['attachid'] > 0) {
                 $this->delAttach($keyid);
             }
@@ -75,7 +80,7 @@ class DelController extends H {
                 if ($multi) {
                     return true;
                 } else {
-                    $this->redirect(array( 'all/list','table'=>$table));
+                    $this->redirect(array('all/list','table'=>$table));
                 }
             } else {
                 if ($multi) {
@@ -89,7 +94,7 @@ class DelController extends H {
                 if ($multi) {
                     return true;
                 } else {
-                    $this->redirect(array( 'all/list','table'=>$table));
+                    $this->redirect(array('all/list','table'=>$table));
                 }
             } else {
                 if ($multi) {
@@ -115,7 +120,40 @@ class DelController extends H {
                     $this->message(0, '非常抱歉，删除【文章】失败，请核实');
                 }
             }
-        } 
+        } elseif ($table == 'album') {
+            if ($this->delAlbum($keyid)) {
+                if ($multi) {
+                    return true;
+                } else {
+                    $this->redirect(array( 'all/list','table'=>$table));
+                }
+            } else {
+                if ($multi) {
+                    return false;
+                } else {
+                    $this->message(0, '非常抱歉，删除【相册】失败，请核实');
+                }
+            }
+        }
+    }
+
+    private function delAlbum($keyid) {
+        $info = Album::model()->findByPk($keyid);
+        if (!$info) {
+            return false;
+            exit;
+        }
+        $attaches = Attachments::model()->findAllByAttributes(array('logid' => $keyid), 'classify=:classify', array(':classify' => 'album'));
+        if (!empty($attaches)) {
+            foreach ($attaches as $v) {
+                $this->delAttach($v['id'], $v);
+            }
+        }
+        if (Album::model()->deleteByPk($keyid)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function delAttach($keyid, $iteminfo = array()) {
@@ -127,7 +165,7 @@ class DelController extends H {
             if (!empty($dirs)) {
                 foreach ($dirs as $d) {
                     $img = $d . '/' . $iteminfo['filePath'];
-                    unlink($img);
+                    @unlink($img);
                 }
             }
             if (Attachments::model()->deleteByPk($keyid)) {

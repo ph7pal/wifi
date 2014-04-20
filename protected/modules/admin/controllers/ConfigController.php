@@ -21,6 +21,8 @@ class ConfigController extends H {
     }
 
     public function actionAdd() {
+        zmf::test($_POST);
+        exit();
         $this->checkPower('setting');
         $type = zmf::filterInput($_POST['type'], 't', 1);
         if ($type == '' OR !in_array($type, array('baseinfo', 'upload', 'page', 'siteinfo', 'base'))) {

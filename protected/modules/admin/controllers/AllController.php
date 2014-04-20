@@ -8,12 +8,14 @@ class AllController extends H {
     public function actionList(){
         $table=zmf::filterInput($_GET['table'],'t',1);
         $type=zmf::filterInput($_GET['type'],'t',1);
-        if($type=='' || $type=='passed'){
-            $status=Posts::STATUS_PASSED;
+        if($type==''){
+            $status="";
+        }elseif($type=='passed'){
+            $status=" WHERE status=" . Posts::STATUS_PASSED;
         }elseif($type=='staycheck'){
-            $status=Posts::STATUS_STAYCHECK;
-        }
-        $sql = "SELECT * FROM {{{$table}}} WHERE status=" . $status . " ORDER BY id DESC";
+            $status=" WHERE status=" . Posts::STATUS_STAYCHECK;
+        }        
+        $sql = "SELECT * FROM {{{$table}}}" . $status . " ORDER BY id DESC";
         Posts::getAll(array('sql'=>$sql), $pages, $items);
         $data = array(
             'table' => $table,
@@ -21,7 +23,11 @@ class AllController extends H {
             'posts' => $items
         );
         $this->switchTable($table);
-        $this->render("/$table/index", $data);
+        if($table=='user_group'){
+        $this->render("/users/group", $data);
+        }else{
+            $this->render("/$table/index", $data);
+        }        
     }
     private function switchTable($table){
         switch ($table){
@@ -48,6 +54,9 @@ class AllController extends H {
                 break;
             case 'questions':
                 $title='所有咨询';
+                break;
+            case 'user_group':
+                $title='用户组';
                 break;
         }
         $this->listTableTitle=$title;

@@ -161,5 +161,34 @@ class tools {
         }
         return $name_arr;
     }
+    public static function exStatus($status){
+        switch ($status){
+            case 0:
+                return 'notpassed';
+            case 1:
+                return 'passed';
+            case 2:
+                return 'staycheck';
+            case 3:
+                return 'deled';
+        }
+    }
+    public static function exStatusToClass($status){
+        switch ($status){
+            case 0:
+                $css= 'warning';
+                break;
+            case 1:
+                $css= 'passed';
+                break;
+            case 2:
+                $css= 'warning';
+                break;
+            case 3:
+                $css= 'warning';
+                break;            
+        }
+        echo 'class="'.$css.'"';
+    }
 
 }

@@ -28,6 +28,10 @@ return array(
 'closeSiteReason'=> '系统正在维护中，请稍后再访问！',
 'readLocalDir'=> 'C:\\AppServ\\www\\wifi\\protected/../attachments/',
 'downloadLocalDir'=> 'C:\\AppServ\\www\\wifi\\protected/../attachments/',
+'shopGroupId'=> '5',
 'noticeall'=> '近期收到举报，有部分网站有不良信息，望各位店家及时处理！',
+'forbidnotshop'=> '1',
+'validateEmail'=> '0',
+'adminGroupIds'=> 'Array',
 );
 ?>

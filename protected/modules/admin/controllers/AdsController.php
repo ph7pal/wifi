@@ -66,24 +66,10 @@ class AdsController extends H {
             Yii::app()->end();
         }
         if (isset($_POST['Ads'])) {
-            $thekeyid = zmf::filterInput($_POST['Ads']['id']);
-            $intoData = array(
-                'title' => zmf::filterInput($_POST['Ads']['title'], 't', 1),
-                'description' => zmf::filterInput($_POST['Ads']['description'], 't', 1),                
-                'position' => 'topbar',
-                'url' => zmf::filterInput($_POST['Ads']['url'], 't', 1),
-                'classify' => 'flash',
-                'attachid' => zmf::filterInput($_POST['Ads']['attachid']),                
-                'status' => 1
-            );
-            $model->attributes = $intoData;
-            if ($model->validate()) {
-                if ($model->updateByPk($thekeyid, $intoData)) {
-                    UserAction::record('editads', $thekeyid);
-                    zmf::delFCache("notSaveAds{$uid}");
-                    $this->redirect(array('ads/index'));
-                }
-            }
+            $info = Publish::addAds(Yii::app()->user->id);
+            if (is_bool($info)) {
+                $this->redirect(array('all/list', 'table' => 'ads'));
+            }            
         }
         $positions = zmf::colPositions();
         $data = array(
@@ -92,7 +78,7 @@ class AdsController extends H {
             'model' => $model,
             'positions' => $positions
         );
-        $this->render('addAds', $data);
+        $this->render('//ads/addAds', $data);
     }
 
 }

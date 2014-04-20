@@ -49,7 +49,7 @@ class LinkController extends H {
         } elseif ($keyid != $_keyid AND $forupdate != 'yes') {
             if (!$keyid) {
                 zmf::delFCache("notSaveLink{$uid}");
-                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('link/add'));
+                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('admin/link/add'));
             } else {
                 $this->redirect(array('link/add', 'id' => $keyid));
             }
@@ -82,7 +82,7 @@ class LinkController extends H {
                 if ($model->updateByPk($thekeyid, $intoData)) {
                     UserAction::record('editlink', $thekeyid);
                     zmf::delFCache("notSaveLink{$uid}");
-                    $this->redirect(array('link/index'));
+                    $this->redirect(array('all/list','table'=>'link'));
                 }
             }
         }
@@ -91,7 +91,7 @@ class LinkController extends H {
             'table' => 'link',
             'model' => $model
         );
-        $this->render('addLink', $data);
+        $this->render('//link/addLink', $data);
     }
 
 }

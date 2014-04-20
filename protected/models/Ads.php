@@ -14,7 +14,7 @@ class Ads extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('title, attachid, position', 'required'),
-            array('status', 'numerical', 'integerOnly' => true),
+            array('status , system', 'numerical', 'integerOnly' => true),
             array('url', 'url'),
             array('title', 'length', 'max' => 50),
             array('url, attachid, description', 'length', 'max' => 255),
@@ -23,7 +23,7 @@ class Ads extends CActiveRecord {
             array('classify', 'length', 'max' => 16),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, title, url, attachid, width, height, description, hits, start_time, expired_time, position, order, status, cTime,classify ,uid', 'safe', 'on' => 'search'),
+            array('id, title, url, attachid, width, height, description, hits, start_time, expired_time, position, order, status, cTime,classify ,uid , system', 'safe', 'on' => 'search'),
         );
     }
 
@@ -58,6 +58,7 @@ class Ads extends CActiveRecord {
             'cTime' => '创建时间',
             'classify' => '展示样式',
             'uid' => 'Uid',
+            'system'=>'系统项'
         );
     }
 
@@ -82,6 +83,7 @@ class Ads extends CActiveRecord {
         $criteria->compare('cTime', $this->cTime, true);
         $criteria->compare('classify', $this->classify, true);
         $criteria->compare('uid', $this->uid, true);
+        $criteria->compare('system', $this->system, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

@@ -49,7 +49,7 @@ class ColumnsController extends H {
         } elseif ($keyid != $_keyid AND $forupdate != 'yes') {
             if (!$keyid) {
                 zmf::delFCache("notSaveColumns{$uid}");
-                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('columns/add'));
+                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('admin/columns/add'));
             } else {
                 $this->redirect(array('columns/add', 'id' => $keyid));
             }
@@ -114,7 +114,7 @@ class ColumnsController extends H {
             'info' => $info,
             'table' => 'columns',
         );
-        $this->render('addCol', $data);
+        $this->render('//columns/addCol', $data);
     }
 
     public function actionGet() {

@@ -13,8 +13,8 @@
                     </label>
                 </p>
                 <p><?php echo $row['content']; ?></p>
-                <?php if($row['reply_content']!=''){?>
-                <pre><?php echo $row['reply_content'];?></pre>
+                <?php if($row['answer_content']!=''){?>
+                <pre><?php echo $row['answer_content'];?></pre>
                 <?php }?>
             </div>
         </td>

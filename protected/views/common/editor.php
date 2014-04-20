@@ -3,6 +3,9 @@ $attri=isset($attribute)?$attribute:'content';
 ?>
 <link href="<?php  echo Yii::app()->baseUrl.'/ueditor/themes/default/css/umeditor.css';?>" type="text/css" rel="stylesheet">
 <script>
+    var allowImgTypes="<?php echo zmf::config('imgAllowTypes');?>";
+    var allowImgPerSize="<?php echo tools::formatBytes(zmf::config('imgMaxSize'));?>";
+    var perAddImgNum="<?php echo zmf::config('imgUploadNum');?>";
     URL= window.UEDITOR_HOME_URL||"<?php echo Yii::app()->baseUrl;?>/ueditor/";
     (function(){window.UMEDITOR_CONFIG={UMEDITOR_HOME_URL:URL}})();
 </script>

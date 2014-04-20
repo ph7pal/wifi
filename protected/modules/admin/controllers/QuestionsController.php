@@ -2,24 +2,31 @@
 
 class QuestionsController extends H {
 
-    public $layout = 'admin';
-
-    public function actionIndex() {
-        $criteria = new CDbCriteria();
-        $criteria->order='id desc';
-        $criteria->addCondition('status=1');
-        $count = Questions::model()->count($criteria);
-        $pager = new CPagination($count);
-        $pager->pageSize = 1;
-        $pager->applyLimit($criteria);
-        $items = Questions::model()->findAll($criteria);
+    public function actionAdd() {
+        $keyid = zmf::filterInput($_GET['id']);
+        $model = new Questions;
+        $info = $model->findByPk($keyid);
+        if (!$info) {            
+            $this->message(0, '非常抱歉，您查看的页面不存在');
+        }        
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'questions-addQuestions-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+        if (isset($_POST['Questions'])) {
+            $_POST['Questions']['answer_status']=1;
+            $info = Publish::addQuestions(Yii::app()->user->id);
+            if (is_bool($info)) {
+                $url = Yii::app()->createUrl('user/list', array('table' => 'questions'));
+                $this->message(1, '问题已提交，我们会尽快回复您！');
+            }
+        }
         $data = array(
+            'info' => $info,
             'table' => 'questions',
-            'pages' => $pager,
-            'posts' => $items
+            'model' => $model
         );
-
-        $this->render('index', $data);
+        $this->render('//questions/addQuestions', $data);
     }
 
 }

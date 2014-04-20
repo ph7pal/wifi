@@ -124,4 +124,20 @@ class Attachments extends CActiveRecord
                 return false;
             }
         }
+        public function getClassify($type,$keyid=''){
+            if($type=='ads'){
+                $_title='展示';
+                $arr='';
+            }elseif($type=='logo'){
+                $_title='Logo封面';
+            }elseif($type=='coverimg'){
+                $_info=  Posts::getOne($keyid,'title');
+                $_title='文章【'.$_info.'】封面';
+            }elseif($type=='album'){
+                $_title='相册';
+            }else{
+                $_title='暂未完善该分类';
+            }
+            return $_title;
+        }
 }

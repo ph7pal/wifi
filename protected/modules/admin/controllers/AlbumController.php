@@ -48,7 +48,7 @@ class AlbumController extends H {
         } elseif ($keyid != $_keyid AND $forupdate != 'yes') {
             if (!$keyid) {
                 zmf::delFCache("notSaveAlbum{$uid}");
-                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('album/add'));
+                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('admin/album/add'));
             } else {
                 $this->redirect(array('album/add', 'id' => $keyid));
             }
@@ -82,7 +82,7 @@ class AlbumController extends H {
                 if ($model->updateByPk($thekeyid, $intoData)) {
                     UserAction::record('editalbum', $thekeyid);
                     zmf::delFCache("notSaveAlbum{$uid}");
-                    $this->redirect(array('album/index'));
+                    $this->redirect(array('all/list','table'=>'album'));
                 }
             }
         }
