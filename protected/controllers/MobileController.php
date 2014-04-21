@@ -13,13 +13,7 @@ class MobileController extends T {
         $this->uid = zmf::filterInput($_GET['uid']);
         if (!$this->uid) {
             $this->message(0, '请选择需要查看的商铺');
-        }
-        if (zmf::checkmobile()) {
-            Yii::app()->theme = 'mobile';
-        } else {
-            Yii::app()->theme = 'mobile';
-            //$this->_closed();
-        }
+        }        
         $uid = $this->uid;
         $_close = zmf::userConfig($uid, 'closeSite');
         if (!$_close) {
@@ -30,6 +24,17 @@ class MobileController extends T {
         if ($this->userInfo['status'] != Posts::STATUS_PASSED) {
             $this->renderPartial('/error/close', array('message' => '您访问的用户暂不能访问，如有疑问请咨询' . zmf::config('phone') . '或者' . zmf::config('email')));
             Yii::app()->end();
+        }
+        if (zmf::checkmobile()) {
+            Yii::app()->theme = 'mobile';
+        } else {
+            Yii::app()->theme = 'mobile';
+            $_hash=tools::jiaMi($this->uid.$this->userInfo['truename']);
+            if($_GET['hash']!=$_hash && Yii::app()->session['forceMobile']!='yes'){
+                $this->_closed();
+            }elseif(!isset(Yii::app()->session['forceMobile'])){
+                Yii::app()->session['forceMobile'] = 'yes';
+            }            
         }
         $cols = Columns::userColumns($this->uid);
         $this->userCols = $cols;
@@ -51,7 +56,7 @@ class MobileController extends T {
     public function _closed($reason = '') {
         $url = zmf::config('domain') . Yii::app()->createUrl('mobile/index', array('uid' => $this->uid));
         $qrcodeUrl = zmf::qrcode($url, 'users', $this->uid);
-        $reason = '为达到更真实的访问效果，建议手机访问<br/>"' . $url . '",<br/>或扫描二维码：<br/><img src="' . $qrcodeUrl . '"/>';
+        $reason = '为达到更真实的访问效果，建议手机访问<br/>"' . $url . '",<br/>或扫描二维码：<br/><img src="' . $qrcodeUrl . '"/><br/>或'.CHtml::link('访问响应版',array('mobile/index','uid'=>  $this->uid,'hash'=>  tools::jiaMi($this->uid.$this->userInfo['truename'])));        
         parent::_closed($reason);
     }
 
