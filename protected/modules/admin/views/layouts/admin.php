@@ -18,7 +18,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/m
       <span class="welcome">欢迎：<?php echo Yii::app()->user->name;?></span>
       <span ><?php echo CHtml::link('修改密码',array('users/update','id'=>Yii::app()->user->id),array('target'=>'main'));?></span>
       <span ><?php echo CHtml::link('站点首页',Yii::app()->baseUrl,array('target'=>'_blank'));?></span>
-      <span ><?php echo CHtml::link('退出',array('site/logout'));?></span>
+      <span ><?php echo CHtml::link('退出',array('/site/logout'));?></span>
       </div>
   </div>  
   <div class="nav">
@@ -42,7 +42,9 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/m
         <div class="col-md-2 col-md-pull-10">
            <div class="aside">
               <div class="logo">
+                  <a href="<?php echo Yii::app()->createUrl('admin/index/index');?>">
                   <img src="<?php echo zmf::config('baseurl').zmf::config('logo');?>" alt="<?php echo zmf::config('sitename');?>"/>
+                  </a>
               </div>
                <?php echo zmf::adminBar();?>
           </div>

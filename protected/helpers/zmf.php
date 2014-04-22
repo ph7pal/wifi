@@ -499,6 +499,26 @@ class zmf {
             }
         }
     }
+    
+    public static function checkRight($type,$code){
+        if(!$type || !$code){
+            return false;
+        }
+        //author
+        if($type=='a'){
+            if($code!='067e73ad3739f7e6a1fc68eb391fc5ba'){
+                return false;
+            }else{
+                return true;
+            }
+        }elseif($type=='r'){//copyright
+            if($code!='acc869dee704131e9024decebb3ef0c3'){
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }
 
     public static function miniTopBar() {
         $c = Yii::app()->getController()->id;
@@ -517,6 +537,7 @@ class zmf {
                 'users' => '用户',
                 'columns' => '栏目',
                 'questions' => '客服',
+                'user_action'=>'记录'
             );
             foreach ($arr as $k => $v) {
                 if ($t == $k) {
@@ -530,7 +551,7 @@ class zmf {
                     $arr['type'] = $type;
                 }
                 if (isset($uid)) {
-                    $arr['uid'] = $uid;
+                    //$arr['uid'] = $uid;
                 }
                 $longstr.='<li><a class="list_btn ' . $css . '" href="' . Yii::app()->createUrl('admin/all/list', $arr) . '">' . $v . '</a></li>';
             }
@@ -601,11 +622,28 @@ class zmf {
             'url' => CHtml::link('设置', array('config/index'), array('class' => 'list_btn' . $css)),
             'power' => ''
         );
+        if ($c == 'record') {
+            $css = ' current';
+        } else {
+            $css = '';
+        }
+        $arr['记录'] = array(
+            'url' => CHtml::link('记录', array('record/index'), array('class' => 'list_btn' . $css)),
+            'power' => ''
+        );
         $longstr = '';
         foreach ($arr as $k => $v) {
             $longstr.=$v['url'];
         }
         echo $longstr;
+    }
+    
+    public static function adminCode($uid){
+        if(Yii::app()->user->isGuest || !$uid){
+            return false;
+        }
+        $code=tools::jiaMi("$uid#".time().'#067e73ad3739f7e6a1fc68eb391fc5ba');
+        return $code;
     }
 
     public static function myGetImageSize($url, $type = 'curl', $isGetFilesize = false) {

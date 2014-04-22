@@ -161,34 +161,71 @@ class tools {
         }
         return $name_arr;
     }
-    public static function exStatus($status){
-        switch ($status){
-            case 0:
-                return 'notpassed';
-            case 1:
-                return 'passed';
-            case 2:
-                return 'staycheck';
-            case 3:
-                return 'deled';
+
+    public static function exStatus($status) {
+        if (is_numeric($status)) {
+            switch ($status) {
+                case 0:
+                    return 'notpassed';
+                case 1:
+                    return 'passed';
+                case 2:
+                    return 'staycheck';
+                case 3:
+                    return 'deled';
+            }
+        } else {
+            switch ($status) {
+                case 'notpassed':
+                    return 0;
+                case 'passed':
+                    return 1;
+                case 'staycheck':
+                    return 2;
+                case 'deled':
+                    return 3;
+            }
         }
     }
-    public static function exStatusToClass($status){
-        switch ($status){
+
+    public static function exStatusToClass($status) {
+        switch ($status) {
             case 0:
-                $css= 'warning';
+                $css = 'warning';
                 break;
             case 1:
-                $css= 'passed';
+                $css = 'passed';
                 break;
             case 2:
-                $css= 'warning';
+                $css = 'warning';
                 break;
             case 3:
-                $css= 'warning';
-                break;            
+                $css = 'warning';
+                break;
         }
-        echo 'class="'.$css.'"';
+        echo 'class="' . $css . '"';
+    }
+    
+    public static function url($title,$url,$data=array()){
+        $_data=array();        
+        $_data[]=$url;
+        $_data=  array_merge($_data,$data);
+        if(isset($_GET['table'])){
+            $_data['table']=  zmf::filterInput($_GET['table'],'t',1);
+        }
+        if(isset($_GET['type'])){
+            $_data['type']=  zmf::filterInput($_GET['type'],'t',1);
+        }
+        if(isset($_GET['colid'])){
+            $_data['colid']=  zmf::filterInput($_GET['colid']);
+        }        
+        if(isset($_GET['uid'])){
+            $_data['uid']=  zmf::filterInput($_GET['uid'],'t',1);
+        }
+        if(isset($_GET['table'])){
+            $_data['table']=  zmf::filterInput($_GET['table'],'t',1);
+        }
+        return CHtml::link($title,$_data);
     }
 
 }

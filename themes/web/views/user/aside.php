@@ -14,7 +14,7 @@
             <div class="site_action config">
                 <?php echo CHtml::link('设置', array('user/config'), array('class' => 'list_btn '.(Yii::app()->getController()->getAction()->id=='config'?'current':''))); ?>
                 <?php echo CHtml::link('轮播', array('user/list','table'=>'ads'), array('class' => 'list_btn '.($_GET['table']=='ads'?'current':''))); ?>
-                <?php $columns=Columns::userColumns();if(!empty($columns)){foreach($columns as $val){?>
+                <?php $columns=Columns::userColumns($this->uid);if(!empty($columns)){foreach($columns as $val){?>
                     <?php echo CHtml::link($val['title'], array('user/list','colid'=>$val['id']), array('class' => 'list_btn '.($_GET['colid']==$val['id']?'current':''))); ?>
                 <?php }}?>
                 <?php echo CHtml::link('评论', array('user/list','table'=>'comments'), array('class' => 'list_btn '.($_GET['table']=='comments'?'current':''))); ?>

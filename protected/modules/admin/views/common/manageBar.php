@@ -32,4 +32,7 @@ echo CHtml::link('编辑', array($table.'/add', 'id' => $keyid, 'edit' => 'yes')
 if($from=='dashbin'){
     echo CHtml::link('删除', array('del/sth', 'table' => $table, 'id' => $keyid, 'single' => 'yes'));
 }
+if($table=='users'){
+    echo CHtml::link('浏览', array('/user/index', 'id' => $keyid,'code'=>zmf::adminCode($keyid)),array('target'=>'_blank')); 
+}
 ?>

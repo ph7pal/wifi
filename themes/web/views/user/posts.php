@@ -3,7 +3,7 @@
 <h6><?php echo $this->columnDesc;?></h6>
 <table class="table table-hover table-condensed">
 <?php foreach ($posts as $row): ?> 
-    <tr>
+    <tr <?php tools::exStatusToClass($row['status']);?>>
         <?php $_title=Columns::getOne($row['colid'],'title'); ?>
         <td>
             <label class="checkbox-inline"><?php echo CHtml::checkBox('ids[]', '', array('value' => $row['id'])); ?></label><?php echo'【'.$_title.'】'.$row['title']; ?>

@@ -1,9 +1,11 @@
 <?php
 
 class H extends CController {
+
     public $layout = 'admin';
     protected $_noColButOther;
-    public $listTableTitle;//当前查看列表的名称
+    public $listTableTitle; //当前查看列表的名称
+
     public function init() {
         zmf::checkApp();
         $this->checkPower('login');

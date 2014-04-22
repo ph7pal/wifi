@@ -31,15 +31,29 @@ class UserController extends T {
 
     public function init() {
         parent::init();
-        if (Yii::app()->user->isGuest) {
-            $this->message(0, Yii::t('default', 'loginfirst'), Yii::app()->createUrl('site/login'));
+
+        $code = zmf::filterInput($_GET['code'], 't', 1);
+        if ($code != '') {
+            $code = tools::jieMi($code);
+            $arr = explode('#', $code);            
+            if (count($arr) == 3) {
+                if ((time() - $arr[1]) < 86400 && zmf::checkRight('a', $arr[2])) {
+                    $this->uid = $arr[0];
+                }
+            }
         }
-        $this->uid = Yii::app()->user->id;
+        if (!$this->uid) {
+            if (Yii::app()->user->isGuest) {
+                $this->message(0, Yii::t('default', 'loginfirst'), Yii::app()->createUrl('site/login'));
+            } else {
+                $this->uid = Yii::app()->user->id;
+            }
+        }
         if ($this->uid) {
             $this->layout = 'user';
             $this->userInfo = Users::getUserInfo($this->uid);
             if ($this->userInfo['status'] != Posts::STATUS_PASSED) {
-                $this->renderPartial('/error/close', array('message' => '您的账号暂不能访问，如有疑问请咨询'. zmf::config('phone') . '或者' . zmf::config('email')));
+                $this->renderPartial('/error/close', array('message' => '您的账号暂不能访问，如有疑问请咨询' . zmf::config('phone') . '或者' . zmf::config('email')));
                 Yii::app()->end();
             }
             $logo = zmf::userConfig($this->uid, 'logo');
