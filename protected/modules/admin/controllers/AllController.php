@@ -13,6 +13,7 @@ class AllController extends H {
         $type = zmf::filterInput($_GET['type'], 't', 1);
         $colid = zmf::filterInput($_GET['colid']);
         $uid = zmf::filterInput($_GET['uid']);
+        $groupid = zmf::filterInput($_GET['groupid']);
         $where = array();
         if ($type != '') {
             $where['status'] = "status=" . tools::exStatus($type);
@@ -23,14 +24,19 @@ class AllController extends H {
         if ($uid) {
             $where['uid'] = 'uid=' . $uid;
         }
+        if ($groupid) {
+            $where['groupid'] = 'groupid=' . $groupid;
+        }
         $_where = '';
         if ($table == 'user_action') {
             unset($where['colid']);
             unset($where['status']);
+            unset($where['groupid']);
         }elseif($table=='columns'){
             unset($where['colid']);
             unset($where['status']);
-            unset($where['uid']);            
+            unset($where['uid']);
+            unset($where['groupid']);
         }
         if (!empty($where)) {
             $_where = ' WHERE ' . join(' AND ', $where);

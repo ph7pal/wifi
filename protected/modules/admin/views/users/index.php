@@ -8,7 +8,7 @@
     <tr <?php tools::exStatusToClass($row['status']);?>>
         <td><label class="checkbox-inline"><?php echo CHtml::checkBox('ids[]', '', array('value' => $row['id'])); ?></label></td>
         <td><?php echo $row['truename']; ?></td>
-        <td><?php echo UserGroup::getInfo($row['groupid'], 'title'); ?></td>
+        <td><?php $gtitle=UserGroup::getInfo($row['groupid'], 'title');echo tools::url($gtitle,'all/list',array('table'=>$table,'groupid'=>$row['groupid'])); ?></td>
         <td>
             <?php $this->renderPartial('/common/manageBar',array('status'=>$row['status'],'keyname'=>'keyid','keyid'=>$row['id'],'table'=>$table));?>             
          </td>

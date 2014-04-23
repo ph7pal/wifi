@@ -5,13 +5,12 @@
     <td>操作</td>
 </tr>
 <?php foreach ($posts as $row): ?> 
-    <tr>
+    <tr <?php tools::exStatusToClass($row['status']);?>>
         <td><label class="checkbox-inline"><?php echo CHtml::checkBox('ids[]', '', array('value' => $row['id'])); ?></label></td>
         <td><?php echo $row['title']; ?></td>
         <td><?php echo date('Y-m-d', $row['cTime']); ?></td>
         <td>
             <?php echo CHtml::link('编辑', array('users/addgroup', 'id' => $row['id'], 'edit' => 'yes')); ?>
-            <?php echo CHtml::link('删除', array('del/sth', 'table' => $table, 'id' => $row['id'], 'single' => 'yes')); ?>
         </td>
     </tr>
 <?php endforeach; ?>

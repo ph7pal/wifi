@@ -586,6 +586,19 @@ class zmf {
         }elseif ($c == 'link') {
             $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'link')) . '">列表</a></li>';
             $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/link/add') . '">新增</a></li>';
+        }elseif ($c == 'tools') {
+            $arr = array(
+                'clearcache' => '清除缓存',
+                'db' => '数据库',
+            );
+            foreach ($arr as $k => $v) {
+                if ($type == $k) {
+                    $css = 'current';
+                } else {
+                    $css = '';
+                }
+                $longstr.='<li><a class="list_btn ' . $css . '" href="' . Yii::app()->createUrl('admin/tools/index', array('type' => $k)) . '">' . $v . '</a></li>';
+            }
         }
         echo $longstr;
     }
@@ -611,6 +624,24 @@ class zmf {
         }
         $arr['最新'] = array(
             'url' => CHtml::link('最新', array('all/list', 'table' => 'posts', 'type' => 'passed'), array('class' => 'list_btn' . $css)),
+            'power' => ''
+        );
+        if ($t == 'users' && !$type) {
+            $css = ' current';
+        } else {
+            $css = '';
+        }
+        $arr['商家'] = array(
+            'url' => CHtml::link('商家', array('all/list','table'=>'users','groupid'=>self::config('shopGroupId')), array('class' => 'list_btn' . $css)),
+            'power' => ''
+        );
+        if ($c == 'tools') {
+            $css = ' current';
+        } else {
+            $css = '';
+        }
+        $arr['工具'] = array(
+            'url' => CHtml::link('工具', array('tools/index','type'=>'clearcache'), array('class' => 'list_btn' . $css)),
             'power' => ''
         );
         if ($c == 'config') {
