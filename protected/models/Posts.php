@@ -23,10 +23,10 @@ class Posts extends CActiveRecord {
         return array(
             array('title,colid', 'required'),
             //array('copy_url', 'url'),
-            array('colid, albumid, reply_allow, status ,attachid', 'numerical', 'integerOnly' => true),
+            array('colid, albumid, reply_allow, status', 'numerical', 'integerOnly' => true),
             array('uid, hits, order, last_update_time, cTime', 'length', 'max' => 10),
             array('nickname', 'length', 'max' => 30),
-            array('author, copy_from', 'length', 'max' => 100),
+            array('author, copy_from ,attachid', 'length', 'max' => 100),
             array('title, second_title, title_style, seo_title, seo_description, seo_keywords, copy_url, redirect_url', 'length', 'max' => 255),
             array('name', 'length', 'max' => 50),
             // The following rule is used by search().
@@ -124,7 +124,7 @@ class Posts extends CActiveRecord {
         return $items;
     }
 
-    public function listPosts($colid, $field = 'id,title,cTime', $limit = 10,$notId='') {
+    public function listPosts($colid, $field = 'id,title,cTime,attachid', $limit = 10,$notId='') {
         if ($limit == 0) {
             $_limit = '';
         } else {
