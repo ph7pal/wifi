@@ -34,10 +34,17 @@ class ConfigController extends H {
             if ($type == 'indexpage') {
                 $indexCols = $_POST['indexCols'];
                 $colIds = $_POST['colIds'];
+                $adsIds=$_POST['adsIds'];
                 $total = array();
+                $y=0;
                 foreach ($indexCols as $ke => $ic) {
-                    $total[] = $ic . '@' . $colIds[$ke];
-                }
+                    if($colIds[$ke]=='ads'){
+                        $total[] = $ic . '@' . $colIds[$ke].'|'.$adsIds[$y];
+                        $y++;
+                    }else{
+                        $total[] = $ic . '@' . $colIds[$ke];
+                    }
+                }                
                 $set = join('#', $total);
                 $data = array(
                     'name' => zmf::filterInput($type, 't'),

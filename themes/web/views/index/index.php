@@ -1,6 +1,6 @@
 <?php if(!empty($indexCols)){?>
 <?php $colsNum=0;$echoDiv=false;foreach($indexCols as $key=>$ic){?>
-<?php if(is_numeric($ic['colinfo']['id'])){?>
+<?php if($ic['coltype']!='ads'){?>
 <?php if($colsNum!=12 && !$echoDiv){$echoDiv=true;?>
 <div class="row">
 <?php }?>
@@ -34,7 +34,7 @@
 <?php }?>
 <?php }else{?>
 <div class="col-xs-<?php echo $ic['colnum'];?> col-md-<?php echo $ic['colnum'];?> moduleBox">
-<?php $this->renderPartial('/posts/ads');?>
+<?php $this->renderPartial('/posts/ads',array('data'=>$ic['colinfo']));?>
 </div>
 <?php }?>
 <?php }?>

@@ -25,10 +25,7 @@
 </div>
 <?php }?>
 <div class="clearfix"></div> 
-<?php $this->renderPartial('/common/comments',array('keyid'=>$data['id'],'type'=>'posts'));?>
-<?php if($data['reply_allow']){?>
-<?php $this->renderPartial('/common/minCommentForm',array('keyid'=>$data['id'],'type'=>'posts'));?>
-<?php } ?>
+<?php $this->renderPartial('/common/comments',array('keyid'=>$data['id'],'type'=>'posts','coms'=>$coms,'pages'=>$pages));?>
 </div>
 <div class="col-4 col-sm-4 col-lg-4 floatR row">
 <?php $this->renderPartial('aside',array('likes'=>$likes));?>

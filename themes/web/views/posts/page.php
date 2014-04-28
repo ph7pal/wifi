@@ -1,11 +1,11 @@
 <?php //$this->renderPartial('/common/topdesc');?>
 <div class="wrap clear">
-	<?php $this->renderPartial('aside',array('colid'=>$info['id']));?>
+	<?php $this->renderPartial('aside',array('likes'=>$likes));?>
 	<div class="mainBox">
 		<div class="postWrap">
                     <?php $this->renderPartial('bread',array('info'=>$info));?>
                     <div class="h head"> 
-                        <h1 class="title"><?php echo $page['title'];?></h1>
+                        <h1><?php echo $page['title'];?></h1>
                         <?php if($page['second_title']!=''){?>
                         <p class="info"><?php echo $page['second_title'];?></p>
                         <?php }?>
@@ -17,12 +17,9 @@
                     </div>
                     <div class="col-md-12 col-xs-12">
                         <blockquote>
-                            <?php if($page['intro']!=''){?>
-                            <p><?php echo $page['intro'];?></p>
-                            <?php }?>
-                            <p>发布者:<?php echo $page['uid'];?></p>
+                            <p><?php echo CHtml::link(zmf::avatar($page['uid']),array('mobile/index','uid'=>$page['uid']));?></p>
+                            <p>发布者:<?php $uname=  Users::getUserInfo($page['uid'],'truename'); echo CHtml::link($uname,array('mobile/index','uid'=>$page['uid']));?></p>
                             <?php if($page['copy_url']!='' && $page['copy_from']!=''){?>
-                            <span class="split">|</span> 
                             <?php if($page['copy_url']!=''){?>
                                 <p><small>来源：
                                     <a href="<?php if($page['copy_url']!=''){echo $page['copy_url'];}?>" target="_blank"><?php if($page['copy_from']!=''){?>
@@ -31,22 +28,26 @@
                                     </small>
                                 </p>
                             <?php }else{?>
-                                <p>来源：<?php echo $page['copy_from'];?>
+                                <p><small>来源：<?php echo $page['copy_from'];?></small>
                             <?php }}?>
                         </blockquote>
                     </div>
                     
                     
-                    
-                    
-                    <?php $attachinfo=  Attachments::getFaceImg($page['id']);if($attachinfo){?>
-                    <div class="clear cfaceimg">
-                        <?php echo '<img src="'.zmf::imgurl($page['id'],$attachinfo['filePath'],'600',$attachinfo['classify']).'" alt="'.$page['title'].'的封面" title="'.$page['title'].'"/>';?>
-                    </div>    
+                    <div class="clearfix"></div>
+                    <?php /*$attachinfo=  Attachments::getOne($page['attachid']);*/?>
+                    <?php if(!empty($attachinfo) || $page['intro']!=''){?>
+                    <div class="well well-sm">
+                    <?php if($attachinfo){?>
+                    <p>
+                        <?php echo '<img src="'.zmf::imgurl($attachinfo['logid'],$attachinfo['filePath'],'600',$attachinfo['classify']).'" alt="'.$page['title'].'的封面" title="'.$page['title'].'" class="thumbnail img-responsive"/>';?>
+                    </p>    
                     <?php }?>
-                    
-                        
-                    
+                        <?php if($page['intro']!=''){?>
+                            <p><?php echo $page['intro'];?></p>
+                            <?php }?>
+                    </div>
+                    <?php }?>
                                      
                     <div class="cdata clearfix">
                         <p><?php echo $page['content'];?></p>

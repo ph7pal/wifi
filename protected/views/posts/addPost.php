@@ -45,6 +45,11 @@
      <p class="help-block"><?php echo $form->error($model,'redirect_url'); ?></p>
     </div>
     <div class="form-group">
+    <?php echo $form->labelEx($model,'copy_from'); ?>
+    <?php echo $form->textField($model,'copy_from',array('class'=>'form-control','value'=>$info['copy_from'])); ?>
+     <p class="help-block"><?php echo $form->error($model,'copy_from'); ?></p>
+    </div>
+    <div class="form-group">
     <?php echo $form->labelEx($model,'copy_url'); ?>
     <?php echo $form->textField($model,'copy_url',array('class'=>'form-control','value'=>$info['copy_url'])); ?>
      <p class="help-block"><?php echo $form->error($model,'copy_url'); ?></p>

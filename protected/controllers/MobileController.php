@@ -13,7 +13,7 @@ class MobileController extends T {
         $this->uid = zmf::filterInput($_GET['uid']);
         if (!$this->uid) {
             $this->message(0, '请选择需要查看的商铺');
-        }        
+        }
         $uid = $this->uid;
         $_close = zmf::userConfig($uid, 'closeSite');
         if (!$_close) {
@@ -24,11 +24,11 @@ class MobileController extends T {
         if ($this->userInfo['status'] != Posts::STATUS_PASSED) {
             $this->renderPartial('/error/close', array('message' => '您访问的用户暂不能访问，如有疑问请咨询' . zmf::config('phone') . '或者' . zmf::config('email')));
             Yii::app()->end();
-        }        
-        if (zmf::checkmobile()) {            
+        }
+        if (zmf::checkmobile()) {
             Yii::app()->theme = 'mobile';
-        } 
-        
+        }
+
 //        else {
 //            Yii::app()->theme = 'mobile';
 //            $_hash=tools::jiaMi($this->uid.$this->userInfo['truename']);
@@ -58,32 +58,32 @@ class MobileController extends T {
     public function _closed($reason = '') {
         $url = zmf::config('domain') . Yii::app()->createUrl('mobile/index', array('uid' => $this->uid));
         $qrcodeUrl = zmf::qrcode($url, 'users', $this->uid);
-        $reason = '为达到更真实的访问效果，建议手机访问<br/>"' . $url . '",<br/>或扫描二维码：<br/><img src="' . $qrcodeUrl . '"/><br/>或'.CHtml::link('访问响应版',array('mobile/index','uid'=>  $this->uid,'hash'=>  tools::jiaMi($this->uid.$this->userInfo['truename'])));        
+        $reason = '为达到更真实的访问效果，建议手机访问<br/>"' . $url . '",<br/>或扫描二维码：<br/><img src="' . $qrcodeUrl . '"/><br/>或' . CHtml::link('访问响应版', array('mobile/index', 'uid' => $this->uid, 'hash' => tools::jiaMi($this->uid . $this->userInfo['truename'])));
         parent::_closed($reason);
     }
 
     public function actionIndex() {
-        $colid = zmf::filterInput($_GET['colid']);  
-        $cols=array();
+        $colid = zmf::filterInput($_GET['colid']);
+        $cols = array();
         if ($colid) {
             $this->colid = $colid;
-            $cols[]=array('id'=>$colid);
-        }else{
-            $cols=$this->userCols;
+            $cols[] = array('id' => $colid);
+        } else {
+            $cols = $this->userCols;
         }
         $data = array(
-            'cols' =>$cols ,
+            'cols' => $cols,
         );
         $this->render('index', $data);
     }
-    
+
     public function indexBak() {
         //次版本为首页显示一个栏目
         //对应模板为bak
         $colid = zmf::filterInput($_GET['colid']);
         if (!$colid) {
             $colid = $this->userCols[0]['id'];
-        }        
+        }
         if ($colid) {
             $this->colid = $colid;
             $colinfo = Columns::getOne($colid);
@@ -111,11 +111,11 @@ class MobileController extends T {
 //            $this->jsonOutPut(0, Yii::t('default', 'loginfirst'));
 //        }
         $keyid = zmf::filterInput($_GET['id']);
-        if (!isset($keyid) OR !is_numeric($keyid)) {
+        if (!isset($keyid) OR ! is_numeric($keyid)) {
             $this->jsonOutPut(0, Yii::t('default', 'pagenotexists'));
         }
         $type = zmf::filterInput($_GET['type'], 't', 1);
-        if (!isset($type) OR !in_array($type, array('posts', 'image'))) {
+        if (!isset($type) OR ! in_array($type, array('posts', 'image'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         if ($type == 'posts') {
@@ -197,15 +197,19 @@ class MobileController extends T {
             $preInfo = Posts::model()->findBySql($sql4, array(':colid' => $info['colid']));
         }
         Posts::model()->updateCounters(array('hits' => 1), ':id=id', array(':id' => $keyid));
-        $_sql='SELECT id,title FROM {{posts}} WHERE colid='.$colinfo['id'].' AND uid='.$this->uid.' AND id!='.$keyid.' AND status='.Posts::STATUS_PASSED;
-        Posts::getAll(array('sql'=>$_sql),$_page,$likes);
+        $_sql = 'SELECT id,title FROM {{posts}} WHERE colid=' . $colinfo['id'] . ' AND uid=' . $this->uid . ' AND id!=' . $keyid . ' AND status=' . Posts::STATUS_PASSED;
+        Posts::getAll(array('sql' => $_sql), $_page, $likes);
+        $_sql2="SELECT * FROM {{comments}} WHERE logid='{$keyid}' AND status=1 ORDER BY cTime DESC";
+        Posts::getAll(array('sql' => $_sql2), $pages, $coms);
         $data = array(
             'from' => 'show',
             'preInfo' => $preInfo,
             'nextInfo' => $nextInfo,
             'data' => $info,
             'colinfo' => $colinfo,
-            'likes'=>$likes
+            'likes' => $likes,
+            'coms' => $coms,
+            'pages' => $pages,
         );
         $this->pageTitle = $info['title'] . ' - ' . $colinfo['title'] . ' - ' . zmf::config('sitename');
         $this->render('page', $data);

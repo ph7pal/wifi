@@ -18,7 +18,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>  
-        <?php $logo=zmf::userConfig($this->uid,'logo');?>  
+        <?php //$logo=zmf::userConfig($this->uid,'logo');?>  
         <a class="navbar-brand <?php if($logo){ echo 'logo';}?>" href="<?php echo Yii::app()->createUrl('mobile/index',array('uid'=>$this->uid));?>">
         <?php                 
         if($logo){    

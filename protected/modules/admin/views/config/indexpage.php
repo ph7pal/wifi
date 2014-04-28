@@ -54,7 +54,7 @@ function addIndexCols(str,divid){
         var randId=Math.floor(Math.random()*10000000000000);
         var selectStr='<select name="colIds[]" id="colIds'+randId+'" onchange="selected(\''+randId+'\');">';
         <?php $cols=Columns::indexPageCols();foreach($cols as $key=>$col){?>
-        selectStr+='<option value="<?php echo $key;?>" onclick=""><?php echo $col;?></option>';
+        selectStr+='<option value="<?php echo $key;?>"><?php echo $col;?></option>';
         <?php }?>
         selectStr+='</select><span id="selected'+randId+'"></span>';
         longstr+='<div class="col-xs-'+arr[k]+' col-md-'+arr[k]+' indexpage"><input type="hidden" name="indexCols[]" value="'+arr[k]+'"/><label>对应栏目：'+selectStr+'</label></div>';
@@ -69,8 +69,17 @@ function addIndexCols(str,divid){
 }
 function selected(divid){
     var title=$("#colIds"+divid+" option[value="+$("#colIds"+divid).val()+"]").text();
-    if(title!='请选择' && $("#colIds"+divid).val()!=0){
-        $("#selected"+divid).html('<button type="button" class="btn btn-success btn-xs">已选择：'+title+'</button>'); 
+    if(title!='请选择' && $("#colIds"+divid).val()!=0){        
+        if($("#colIds"+divid).val()=='ads'){
+            var selectStr='<select name="adsIds[]">';
+            <?php $ads= Ads::all(TRUE);foreach($ads as $key=>$ad){?>
+            selectStr+='<option value="<?php echo $key;?>"><?php echo $ad;?></option>';
+            <?php }?>
+            selectStr+='</select>';
+            $("#selected"+divid).html('<button type="button" class="btn btn-success btn-xs">'+title+'：</button>'+selectStr); 
+        }else{
+            $("#selected"+divid).html('<button type="button" class="btn btn-success btn-xs">已选择：'+title+'</button>'); 
+        }
     }else{
         $("#selected"+divid).html('');
     }

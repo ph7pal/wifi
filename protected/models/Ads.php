@@ -115,5 +115,26 @@ class Ads extends CActiveRecord {
         }
         return $arr;
     }
+    public static function all($foreach = true) {
+        $sql = "SELECT id,title FROM {{ads}}";
+        $info = Yii::app()->db->createCommand($sql)->query();
+        if ($foreach) {
+            $info = CHtml::listData($info, 'id', 'title');
+            $info[0] = '请选择';
+            ksort($info);
+        }
+        return $info;
+    }
+    public function getOne($keyid, $return = '') {
+        if (!$keyid) {
+            return false;
+        }
+        $item = Ads::model()->findByPk($keyid);
+        if ($return != '') {
+            return $item[$return];
+            exit();
+        }
+        return $item;
+    }
 
 }

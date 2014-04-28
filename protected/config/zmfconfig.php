@@ -19,14 +19,14 @@ return array(
 'imgQuality'=> '80',
 'validateEmail'=> '1',
 'officalUid'=> '',
-'shopGroupId'=> '5',
-'forbidnotshop'=> '1',
 'adminGroupIds'=> '5,4',
-'userDefaultGroup'=> '5',
+'shopGroupId'=> '7',
+'forbidnotshop'=> '1',
 'mobile'=> '1',
+'userDefaultGroup'=> '6',
 'closeSiteReason'=> '系统正在维护中，请稍后再访问！',
 'closeSite'=> '1',
 'noticeall'=> '近期收到举报，有部分网站有不良信息，望各位店家及时处理！',
-'indexpage'=> '12@ads#6@29#6@31#12@30',
+'indexpage'=> '12@ads|9#6@29#6@31#12@30#12@ads|11#12@ads|',
 );
 ?>

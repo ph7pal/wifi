@@ -143,6 +143,48 @@ class zmf {
     public static function noImg($type = '') {
         return CHtml::image(self::config('baseurl') . 'common/images/noimg.png', '暂无图片');
     }
+    
+    public static function avatar($uid,$type='small',$urlonly=false){
+        if(!$uid){
+            $_img=Yii::app()->baseUrl."/common/avatar/{$type}.gif";
+            if($urlonly){
+                return $_img;
+            }else{
+                return "<img src='{$_img}' class='thumbnail img-responsive'/>";
+            }  
+        }
+        $logo=self::userConfig($uid, 'logo');
+        $img=''; 
+        if($logo){
+            $attachinfo=  Attachments::getOne($logo);
+            if($attachinfo){
+                if($type=='small'){
+                    $_type=124;
+                }elseif($type=='big'){
+                    $_type=300;
+                }else{
+                    $_type=124;
+                }                
+                $img=zmf::imgurl($attachinfo['logid'],$attachinfo['filePath'],$_type,$attachinfo['classify']);
+            }else{
+                $img=''; 
+            }
+        }        
+        if($img){
+            if($urlonly){
+                return $img;
+            }else{
+                return "<img src='{$img}' class='thumbnail img-responsive'/>";
+            }            
+        }else{
+            $_img=Yii::app()->baseUrl."/common/avatar/{$type}.gif";
+            if($urlonly){
+                return $_img;
+            }else{
+                return "<img src='{$_img}' class='thumbnail img-responsive'/>";
+            }            
+        }
+    }
 
     //fileCache
     public static function setFCache($key, $value, $expire = '60') {
@@ -812,15 +854,29 @@ class zmf {
         if(!empty($arr1)){
             foreach($arr1 as $v1){
                 $_tmparr=  explode('@', $v1);
+                $_tmptmp=array();
+                if(stripos($_tmparr[1],'ads')!==false){
+                    $_tmptmp= explode('|', $_tmparr[1]);
+                    if(!empty($_tmptmp) && count($_tmptmp)==2){
+                        unset($_tmparr[1]);
+                    }
+                }
+                $_tmparr=  array_merge($_tmparr,$_tmptmp);
                 if($idsOnly){
                     $total[]=$_tmparr;
                 }else{
                     $data=array();
                     $data['colnum']=$_tmparr[0];    
-                    if(is_numeric($_tmparr[1])){
+                    if($_tmparr[1]!='ads'){
                         $data['colinfo']=  Columns::getOne($_tmparr[1]);
+                        $data['coltype']='column';
                     }else{
-                        $data['colinfo']['id']=$_tmparr[1];
+                        $data['coltype']='ads';
+                        if(is_numeric($_tmparr[2])){
+                            $data['colinfo']=Ads::getOne($_tmparr[2]);
+                        }else{
+                            $data['colinfo']='';
+                        }                        
                     }
                     $total[]=$data;
                 }                
