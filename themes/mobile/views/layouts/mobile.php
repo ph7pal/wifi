@@ -14,12 +14,19 @@
         <meta name="format-detection" content="address=no">
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl ?>/css/bootstrap.min.css">
-        <link rel="stylesheet" href="<?php echo zmf::userSkin($this->uid) ?>">
+        <!--link rel="stylesheet" href="<?php echo zmf::userSkin($this->uid) ?>"-->
         <?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
     </head>
     <body>
+        <style>
+            body{
+                font: 12px/1.6 arial,helvetica,sans-serif;
+            }
+            
+            .floatR{float:right;}
+        </style>
         <div class="navbar navbar-default" role="navigation">
-            <div class="container">
+            <div id="zmf" class="container">
               <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -44,6 +51,7 @@
               </div>
               <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li <?php if(!$this->colid){?>class="active"<?php }?> ><a href="<?php echo Yii::app()->createUrl('mobile/index',array('uid'=>$this->uid));?>">首页</a></li>
                   <?php 
                     $cols=$this->userCols;
                     if(!empty($cols)){
@@ -52,36 +60,26 @@
                         <?php }?>
                     <?php }?>
                 </ul>
-                <!--ul class="nav navbar-nav navbar-right">                  
-                  <li class="active"><a href="./">管理</a></li>
-                </ul-->
+                <?php if($this->uid==Yii::app()->user->id){?>  
+                <ul class="nav navbar-nav navbar-right">                  
+                  <li class="active"><a href="<?php echo Yii::app()->createUrl('user/index');?>">管理</a></li>
+                </ul>
+                <?php }?>
               </div><!--/.nav-collapse -->
             </div>
-          </div>
-        <div class="container">
-            <!--nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
-                <ul class="nav nav-pills nav-justified">
-                <?php 
-                $cols=$this->userCols;
-                if(!empty($cols)){
-                    foreach($cols as $col){?>
-        <li <?php if($this->colid==$col['id']){?>class="active"<?php }?>><?php echo CHtml::link($col['title'],array('mobile/index','uid'=>$this->uid,'colid'=>$col['id']));?></li>
-                    <?php }?>
-                <?php }?>
-                </ul>
-            </nav-->
-            <div class="visible-xs visible-sm visible-md visible-lg">
+          </div>        
+        <div id="zmf">
+        
+            <div class="visible-xs visible-sm visible-md visible-lg">       
                 <?php echo $content; ?>
             </div>
             <hr>
             <footer>
                 <p>
-                    <?php echo zmf::userConfig($this->uid,'address').'&nbsp;&nbsp;'.zmf::userConfig($this->uid,'phone');?>
-                </p>
-                <p>
                     <?php echo zmf::userConfig($this->uid,'company').zmf::userConfig($this->uid,'copyright').'&nbsp;&nbsp;'.zmf::userConfig($this->uid,'beian');?>
                 </p>
             </footer>
+        
         </div>
         <?php $this->renderPartial('/common/footer'); ?>
         <script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>

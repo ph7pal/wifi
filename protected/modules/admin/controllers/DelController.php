@@ -4,11 +4,11 @@ class DelController extends H {
 
     public function actionSth() {
         if (isset($_POST['YII_CSRF_TOKEN'])) {
-            $table = zmf::filterInput($_POST['Manage']['table'], 't', 1);
+            $table = zmf::filterInput($_POST['table'], 't', 1);
             if (!empty($_POST['ids'])) {
                 $ids = array_unique(array_filter($_POST['ids']));
             }
-            $type = zmf::filterInput($_POST['Manage']['type'], 't', 1);
+            $type = zmf::filterInput($_POST['type'], 't', 1);
             $multi = true;
         } else {
             $keyid = zmf::filterInput($_GET['id']);
@@ -17,7 +17,7 @@ class DelController extends H {
             $multi = false;
         }
         $table = strtolower($table);
-        if ($multi) {
+        if ($multi) {            
             if (empty($ids)) {
                 $this->message(0, '请选择需要操作的对象');
             } elseif ($type == '' OR !in_array($type, array('del'))) {
@@ -42,6 +42,7 @@ class DelController extends H {
         $usergroup = new UserGroup();
         $comments = new Comments;
         $attachments=new Attachments;
+        $questions=new Questions;
         if ($multi) {
             foreach ($ids as $val) {
                 $info = $$table->findByPk($val);
@@ -72,9 +73,19 @@ class DelController extends H {
         $users = new Users();
         $usergroup = new UserGroup();
         $comments = new Comments;
+        $questions=new Questions;
         if (in_array($table, array('ads', 'columns', 'link', 'comments', 'questions', 'tags', 'users', 'usergroup'))) {
             if (isset($info['attachid']) AND $info['attachid'] > 0) {
                 $this->delAttach($keyid);
+            }
+            if($table=='users'){
+                if($info['system']){
+                    if ($multi) {
+                        return false;
+                    } else {
+                        $this->message(0, '该用户会系统用户，禁止删除！');
+                    }
+                }
             }
             if ($$table->deleteByPk($keyid)) {
                 if ($multi) {

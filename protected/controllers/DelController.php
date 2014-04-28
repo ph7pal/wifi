@@ -1,6 +1,7 @@
 <?php
 
-class DelController extends H {
+class DelController extends T {
+    private $status=array('status'=>Posts::STATUS_DELED);
 
     public function actionSth() {
         if (isset($_POST['YII_CSRF_TOKEN'])) {
@@ -17,7 +18,7 @@ class DelController extends H {
             $multi = false;
         }
         $table = strtolower($table);
-        if ($multi) {
+        if ($multi) {            
             if (empty($ids)) {
                 $this->message(0, '请选择需要操作的对象');
             } elseif ($type == '' OR !in_array($type, array('del'))) {
@@ -28,17 +29,15 @@ class DelController extends H {
                 $this->message(0, '请选择需要操作的对象');
             }
         }
-        if (!in_array($table, array('ads','columns',  'posts', 'link', 'users', 'usergroup'))) {
+        if (!in_array($table, array('ads', 'album', 'attachments', 'comments', 'questions', 'tags', 'posts'))) {
             $this->message(0, '不被允许的操作，请核实');
         }
-        $this->checkPower('del' . $table);
-        UserAction::record('del' . $table);
-        $ads = new Ads();        
+        $ads = new Ads();
+        $album = new Album();        
         $posts = new Posts();
-        $link = new Link();
-        $users = new Users();
-        $usergroup = new UserGroup();
-        $columns=new Columns();
+        $comments = new Comments;
+        $attachments=new Attachments;
+        $questions=new Questions;
         if ($multi) {
             foreach ($ids as $val) {
                 $info = $$table->findByPk($val);
@@ -46,10 +45,10 @@ class DelController extends H {
                     $this->_sth($val, $table, $info, true);
                 }
             }
-            if ($table == 'usergroup') {
-                $this->redirect(array('users/group'));
+            if ($table == 'ads') {
+                $this->redirect(array('user/list','table'=>$table));
             } else {
-                $this->redirect(array( 'all/list','table'=>$table));
+                $this->redirect(array('user/list','table'=>$table));
             }
         } else {
             $info = $$table->findByPk($keyid);
@@ -61,21 +60,20 @@ class DelController extends H {
     }
 
     private function _sth($keyid, $table, $info, $multi = false) {
-        $ads = new Ads();        
-        $columns = new Columns();
+        $ads = new Ads();
+        $album = new Album();        
         $posts = new Posts();
-        $link = new Link();
-        $users = new Users();
-        $usergroup = new UserGroup();
-        if (in_array($table, array('ads', 'columns', 'link', 'users', 'usergroup'))) {
-            if (isset($info['attachid']) AND $info['attachid'] > 0) {
-                $this->delAttach($keyid);
-            }
-            if ($$table->deleteByPk($keyid)) {
+        $comments = new Comments;
+        $questions=new Questions;
+        if (in_array($table, array('ads', 'columns', 'link', 'comments', 'questions', 'tags'))) {
+//            if (isset($info['attachid']) AND $info['attachid'] > 0) {
+//                $this->delAttach($keyid);
+//            }
+            if ($$table->updateByPk($keyid,$this->status)) {
                 if ($multi) {
                     return true;
                 } else {
-                    $this->redirect(array( 'all/list','table'=>$table));
+                    $this->redirect(array('user/list','table'=>$table));
                 }
             } else {
                 if ($multi) {
@@ -89,7 +87,7 @@ class DelController extends H {
                 if ($multi) {
                     return true;
                 } else {
-                    $this->redirect(array( 'all/list','table'=>$table));
+                    $this->redirect(array('user/list','table'=>$table));
                 }
             } else {
                 if ($multi) {
@@ -102,11 +100,11 @@ class DelController extends H {
             if (isset($info['albumid']) AND $info['albumid'] > 0) {
                 $this->delAlbum($info['albumid']);
             }
-            if ($$table->deleteByPk($keyid)) {
+            if ($$table->updateByPk($keyid,$this->status)) {
                 if ($multi) {
                     return true;
                 } else {
-                    $this->redirect(array('user/list','colid'=>$info['colid']));
+                    $this->redirect(array('user/list','table'=>$table));
                 }
             } else {
                 if ($multi) {
@@ -115,7 +113,40 @@ class DelController extends H {
                     $this->message(0, '非常抱歉，删除【文章】失败，请核实');
                 }
             }
-        } 
+        } elseif ($table == 'album') {
+            if ($this->delAlbum($keyid)) {
+                if ($multi) {
+                    return true;
+                } else {
+                    $this->redirect(array( 'user/list','table'=>$table));
+                }
+            } else {
+                if ($multi) {
+                    return false;
+                } else {
+                    $this->message(0, '非常抱歉，删除【相册】失败，请核实');
+                }
+            }
+        }
+    }
+
+    private function delAlbum($keyid) {
+        $info = Album::model()->findByPk($keyid);
+        if (!$info) {
+            return false;
+            exit;
+        }
+        $attaches = Attachments::model()->findAllByAttributes(array('logid' => $keyid), 'classify=:classify', array(':classify' => 'album'));
+        if (!empty($attaches)) {
+            foreach ($attaches as $v) {
+                $this->delAttach($v['id'], $v);
+            }
+        }
+        if (Album::model()->updateByPk($keyid,$this->status)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function delAttach($keyid, $iteminfo = array()) {
@@ -123,14 +154,7 @@ class DelController extends H {
             $iteminfo = Attachments::model()->findByPk($keyid);
         }
         if (!empty($iteminfo)) {
-            $dirs = zmf::uploadDirs($iteminfo['logid'], 'app', $iteminfo['classify']);
-            if (!empty($dirs)) {
-                foreach ($dirs as $d) {
-                    $img = $d . '/' . $iteminfo['filePath'];
-                    unlink($img);
-                }
-            }
-            if (Attachments::model()->deleteByPk($keyid)) {
+            if (Attachments::model()->updateByPk($keyid,$this->status)) {
                 return true;
             } else {
                 return false;

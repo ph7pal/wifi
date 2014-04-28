@@ -59,7 +59,7 @@ class Users extends CActiveRecord {
             'last_login_ip' => '最近登录IP',
             'last_login_time' => '最近登录',
             'login_count' => '登录次数',
-            'status' => 'Status',
+            'status' => '用户状态',
             'cTime' => '创建时间',
             'emailstatus'=>'邮箱状态',
             'system'=>'是否系统'

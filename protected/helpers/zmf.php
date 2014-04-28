@@ -13,6 +13,8 @@ class zmf {
             return 'b93154b988e33fdf0d144fde73028b77';
         } elseif ($type == 'authorCode') {
             return '2014@zmf';
+        }elseif($type=='authorPre'){
+            return 'zmf_grantpower';
         } elseif (empty(Yii::app()->params['c'])) {
             $_c = Config::model()->findAll();
             $configs = CHtml::listData($_c, 'name', 'value');
@@ -344,7 +346,7 @@ class zmf {
         return $str;
     }
 
-    public static function text($logid, $content, $lazyload = true, $size = 600) {
+    public static function text($logid, $content, $lazyload = true, $size = 600) {        
         if (is_array($logid)) {
             $_width = $logid['imgwidth'];
             $tipid = $logid['tipid'];
@@ -377,12 +379,11 @@ class zmf {
         }
         if (empty($match[1])) {
             return $content;
-        }
+        }        
         foreach ($match[1] as $key => $val) {
-            $thekey = tools::jieMi($match[1][$key]);
-            if (is_numeric($thekey)) {
-                $src = Attachments::model()->findByPk($thekey);
-            }
+            //$thekey = tools::jieMi($match[1][$key]);
+            $thekey =$match[1][$key];
+            $src = Attachments::model()->findByPk($thekey);
             if ($src) {
                 if ($src['status'] != Posts::STATUS_PASSED) {
                     continue;
@@ -401,9 +402,9 @@ class zmf {
                 }
                 if ($lazyload) {
                     //$imginfo = getimagesize($_imgurl);                    
-                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='" . self::config('baseurl') . "common/images/grey.gif' class='lazy' data-original='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "'/></a>";
+                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='" . self::config('baseurl') . "common/images/grey.gif' class='lazy thumbnail img-responsive' data-original='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "'/></a>";
                 } else {
-                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "'/></a>";
+                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "' class='thumbnail img-responsive'/></a>";
                 }
                 $content = str_ireplace("{$match[0][$key]}", $imgurl, $content);
             } else {
@@ -557,6 +558,7 @@ class zmf {
             }
         } elseif ($c == 'config') {
             $arr = array(
+                'indexpage'=>'首页定制',
                 'baseinfo' => '基本设置',
                 'siteinfo' => '站点信息',
                 'upload' => '上传设置',
@@ -664,7 +666,7 @@ class zmf {
         );
         $longstr = '';
         foreach ($arr as $k => $v) {
-            $longstr.=$v['url'];
+            $longstr.='<div class="col-xs-12 col-md-8">'.$v['url'].'</div>';
         }
         echo $longstr;
     }
@@ -797,6 +799,68 @@ class zmf {
             $skin='default';
         }
         return Yii::app()->baseUrl.'/skins/'.$skin.'/'.$skin.'.css';
+    }
+    public static function indexPage($colStr='',$idsOnly=false){
+        if($colStr==''){
+            $colStr=self::config('indexpage');
+        }
+        if(!$colStr){
+            return false;
+        }
+        $arr1=  explode('#', $colStr);
+        $total=array();
+        if(!empty($arr1)){
+            foreach($arr1 as $v1){
+                $_tmparr=  explode('@', $v1);
+                if($idsOnly){
+                    $total[]=$_tmparr;
+                }else{
+                    $data=array();
+                    $data['colnum']=$_tmparr[0];    
+                    if(is_numeric($_tmparr[1])){
+                        $data['colinfo']=  Columns::getOne($_tmparr[1]);
+                    }else{
+                        $data['colinfo']['id']=$_tmparr[1];
+                    }
+                    $total[]=$data;
+                }                
+            }
+        }
+        return $total;
+    }
+    
+    public static function userInfoDisplay($uid,$type){
+        $arr=array();
+        if($type=='info'){            
+            $arr[]=zmf::userConfig($uid,'company');
+            $arr[]=zmf::userConfig($uid,'address');
+            $arr[]=zmf::userConfig($uid,'phone');
+            $arr[]=zmf::userConfig($uid,'fax');
+            $arr[]=zmf::userConfig($uid,'email');
+            $arr=  array_filter($arr);            
+        }elseif($type=='credit'){
+            $uinfo=Users::getUserInfo($uid);
+            $ginfo=UserGroup::getInfo($uinfo['groupid'],'title');
+            $arr[]=array('title'=>$ginfo,'css'=>  tools::exStatusToClass(1, true));
+            $arr[]=array('title'=>'邮箱验证','css'=>  tools::exStatusToClass($uinfo['emailstatus'], true));
+        }elseif($type=='score'){
+            $total=134;
+            $arr[]=array(
+                'title'=>'经销商评价',
+                'css'=>  tools::calScoreCss(42),
+                'num'=>'42',
+                'width'=> 42 ,
+                'url'=>''
+                );
+            $arr[]=array(
+                'title'=>'用户评价',
+                'css'=>  tools::calScoreCss(92),
+                'num'=>'92',
+                'width'=>92,
+                'url'=>''
+                );
+        }
+        return $arr;
     }
 
 }

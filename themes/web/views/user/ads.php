@@ -6,7 +6,6 @@
     <tr <?php if($row['status']!=Posts::STATUS_PASSED){echo 'class="danger"';}?>>
         <td>
             <label class="checkbox-inline"><?php echo CHtml::checkBox('ids[]', '', array('value' => $row['id'])); ?></label><?php echo $row['title']; ?>
-            <?php echo CHtml::link('浏览', array('mobile/show', 'id' => $row['id'],'uid'=>$row['uid']),array('target'=>'_blank')); ?>
             <?php echo CHtml::link('编辑', array('user/addads', 'id' => $row['id'],'edit' => 'yes')); ?>
             <?php echo CHtml::link('删除', array('del/sth', 'table' => $table, 'id' => $row['id'], 'single' => 'yes')); ?>
         </td>

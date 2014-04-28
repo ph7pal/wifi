@@ -31,7 +31,8 @@ class Publish extends CFormModel {
 //                        continue;
 //                    }
                 $arr[$_key] = $val;
-                $arr_attachids[] = tools::jieMi($match[1][$key]);
+                $arr_attachids[] = $match[1][$key];
+                //$arr_attachids[] = tools::jieMi($match[1][$key]);
             }
             if (!empty($arr)) {
                 foreach ($arr as $thekey => $imgsrc) {
@@ -40,9 +41,9 @@ class Publish extends CFormModel {
             }
         }
         $attachid = zmf::filterInput($_POST['Posts']['attachid'], 't', 1);
-        if ($attachid != '') {
-            $attachid = tools::jieMi($attachid);
-        }
+//        if ($attachid != '') {
+//            $attachid = tools::jieMi($attachid);
+//        }
         $intoData['content'] = $content;
         $intoData['attachid'] = $attachid;
         $model->attributes = $intoData;
@@ -51,7 +52,7 @@ class Publish extends CFormModel {
                 if (!empty($arr_attachids)) {
                     $ids = join(',', $arr_attachids);
                     if ($ids != '') {
-                        Attachments::model()->updateAll(array('status' => Posts::STATUS_DELED), "logid=$keyid AND uid={$uid} AND classify='posts'");
+                        Attachments::model()->updateAll(array('status' => Posts::STATUS_DELED), "logid=$intoKeyid AND uid={$uid} AND classify='posts'");
                         Attachments::model()->updateAll(array('status' => Posts::STATUS_PASSED), "id IN($ids)");
                     }
                 }
@@ -73,9 +74,9 @@ class Publish extends CFormModel {
         $model = new Ads();
         $thekeyid = zmf::filterInput($_POST['Ads']['id']);
         $attachid = zmf::filterInput($_POST['Ads']['attachid'], 't', 1);
-        if ($attachid != '') {
-            $attachid = tools::jieMi($attachid);
-        }
+//        if ($attachid != '') {
+//            $attachid = tools::jieMi($attachid);
+//        }
         $intoData = $_POST['Ads'];
         $intoData['attachid'] = $attachid;
         $intoData['status'] = 1;

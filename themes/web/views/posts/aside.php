@@ -13,7 +13,7 @@
                             $class='';
                         }
                         ?>
-                    <li><?php echo CHtml::link($_sc['title'],array('posts/images','id'=>$_sc['id']),array('target'=>'_blank','class'=>$class));?></li>
+                    <li><?php echo CHtml::link($_sc['title'],array('posts/images','id'=>$_sc['id']),array('class'=>$class));?></li>
                     <?php }?>
                 </ul> 
         <?php }}else{
@@ -29,7 +29,7 @@
                     $class='';
                 }
                 ?>
-            <li><?php echo CHtml::link($_ac,array('posts/index','colid'=>$_ak),array('target'=>'_blank','class'=>$class));?></li>
+            <li><?php echo CHtml::link($_ac,array('posts/index','colid'=>$_ak),array('class'=>$class));?></li>
             <?php }?>
         </ul>
         <?php }}?>

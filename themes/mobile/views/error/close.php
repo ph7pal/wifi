@@ -16,7 +16,7 @@ img { padding: 0 0 5px 260px; }
 <body>
 <div id="error">
   <h1><?php echo $code; ?></h1>
-  <div class="message"><?php echo nl2br(CHtml::encode($message)); ?></div>
+  <div class="message"><?php echo nl2br($message); ?></div>
 </div>
 </body>
 </html>

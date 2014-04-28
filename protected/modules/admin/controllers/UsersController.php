@@ -64,20 +64,12 @@ class UsersController extends H {
         }
         if (isset($_POST['Users'])) {
             $thekeyid = zmf::filterInput($_POST['Users']['id']);
-            $intoData = array(
-                'username' => zmf::filterInput($_POST['Users']['username'], 't', 1),                
-                'truename' => zmf::filterInput($_POST['Users']['truename'], 't', 1),
-                'groupid' => zmf::filterInput($_POST['Users']['groupid']),
-                'email' => zmf::filterInput($_POST['Users']['email'], 't', 1),
-                'qq' => zmf::filterInput($_POST['Users']['qq'], 't', 1),
-                'mobile' => zmf::filterInput($_POST['Users']['mobile'], 't', 1),
-                'telephone' => zmf::filterInput($_POST['Users']['telephone'], 't', 1),
-                'last_login_ip' => ip2long(Yii::app()->request->userHostAddress),
-                'status' => 1
-            );
+            $intoData =$_POST['Users'];            
             $pass=zmf::filterInput($_POST['Users']['password'], 't', 1);
             if($pass!=''){
                 $intoData['password'] = md5($pass);
+            }else{
+                $intoData['password']=$info['password'];
             }
             $model->attributes = $intoData;
             if ($model->validate()) {

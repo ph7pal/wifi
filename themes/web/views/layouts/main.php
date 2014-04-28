@@ -1,74 +1,70 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="language" content="zh-CN" />
-<meta name="keywords" content="<?php echo zmf::config('siteKeywords');?>" />
-<meta name="description" content="<?php echo zmf::config('siteDesc');?>" />
-<title><?php echo CHtml::encode($this->pageTitle); ?></title>
-<link rel="stylesheet" href="<?php echo Yii::app()->baseUrl ?>/common/css/bootstrap.min.css">
-<link rel="stylesheet" href="<?php echo $this->_theme->baseUrl?>/css/style.css">
-<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
-<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/jquery.SuperSlide.2.1.js");?>
-</head>
-<body>
-<style>
-.logo {
-background: url(<?php echo zmf::config('baseurl').zmf::config('logo');?>) no-repeat center left;
-}
-</style>	
-<div class="zmf">
-<!--头-->
-<div id="header" class="header">
-  <div class="wrap">
-    <a href="<?php echo Yii::app()->homeUrl;?>">  
-    <div class="logo floatL">
+<?php $this->beginContent('/layouts/common'); ?>    	
+<div id="header">
+    <?php $this->renderPartial('/common/topnav');?>
+    <div class="sp-nav">
+        <div class="sp-logo">
+            <a href="<?php echo Yii::app()->baseUrl;?>" class="logo">                
+                <img src="<?php echo Yii::app()->baseUrl;?>/common/images/logo.png" alt="">
+                <?php echo '新灵中国';?>
+            </a>
+            <div class="sp-search">
+                <form class="form-inline" role="form">
+                    <div class="col-xs-10 row">
+                        <input type="text" class="form-control" placeholder="请输入关键词">                        
+                    </div>
+                    <div class="col-xs-2 row">
+                        <button type="button" class="btn btn-primary">搜索</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+        <style>
+            .sp-search{
+                width:480px;
+                height:30px;
+                margin:30px 0 0 0px; 
+                float: left;
+            }
+        </style>
+
+        <div class="navbar navbar-default" role="navigation">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+              </div>
+              <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class='active'><a href="<?php echo Yii::app()->baseUrl;?>">首页</a></li>
+                    <?php 
+                    $topcols=Columns::getColsByPosition('top',true);
+                    if(!empty($topcols)){
+                    foreach($topcols as $_t){
+                    ?>          
+                    <li <?php if($this->currentColId==$_t['first']['id']){echo 'class="active"';}?>>
+                      <?php echo CHtml::link($_t['first']['title'],array('posts/index','colid'=>$_t['first']['id']));?>           
+                    </li>
+                    <?php }}?>
+                </ul>
+                <!--ul class="nav navbar-nav navbar-right">                  
+                  <li class="active"><a href="./">管理</a></li>
+                </ul-->
+              </div><!--/.nav-collapse -->
+              
+            </div>
     </div>
-    </a> 
-    <div class="nav floatR">
-      <div class="clear">
-        <dl class="tnLeft">
-          <dd>
-            <h3><a href="<?php echo Yii::app()->homeUrl?>">首页</a></h3>
-          </dd>
-          <?php 
-          $topcols=Columns::getColsByPosition('top',true);
-          if(!empty($topcols)){
-          foreach($topcols as $_t){
-          ?>          
-          <dd <?php if($this->currentColId==$_t['first']['id']){echo 'class="on"';}?>>
-            <h3><?php echo CHtml::link($_t['first']['title'],array('posts/index','colid'=>$_t['first']['id']));?></h3>            
-            <?php if(!empty($_t['second'])){?>
-            <ul>
-                <?php foreach($_t['second'] as $_s){?>
-                <li><?php echo CHtml::link($_s['title'],array('posts/index','colid'=>$_s['id']));?></li>
-                <?php }?>
-            </ul>
-          <?php }?>
-          </dd>          
-          <?php }}?>
-        </dl>
-      </div>
-    </div>      
-      <div class="subnav">
-          <span> 客服电话：<?php echo zmf::config('phone');?> </span>
-          <span>
-              <?php if(Yii::app()->user->isGuest){?>
-              <?php echo CHtml::link('登录',array('site/login'));?>
-              <?php echo CHtml::link('注册',array('site/reg'));?>
-              <?php }else{?>
-              <?php echo CHtml::link(Yii::app()->user->name,array('user/index'));?>
-              <?php echo CHtml::link('退出',array('site/logout'));?>
-              <?php }?>
-          </span>
-      </div>
-  </div>
 </div>
-<div id="page">
-<?php echo $content; ?>
-</div><!-- page -->
+<div id="content">
+    <?php echo $content; ?>
+    <?php //$this->renderPartial('/user/aside'); ?>  
+    <div class="extra"></div>
+</div>
 <div id="footer">
-  <div class="wrap clear">
+  <div class="wrapper clear">
     <div class="act">        
         <div class="box paddLeft">
             <?php 
@@ -96,6 +92,5 @@ background: url(<?php echo zmf::config('baseurl').zmf::config('logo');?>) no-rep
   </div>
 </div>
 </div>
-<?php $this->renderPartial('/common/footer');?>
-</body>
-</html>
+<div class="bg"></div>
+<?php $this->endContent(); ?>

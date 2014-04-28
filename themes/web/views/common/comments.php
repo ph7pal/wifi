@@ -1,11 +1,9 @@
 <div id="comment">
-    <div class="boxTit "><h3>最新评论</h3></div>
+    <h4>最新评论</h4>
     <div class="bmc">
         <?php if(!empty($coms)){?>
             <?php foreach($coms as $com):?> 
-                <dl class="item clear">
-<?php echo Users::getUserInfo($com['uid'],'truename');?>：<?php echo $com['content'];?><span style="float:right"><?php echo date('Y-m-d H:i',$com['cTime']);?></span>
-                </dl>
+                <?php $this->renderPartial('/common/_comment',array('data'=>$com));?>
             <?php endforeach;?>
         <?php }?>
     </div>

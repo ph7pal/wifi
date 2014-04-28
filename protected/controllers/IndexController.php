@@ -36,13 +36,16 @@ class IndexController extends T {
 //        } else {
 //            $sql = "SELECT * FROM {{columns}} WHERE position='main' AND status=1 AND belongid IN(SELECT id FROM {{columns}} WHERE belongid=0) ORDER BY `cTime` DESC";
 //        }
-//        Posts::getAll(array('sql' => $sql, 'pageSize' => $pageSize), $pages, $mainCols);
-        $mainCols=Columns::getColsByPosition('main',true);
+//        Posts::getAll(array('sql' => $sql, 'pageSize' => $pageSize), $pages, $mainCols);  
+        
+        $indexCols=zmf::indexPage();        
+        //$mainCols=Columns::getColsByPosition('main',true);        
         $this->pageTitle = zmf::config('sitename') . ' - ' . zmf::config('shortTitle');        
         $data = array(
-            'mainCols' => $mainCols,
-            'pages' => $pages,
-            'seconds' => $seconds
+            //'mainCols' => $mainCols,
+            'indexCols'=>$indexCols,
+            //'pages' => $pages,
+            //'seconds' => $seconds
         );
         $this->render('index', $data);
     }  

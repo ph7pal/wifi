@@ -18,7 +18,8 @@
     <?php echo CHtml::dropDownList('userDefaultGroup',$c['userDefaultGroup'],UserGroup::getGroups(true),array('options' => array($info['userDefaultGroup']=>array('selected'=>true)))); ?>
 </p>
 <p><label>商家用户组：</label>
-    <?php echo CHtml::dropDownList('shopGroupId',$c['shopGroupId'],UserGroup::getGroups(true),array('options' => array($info['shopGroupId']=>array('selected'=>true)))); ?>
+    <?php 
+    echo CHtml::dropDownList('shopGroupId',$c['shopGroupId'],UserGroup::getGroups(true),array('options' => array($info['shopGroupId']=>array('selected'=>true)))); ?>
 </p>
 <p><label title="禁止非商家用户访问商家管理页面">禁止非商家：</label>
     <select name="forbidnotshop" id="forbidnotshop">
@@ -27,7 +28,15 @@
     </select>
 </p>
 <p><label>后台用户组：</label>
-    <?php echo CHtml::dropDownList('adminGroupIds',$c['adminGroupIds'],UserGroup::getGroups(true),array('value' => $info['adminGroupIds'],'class'=>'form-control','multiple'=>'true')); ?>
+    <?php 
+    if($c['adminGroupIds']!=''){
+        $arr=  explode(',', $c['adminGroupIds']);
+        $_adArr=array();
+        foreach($arr as $v){
+            $_adArr[$v]=array('selected'=>true);
+        }
+    }
+    echo CHtml::dropDownList('adminGroupIds',$c['adminGroupIds'],UserGroup::getGroups(true),array('options' => $_adArr,'class'=>'form-control','multiple'=>'true')); ?>
 </p>
 <p><label>官方展示用户：</label><input class="form-control" name="officalUid" id="officalUid" value="<?php echo $c['officalUid'];?>"/></p>
 <p><label>验证用户邮箱：</label>

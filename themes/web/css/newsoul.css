@@ -21,8 +21,7 @@ a:hover{ color: #3184db; }
 a:hover.move { background-position: 100% -44px; }
 
 .wrapper {
-    width: 950px;
-    padding: 0 5px;
+    width: 960px;
     margin: 0 auto;
 }
 #header, #content, #footer {
@@ -31,6 +30,7 @@ a:hover.move { background-position: 100% -44px; }
 #header {
     margin: 0;
     padding: 0;
+    margin-bottom: 10px;
 }
 #content {
     min-height: 500px;
@@ -68,8 +68,8 @@ a:hover.move { background-position: 100% -44px; }
     color: #072;
 }
 .sp-nav {
-    padding: 22px 20px 0;
-    background: #beb1cc;
+    /*padding: 22px 20px 0;*/
+    /*background: #beb1cc;*/
     -moz-border-radius-topleft: 6px;
     -moz-border-radius-topright: 6px;
     -webkit-border-top-left-radius: 6px;
@@ -78,10 +78,10 @@ a:hover.move { background-position: 100% -44px; }
     border-top-right-radius: 6px;
 }
 .sp-nav {
-    background-color: #5a9475;
+    /*background-color: #5a9475;*/
 }
 .sp-logo {
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
 }
 .sp-logo .logo {
     float: left;
@@ -130,9 +130,7 @@ a:hover.move { background-position: 100% -44px; }
     outline: 0;
 }
 .nav-items li.on {
-    border: 1px solid #ddd;
-    padding-bottom: 1px;
-    margin-top: 0;
+    border: 1px solid #ddd;        
     border-bottom: 0;
     background: #fff;
 }
@@ -597,10 +595,10 @@ color:red
     z-index: -1;
     width: 100%;
     height: 300px;
-    background: #d0c6db;
+    /*background: #d0c6db;*/
 }
 .bg {
-    background: #ebf2db url(../images/bg.png);
+    /*background: #ebf2db url(../images/bg.png);*/
 }
 
 

@@ -28,7 +28,13 @@
     <?php echo $form->labelEx($model,'groupid'); ?>
     <?php echo $form->dropDownList($model,'groupid',$groups,array('options' => array($info['groupid']=>array('selected'=>true)))); ?>
      <p class="help-block"><?php echo $form->error($model,'groupid'); ?></p>
-</div>  
+</div> 
+<div class="form-group">
+    <?php echo $form->labelEx($model,'status'); ?>
+    <?php echo $form->dropDownList($model,'status',tools::exStatusTitle(),array('options' => array($info['status']=>array('selected'=>true)))); ?>
+     <p class="help-block"><?php echo $form->error($model,'status'); ?></p>
+</div>    
+    
 <div class="form-group">
     <?php echo $form->labelEx($model,'email'); ?>
     <?php echo $form->textField($model,'email',array('class'=>'form-control','value'=>$info['email'])); ?>

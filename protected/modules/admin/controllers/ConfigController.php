@@ -7,7 +7,7 @@ class ConfigController extends H {
     public function actionIndex() {
         $this->checkPower('checksetting');
         $type = zmf::filterInput($_GET['type'], 't', 1);
-        if ($type == '' OR !in_array($type, array('baseinfo', 'upload', 'page', 'siteinfo', 'base'))) {
+        if ($type == '' OR !in_array($type, array('baseinfo', 'upload', 'page', 'siteinfo', 'base', 'indexpage'))) {
             $type = 'baseinfo';
         }
         $configs = Config::model()->findAllByAttributes(array('classify' => $type));
@@ -20,35 +20,49 @@ class ConfigController extends H {
         $this->render($type, $data);
     }
 
-    public function actionAdd() {
-        zmf::test($_POST);
-        exit();
+    public function actionAdd() {        
         $this->checkPower('setting');
         $type = zmf::filterInput($_POST['type'], 't', 1);
-        if ($type == '' OR !in_array($type, array('baseinfo', 'upload', 'page', 'siteinfo', 'base'))) {
+        if ($type == '' OR !in_array($type, array('baseinfo', 'upload', 'page', 'siteinfo', 'base', 'indexpage'))) {
             $this->message(0, '不允许的操作');
-        }
+        }        
         unset($_POST['type']);
         unset($_POST['YII_CSRF_TOKEN']);
-        $configs = $_POST;
-        if (!empty($configs)) {
-            foreach ($configs as $k => $v) {
-                if ($v != '') {
-                    $model = new Config();
+        $configs = $_POST;        
+        if (!empty($configs)) {            
+            Config::model()->deleteAll('classify="'.$type.'"');
+            if ($type == 'indexpage') {
+                $indexCols = $_POST['indexCols'];
+                $colIds = $_POST['colIds'];
+                $total = array();
+                foreach ($indexCols as $ke => $ic) {
+                    $total[] = $ic . '@' . $colIds[$ke];
+                }
+                $set = join('#', $total);
+                $data = array(
+                    'name' => zmf::filterInput($type, 't'),
+                    'value' => $set,
+                    'classify' => zmf::filterInput($type, 't')
+                );
+                $model = new Config();                
+                $model->attributes = $data;
+                $model->save();                
+            } else {                
+                foreach ($configs as $k => $v) {
+                    if (is_array($v)) {
+                        $v=  join(',', $v);
+                    }                    
                     $data = array(
                         'name' => zmf::filterInput($k, 't'),
                         'value' => zmf::filterInput($v, 't'),
                         'classify' => zmf::filterInput($type, 't')
-                    );
-                    $info = Config::model()->findByAttributes(array('name' => $k), 'classify=:classify', array(':classify' => $type));
-                    if (!$info) {
-                        $model->attributes = $data;
-                        $model->save();
-                    } else {
-                        if (md5($info['value']) != md5($v)) {
-                            $model->updateByPk($info['id'], array('value' => zmf::filterInput($v, 't')));
-                        }
-                    }
+                    );                    
+                    $model = new Config();
+                    $model->attributes = $data;
+                    if(!$model->save()){
+                        echo '写入失败';
+                        exit();
+                    }                                      
                 }
             }
             tools::writeSet(array());

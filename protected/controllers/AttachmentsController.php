@@ -1,6 +1,6 @@
 <?php
 
-class AttachmentsController extends H {
+class AttachmentsController extends T {
 
     public $layout = 'admin';
 
@@ -87,7 +87,8 @@ class AttachmentsController extends H {
                     //UserController::recordAction($model->id,'uploadimg','client');                                         
                     $outPutData = array(
                         'status' => 1,
-                        'attachid' => tools::jiaMi($model->id),
+                        'attachid' => $model->id,
+                        //'attachid' => tools::jiaMi($model->id),
                         'imgsrc' => $returnimg
                     );
                     $json = CJSON::encode($outPutData);
@@ -103,7 +104,7 @@ class AttachmentsController extends H {
         } else {
             $attachid = zmf::filterInput($_POST['attachid'],'t',1);
         }
-        $attachid=tools::jieMi($attachid);
+        //$attachid=tools::jieMi($attachid);
         if(H::checkPower('delattachments')){
             $admin=true;
         }else{

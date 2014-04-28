@@ -13,9 +13,7 @@ class SiteController extends T {
                 'maxLength' => '4', // 最多生成几个字符
                 'height' => '30',
                 'width' => '60'
-            ),
-            // page action renders "static" pages stored under 'protected/views/site/pages'
-            // They can be accessed via: index.php?r=site/page&view=FileName
+            ),            
             'page' => array(
                 'class' => 'CViewAction',
             ),
@@ -82,7 +80,8 @@ class SiteController extends T {
                 'ip' => ip2long($ip),
                 'last_login_ip' => ip2long($ip),
                 'last_login_time' => time(),
-                'login_count' => 1
+                'login_count' => 1,
+                //'hash'=>tools::randMykeys(6),
             );
             $model->attributes = $inputData;
             if ($model->validate()) {

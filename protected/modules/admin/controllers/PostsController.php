@@ -29,7 +29,7 @@ class PostsController extends H {
         } elseif ($keyid != $_keyid AND $forupdate != 'yes') {
             if (!$keyid) {
                 zmf::delFCache("notSavePosts{$uid}");
-                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('admin/posts/add'));
+                $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('posts/add'));
             } else {
                 $this->redirect(array('posts/add', 'id' => $keyid));
             }

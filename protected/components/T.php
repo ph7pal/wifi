@@ -15,6 +15,7 @@ class T extends CController {
     public $pageDescription;
     public $keywords;
     public $uid;
+    public $userInfo;
 
     public function init() {
         if (!zmf::config('closeSite')) {
@@ -23,8 +24,11 @@ class T extends CController {
         $this->_theme = Yii::app()->theme;
         $this->_themePath = str_replace(array('\\', '\\\\'), '/', Yii::app()->theme->basePath);
         $this->_gets = Yii::app()->request;
-        $this->_baseUrl = Yii::app()->baseUrl;        
+        $this->_baseUrl = Yii::app()->baseUrl;           
         $this->checkApp();
+        if(!Yii::app()->user->isGuest){
+            $this->userInfo = Users::getUserInfo(Yii::app()->user->id);
+        }
     }
 
     static public function jsonOutPut($status = 0, $msg = '', $end = true, $return = false) {

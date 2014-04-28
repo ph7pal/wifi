@@ -2,18 +2,16 @@
 <?php echo CHtml::hiddenField('type',$type);?>
 <p>
 <?php 
-if(!empty($c['column'])){
-    $arr=explode(',',$c['column']);
-    if(!empty($arr)){
-        foreach($items as $k=>$v){
-            if(in_array($k,$arr)){
-                $css='checked="checked"';
-            }else{
-                $css='';
-            }            
-            $tm='<label class="checkbox-inline"><input type="checkbox" id="column_'.$k.'" value="'.$k.'" name="columns[]" '.$css.'>'.$v.'</label>';
-            $items[$k]=$tm;
-        }
+$arr=explode(',',$c['column']);
+if(!empty($arr)){
+    foreach($items as $k=>$v){
+        if(in_array($k,$arr)){
+            $css='checked="checked"';
+        }else{
+            $css='';
+        }            
+        $tm='<label class="checkbox-inline"><input type="checkbox" id="column_'.$k.'" value="'.$k.'" name="columns[]" '.$css.'>'.$v.'</label>';
+        $items[$k]=$tm;
     }
 }
 $this->widget('zii.widgets.jui.CJuiSortable', array(

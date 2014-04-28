@@ -188,13 +188,27 @@ class tools {
         }
     }
 
-    public static function exStatusToClass($status) {
+    public static function exStatusTitle($return = '') {
+        $arr = array(
+            0 => '未通过',
+            1 => '已通过',
+            2 => '待审核',
+            3 => '已删除'
+        );
+        if ($return != '') {
+            return $arr[$return];
+        } else {
+            return $arr;
+        }
+    }
+
+    public static function exStatusToClass($status,$return=false) {
         switch ($status) {
             case 0:
                 $css = 'warning';
                 break;
             case 1:
-                $css = 'passed';
+                $css = 'success';
                 break;
             case 2:
                 $css = 'warning';
@@ -203,29 +217,82 @@ class tools {
                 $css = 'warning';
                 break;
         }
-        echo 'class="' . $css . '"';
+        if($return){
+            return $css;
+        }else{
+            echo 'class="' . $css . '"';
+        }        
+    }
+
+    public static function url($title, $url, $data = array()) {
+        $_data = array();
+        $_data[] = $url;
+        $_data = array_merge($_data, $data);
+        if (isset($_GET['table'])) {
+            $_data['table'] = zmf::filterInput($_GET['table'], 't', 1);
+        }
+        if (isset($_GET['type'])) {
+            $_data['type'] = zmf::filterInput($_GET['type'], 't', 1);
+        }
+        if (isset($_GET['colid'])) {
+            $_data['colid'] = zmf::filterInput($_GET['colid']);
+        }
+        if (isset($_GET['uid'])) {
+            $_data['uid'] = zmf::filterInput($_GET['uid'], 't', 1);
+        }
+        if (isset($_GET['table'])) {
+            $_data['table'] = zmf::filterInput($_GET['table'], 't', 1);
+        }
+        return CHtml::link($title, $_data);
+    }
+
+    public static function pageColumns($return = '') {
+        $arr = array(
+            '12' => '通栏',
+            '6-6' => '两列',
+            '4-4-4' => '三列',
+            '3-3-3-3' => '四列',
+            '8-4' => '2:1',
+            '4-8' => '1:2',
+            '3-9' => '1:3',
+            '9-3' => '3:1',
+        );
+        if ($return != '') {
+            return $arr[$return];
+        } else {
+            return $arr;
+        }
+    }
+
+    public static function randomKeys($length) {
+        $output = '';
+        for ($a = 0; $a < $length; $a++) {
+            $output .= chr(mt_rand(33, 126));    //生成php随机数
+        }
+        return $output;
+    }
+
+    public static function randMykeys($length) {
+        $pattern = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLOMNOPQRSTUVWXYZ';    //字符池,可任意修改
+        for ($i = 0; $i < $length; $i++) {
+            $key .= $pattern{mt_rand(0, 35)};    //生成php随机数
+        }
+        return $key;
     }
     
-    public static function url($title,$url,$data=array()){
-        $_data=array();        
-        $_data[]=$url;
-        $_data=  array_merge($_data,$data);
-        if(isset($_GET['table'])){
-            $_data['table']=  zmf::filterInput($_GET['table'],'t',1);
+    public static function calScoreCss($score){
+        $score=(int)$score;
+        if($score<60){
+            return 'danger';
+        }elseif($score<70){
+            return 'warning';
+        }elseif($score<80){
+            return 'info';
+        }elseif($score<90){
+            return 'primary';
+        }else{
+            return 'success';
         }
-        if(isset($_GET['type'])){
-            $_data['type']=  zmf::filterInput($_GET['type'],'t',1);
-        }
-        if(isset($_GET['colid'])){
-            $_data['colid']=  zmf::filterInput($_GET['colid']);
-        }        
-        if(isset($_GET['uid'])){
-            $_data['uid']=  zmf::filterInput($_GET['uid'],'t',1);
-        }
-        if(isset($_GET['table'])){
-            $_data['table']=  zmf::filterInput($_GET['table'],'t',1);
-        }
-        return CHtml::link($title,$_data);
     }
 
 }

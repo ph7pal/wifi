@@ -20,12 +20,8 @@ class H extends CController {
             }
         } else {
             $uid = Yii::app()->user->id;
-        }
-        if ($type == 'login') {
-            return true;
-            exit();
-        }
-        $userinfo = Users::model()->findByPk($uid);
+        }        
+        $userinfo = Users::getUserInfo($uid);
         if (!$userinfo) {
             if (!$json AND !Yii::app()->request->isAjaxRequest) {
                 $this->message(0, '不存在的用户，请核实', Yii::app()->createUrl('admin/site/logout'));
@@ -34,13 +30,32 @@ class H extends CController {
             }
         }
         $gid = $userinfo['groupid'];
-        $groupinfo = UserGroup::model()->findByPk($gid);
+        if(!$gid){
+            if (!$json AND !Yii::app()->request->isAjaxRequest) {
+                $this->message(0, '您在组织之外，请设置用户组！', Yii::app()->baseUrl);
+            } else {
+                $this->jsonOutPut(0, '您在组织之外，请设置用户组！');
+            }
+        }
+        $gids=zmf::config('adminGroupIds');
+        $arr=  explode(',', $gids);
+        if(!in_array($gid,$arr)){
+            if (!$json AND !Yii::app()->request->isAjaxRequest) {
+                $this->message(0, '您好像发现了新大陆，但该地区为禁区！', Yii::app()->baseUrl);
+            } else {
+                $this->jsonOutPut(0, '您好像发现了新大陆，但该地区为禁区！');
+            }
+        }
+        $groupinfo = UserGroup::getInfo($gid);
         if (!$groupinfo) {
             if (!$json AND !Yii::app()->request->isAjaxRequest) {
                 $this->message(0, '该用户所在用户组不存在，请核实', Yii::app()->createUrl('admin/site/logout'));
             } else {
                 $this->jsonOutPut(0, '该用户所在用户组不存在，请核实');
             }
+        }
+        if($type=='login'){
+            return true;
         }
         $power = GroupPowers::model()->findByAttributes(array('powers' => $type), 'gid=:gid', array(':gid' => $gid));
         if (!$power) {

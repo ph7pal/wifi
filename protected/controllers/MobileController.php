@@ -2,7 +2,7 @@
 
 class MobileController extends T {
 
-    public $layout = 'main';
+    public $layout = 'mobile';
     public $uid;
     public $userInfo;
     public $userCols = array();
@@ -24,18 +24,20 @@ class MobileController extends T {
         if ($this->userInfo['status'] != Posts::STATUS_PASSED) {
             $this->renderPartial('/error/close', array('message' => '您访问的用户暂不能访问，如有疑问请咨询' . zmf::config('phone') . '或者' . zmf::config('email')));
             Yii::app()->end();
-        }
-        if (zmf::checkmobile()) {
+        }        
+        if (zmf::checkmobile()) {            
             Yii::app()->theme = 'mobile';
-        } else {
-            Yii::app()->theme = 'mobile';
-            $_hash=tools::jiaMi($this->uid.$this->userInfo['truename']);
-            if($_GET['hash']!=$_hash && Yii::app()->session['forceMobile']!='yes'){
-                $this->_closed();
-            }elseif(!isset(Yii::app()->session['forceMobile'])){
-                Yii::app()->session['forceMobile'] = 'yes';
-            }            
-        }
+        } 
+        
+//        else {
+//            Yii::app()->theme = 'mobile';
+//            $_hash=tools::jiaMi($this->uid.$this->userInfo['truename']);
+//            if($_GET['hash']!=$_hash && Yii::app()->session['forceMobile']!='yes'){
+//                $this->_closed();
+//            }elseif(!isset(Yii::app()->session['forceMobile'])){
+//                Yii::app()->session['forceMobile'] = 'yes';
+//            }            
+//        }
         $cols = Columns::userColumns($this->uid);
         $this->userCols = $cols;
         $this->pageTitle = zmf::userConfig($this->uid, 'sitename') . ' - ' . zmf::userConfig($this->uid, 'shortTitle');
@@ -61,10 +63,27 @@ class MobileController extends T {
     }
 
     public function actionIndex() {
+        $colid = zmf::filterInput($_GET['colid']);  
+        $cols=array();
+        if ($colid) {
+            $this->colid = $colid;
+            $cols[]=array('id'=>$colid);
+        }else{
+            $cols=$this->userCols;
+        }
+        $data = array(
+            'cols' =>$cols ,
+        );
+        $this->render('index', $data);
+    }
+    
+    public function indexBak() {
+        //次版本为首页显示一个栏目
+        //对应模板为bak
         $colid = zmf::filterInput($_GET['colid']);
         if (!$colid) {
             $colid = $this->userCols[0]['id'];
-        }
+        }        
         if ($colid) {
             $this->colid = $colid;
             $colinfo = Columns::getOne($colid);
@@ -167,7 +186,6 @@ class MobileController extends T {
         $sql2 = "SELECT id,title FROM {{posts}} WHERE id<:id AND colid=:colid AND status=1 ORDER BY id DESC LIMIT 1";
         $nextInfo = Posts::model()->findBySql($sql1, array(':id' => $keyid, ':colid' => $info['colid']));
         $preInfo = Posts::model()->findBySql($sql2, array(':id' => $keyid, ':colid' => $info['colid']));
-
         if (empty($nextInfo)) {
             //已到最后张，则返回第一张
             $sql3 = "SELECT id,title FROM {{posts}} WHERE colid=:colid AND status=1 ORDER BY id ASC LIMIT 0,1";
@@ -179,12 +197,15 @@ class MobileController extends T {
             $preInfo = Posts::model()->findBySql($sql4, array(':colid' => $info['colid']));
         }
         Posts::model()->updateCounters(array('hits' => 1), ':id=id', array(':id' => $keyid));
+        $_sql='SELECT id,title FROM {{posts}} WHERE colid='.$colinfo['id'].' AND uid='.$this->uid.' AND id!='.$keyid.' AND status='.Posts::STATUS_PASSED;
+        Posts::getAll(array('sql'=>$_sql),$_page,$likes);
         $data = array(
             'from' => 'show',
             'preInfo' => $preInfo,
             'nextInfo' => $nextInfo,
             'data' => $info,
             'colinfo' => $colinfo,
+            'likes'=>$likes
         );
         $this->pageTitle = $info['title'] . ' - ' . $colinfo['title'] . ' - ' . zmf::config('sitename');
         $this->render('page', $data);

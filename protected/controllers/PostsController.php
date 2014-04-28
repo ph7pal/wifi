@@ -72,6 +72,7 @@ class PostsController extends T{
         }
         $this->comments($keyid, $coms, $pages);
         Posts::model()->updateCounters(array('hits'=>1),':id=id',array(':id'=>$keyid));
+        $this->uid=$info['uid'];
         $data=array(
             'preInfo'=>$preInfo,
             'nextInfo'=>$nextInfo,
