@@ -17,14 +17,15 @@ class Columns extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('title, position', 'required'),
-            array('status , system', 'numerical', 'integerOnly' => true),
+            array('status , system,listnum', 'numerical', 'integerOnly' => true),
             array('belongid, attachid, order, hits, cTime', 'length', 'max' => 10),
             array('name, title, second_title', 'length', 'max' => 100),
             array('classify, position', 'length', 'max' => 32),
-            array('url', 'length', 'max' => 255),
+            array('url,listcondition', 'length', 'max' => 255),
+            array('url,listnum', 'length', 'max' => 3),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, belongid, name, title, second_title, classify, position, url, attachid, order, hits, status, cTime ,system', 'safe', 'on' => 'search'),
+            array('id, belongid, name, title, second_title, classify, position, url, attachid, order, hits, status, cTime ,system,listnum,listcondition', 'safe', 'on' => 'search'),
         );
     }
 
@@ -57,6 +58,8 @@ class Columns extends CActiveRecord {
             'status' => '状态',
             'cTime' => '创建时间',
             'system' => '是否系统默认',
+            'listnum'=>'显示条数',
+            'listcondition'=>'显示条件',
         );
     }
 
@@ -79,6 +82,8 @@ class Columns extends CActiveRecord {
         $criteria->compare('status', $this->status);
         $criteria->compare('cTime', $this->cTime, true);
         $criteria->compare('system', $this->system, true);
+        $criteria->compare('listnum', $this->listnum, true);
+        $criteria->compare('listcondition', $this->listcondition, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

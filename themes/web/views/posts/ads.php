@@ -6,7 +6,8 @@
     <?php if($data['attachid']){$attachinfo=  Attachments::getOne($data['attachid']);if(!empty($attachinfo)){?>
                 <li><img src="<?php echo zmf::uploadDirs($attachinfo['logid'], 'site', $attachinfo['classify'], 'origin').'/'.$attachinfo['filePath'];?>" class="img-responsive"/></li>
     <?php }}?>
+            </ul>
+        </div>
+    </div>   
 <?php }?> 
-</ul>
-    </div></div>
 </div>
