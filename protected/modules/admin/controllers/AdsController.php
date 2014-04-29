@@ -65,7 +65,7 @@ class AdsController extends H {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
-        if (isset($_POST['Ads'])) {
+        if (isset($_POST['Ads'])) {            
             $info = Publish::addAds(Yii::app()->user->id);
             if (is_bool($info)) {
                 $this->redirect(array('all/list', 'table' => 'ads'));

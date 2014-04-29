@@ -1,12 +1,14 @@
 <?php $colitems = Posts::allPosts($colid); ?>
     <?php if (!empty($colitems)) {
         if($colnum==12){
-            $colrows=2;
+            $colrows_min=2;
+            $colrows_max=4;
         }else{
-            $colrows=12;
+            $colrows_min=12;
+            $colrows_max=12;
         }
         foreach ($colitems as $key=>$ci) { ?> 
-        <div class="col-md-<?php echo $colrows;?> col-xs-<?php echo $colrows;?>">
+        <div class="col-md-<?php echo $colrows_min;?> col-xs-<?php echo $colrows_max;?>">
             <?php if($ci['attachid']!=''){?>
             <?php $attachinfo=  Attachments::getOne($ci['attachid']);if($attachinfo){?>
             <?php echo '<img src="'.zmf::imgurl($attachinfo['logid'],$attachinfo['filePath'],'origin',$attachinfo['classify']).'" alt="'.$ci['title'].'的封面" title="'.$ci['title'].'" class="img-responsive"/>';?>            

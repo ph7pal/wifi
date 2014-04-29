@@ -81,6 +81,12 @@ class Publish extends CFormModel {
         $intoData['attachid'] = $attachid;
         $intoData['status'] = 1;
         $intoData['uid'] = $uid;
+        if(isset($intoData['start_time'])){
+            $intoData['start_time'] = strtotime($intoData['start_time']);
+        }
+        if(isset($intoData['expired_time'])){
+            $intoData['expired_time'] = strtotime($intoData['expired_time']);
+        }        
         $model->attributes = $intoData;
         if ($model->validate()) {
             if ($model->updateByPk($thekeyid, $intoData)) {

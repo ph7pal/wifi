@@ -30,11 +30,15 @@
 <?php echo $form->hiddenField($model,'attachid',array('class'=>'form-control','value'=>$info['attachid'])); ?>  
 <p class="help-block"><?php echo $form->error($model,'attachid'); ?></p>
 </div>
-    
+<div class="form-group">
+    <?php echo $form->labelEx($model,'code'); ?>
+    <?php echo $form->textArea($model,'code',array('class'=>'form-control','value'=>$info['code'])); ?>
+     <p class="help-block"><?php echo $form->error($model,'code'); ?></p>
+</div>     
 <div class="form-group">
     <?php echo $form->labelEx($model,'start_time'); ?>
     <?php 
-            	$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+    $this->widget('zii.widgets.jui.CJuiDatePicker', array(
             	'model'=>$model,
             	'attribute'=>'start_time',
             	'language'=>'zh-cn',
@@ -44,7 +48,8 @@
 			    ),	
 			    'htmlOptions'=>array(
         			'readonly'=>'readonly',
-                                'class'=>'form-control'
+                                'class'=>'form-control',
+                                'value'=>date('Y/m/d',$info['start_time'])
     			),		    
 			));
             	?>
@@ -63,12 +68,23 @@
                     ),
                     'htmlOptions'=>array(
                         'readonly'=>'readonly',
-                        'class'=>'form-control'
+                        'class'=>'form-control',
+                        'value'=>date('Y/m/d',$info['expired_time'])
                 ),			    
                 ));
     ?>            	
      <p class="help-block"><?php echo $form->error($model,'expired_time'); ?></p>
-</div>      
+</div> 
+<div class="form-group">
+    <?php echo $form->labelEx($model,'width'); ?>
+    <?php echo $form->textField($model,'width',array('class'=>'form-control','value'=>$info['width'])); ?>
+     <p class="help-block"><?php echo $form->error($model,'width'); ?></p>
+</div>
+<div class="form-group">
+    <?php echo $form->labelEx($model,'height'); ?>
+    <?php echo $form->textField($model,'height',array('class'=>'form-control','value'=>$info['height'])); ?>
+     <p class="help-block"><?php echo $form->error($model,'height'); ?></p>
+</div>    
 <div class="form-group">
     <?php echo $form->labelEx($model,'order'); ?>
     <?php echo $form->textField($model,'order',array('class'=>'form-control','value'=>$info['order'])); ?>

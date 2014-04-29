@@ -27,6 +27,6 @@ return array(
 'closeSiteReason'=> '系统正在维护中，请稍后再访问！',
 'closeSite'=> '1',
 'noticeall'=> '近期收到举报，有部分网站有不良信息，望各位店家及时处理！',
-'indexpage'=> '12@ads|9#6@29#6@31#12@30#12@ads|11#12@ads|',
+'indexpage'=> '12@ads|9#6@31#6@30#12@ads|11#12@30#12@ads|12',
 );
 ?>

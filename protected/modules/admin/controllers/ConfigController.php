@@ -44,7 +44,7 @@ class ConfigController extends H {
                     }else{
                         $total[] = $ic . '@' . $colIds[$ke];
                     }
-                }                
+                }
                 $set = join('#', $total);
                 $data = array(
                     'name' => zmf::filterInput($type, 't'),

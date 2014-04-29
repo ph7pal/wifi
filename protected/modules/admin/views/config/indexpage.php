@@ -15,7 +15,7 @@
     }
 </style>
 <div id="indexPage-container">
-  <?php $colsNum=0;$echoDiv=false;$indexCols=zmf::indexPage($indexCols);if(!empty($indexCols)){?>    
+  <?php $colsNum=0;$echoDiv=false;$indexCols=zmf::indexPage();if(!empty($indexCols)){?>
     <?php foreach($indexCols as $ic){?>    
     <?php if($colsNum!=12 && !$echoDiv){$echoDiv=true;?>
     <?php $holderId=uniqid();?>
@@ -26,7 +26,17 @@
     <div class="col-xs-<?php echo $ic['colnum'];?> col-md-<?php echo $ic['colnum'];?> indexpage" id="colHolder<?php echo $randId;?>">
         <input type="hidden" name="indexCols[]" value="<?php echo $ic['colnum'];?>"/>
         <span type="button" class="btn btn-success btn-xs">对应栏目：</span>
-        <?php echo CHtml::dropDownList('colIds[]',$ic['colinfo']['id'],Columns::indexPageCols(),array('value' => $ic['colinfo']['id'])); ?>        
+        <?php $rand_id=  uniqid();?>
+        <?php if($ic['coltype']!='ads'){?>
+            <?php echo CHtml::dropDownList('colIds[]',$ic['colinfo']['id'],Columns::indexPageCols(),array('value' => $ic['colinfo']['id'],'onclick'=>'selected("'.$rand_id.'")','id'=>'colIds'.$rand_id)); ?>   
+        <?php }else{?>
+            <?php echo CHtml::dropDownList('colIds[]',$ic['coltype'],Columns::indexPageCols(),array('value' => $ic['coltype'],'onclick'=>'selected("'.$rand_id.'")','id'=>'colIds'.$rand_id)); ?>
+        <?php }?>
+        <span id="selected<?php echo $rand_id;?>">
+        <?php if($ic['coltype']=='ads'){?>
+            <?php echo CHtml::dropDownList('adsIds[]',$ic['colinfo']['id'],Ads::all(TRUE),array('value' => $ic['colinfo']['id'])); ?>
+        <?php }?>
+        </span>
     </div>
     <?php if($colsNum==12){$colsNum=0;$echoDiv=false;?>
         <div class="clearfix" id="append<?php echo $holderId;?>"></div>

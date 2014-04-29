@@ -41,8 +41,17 @@
     <?php echo $form->textField($model,'order',array('class'=>'form-control','value'=>$info['order'])); ?>
      <p class="help-block"><?php echo $form->error($model,'order'); ?></p>
     </div>
+    <div class="form-group">
+    <?php echo $form->labelEx($model,'listnum'); ?>
+    <?php echo $form->textField($model,'listnum',array('class'=>'form-control','value'=>$info['listnum'])); ?>
+     <p class="help-block"><?php echo $form->error($model,'listnum'); ?></p>
+    </div>
+    <div class="form-group">
+    <?php echo $form->labelEx($model,'listcondition'); ?>
+    <?php echo $form->textField($model,'listcondition',array('class'=>'form-control','value'=>$info['listcondition'])); ?>
+     <p class="help-block"><?php echo $form->error($model,'listcondition'); ?></p>
+    </div>
     <?php echo CHtml::submitButton('提交',array('class'=>'btn btn-default')); ?>
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->
-</fieldset>

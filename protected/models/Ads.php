@@ -13,17 +13,17 @@ class Ads extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('title, attachid, position', 'required'),
+            array('title, position', 'required'),
             array('status , system', 'numerical', 'integerOnly' => true),
             array('url', 'url'),
             array('title', 'length', 'max' => 50),
-            array('url, attachid, description', 'length', 'max' => 255),
+            array('url, attachid, description,code', 'length', 'max' => 255),
             array('width, height, hits, start_time, expired_time, order, cTime , uid', 'length', 'max' => 10),
             array('position', 'length', 'max' => 40),
             array('classify', 'length', 'max' => 16),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, title, url, attachid, width, height, description, hits, start_time, expired_time, position, order, status, cTime,classify ,uid , system', 'safe', 'on' => 'search'),
+            array('id, title, url, attachid, width, height, description, hits, start_time, expired_time, position, order, status, cTime,classify ,uid , system,code', 'safe', 'on' => 'search'),
         );
     }
 
@@ -46,8 +46,8 @@ class Ads extends CActiveRecord {
             'title' => '广告标题',
             'url' => '链接地址',
             'attachid' => '使用图片',
-            'width' => '广告宽度',
-            'height' => '广告高度',
+            'width' => '宽度',
+            'height' => '高度',
             'description' => '广告描述',
             'hits' => '点击次数',
             'start_time' => '起始时间',
@@ -58,7 +58,8 @@ class Ads extends CActiveRecord {
             'cTime' => '创建时间',
             'classify' => '展示样式',
             'uid' => 'Uid',
-            'system'=>'系统项'
+            'system'=>'系统项',
+            'code'=>'使用代码'
         );
     }
 
@@ -84,6 +85,7 @@ class Ads extends CActiveRecord {
         $criteria->compare('classify', $this->classify, true);
         $criteria->compare('uid', $this->uid, true);
         $criteria->compare('system', $this->system, true);
+        $criteria->compare('code', $this->code, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
