@@ -202,7 +202,7 @@ class tools {
         }
     }
 
-    public static function exStatusToClass($status,$return=false) {
+    public static function exStatusToClass($status, $return = false) {
         switch ($status) {
             case 0:
                 $css = 'warning';
@@ -217,11 +217,11 @@ class tools {
                 $css = 'warning';
                 break;
         }
-        if($return){
+        if ($return) {
             return $css;
-        }else{
+        } else {
             echo 'class="' . $css . '"';
-        }        
+        }
     }
 
     public static function url($title, $url, $data = array()) {
@@ -279,20 +279,241 @@ class tools {
         }
         return $key;
     }
-    
-    public static function calScoreCss($score){
-        $score=(int)$score;
-        if($score<60){
+
+    public static function calScoreCss($score) {
+        $score = (int) $score;
+        if ($score < 60) {
             return 'danger';
-        }elseif($score<70){
+        } elseif ($score < 70) {
             return 'warning';
-        }elseif($score<80){
+        } elseif ($score < 80) {
             return 'info';
-        }elseif($score<90){
+        } elseif ($score < 90) {
             return 'primary';
-        }else{
+        } else {
             return 'success';
         }
+    }
+
+    public static function userCredits($return = '') {
+        $arr = array();
+        $arr[] = array(
+            'title' => '生产厂家',
+            'css' => 'info',
+            'type' => 'producer',
+        );
+        $arr[] = array(
+            'title' => '厂家客服',
+            'css' => 'info',
+            'type' => 'pro_service',
+        );
+        $arr[] = array(
+            'title' => '经销商',
+            'css' => 'info',
+            'type' => 'dealer',
+        );
+        $arr[] = array(
+            'title' => '代理商',
+            'css' => 'info',
+            'type' => 'agent',
+        );
+        $arr[] = array(
+            'title' => '讲师',
+            'css' => 'info',
+            'type' => 'lecturer',
+        );
+        $arr[] = array(
+            'title' => '营销团队',
+            'css' => 'info',
+            'type' => 'marketing_team',
+        );
+        $arr[] = array(
+            'title' => '行业杂志',
+            'css' => 'info',
+            'type' => 'trade_magazine',
+        );
+        $arr[] = array(
+            'title' => '行业网站',
+            'css' => 'info',
+            'type' => 'trade_website',
+        );
+        $arr[] = array(
+            'title' => '行业会展',
+            'css' => 'info',
+            'type' => 'exhibition',
+        );
+//        $arr[] = array(
+//            'title' => '个人',
+//            'css' => 'info',
+//            'type' => 'personal',            
+//        ); 
+        if ($return != '') {
+            //return $arr[$return];
+            foreach ($arr as $list) {
+                if ($list['type'] == $return) {
+                    return $list;
+                    break;
+                }
+            }
+        } else {
+            return $arr;
+        }
+    }
+
+    /**
+     * 认证后显示的信用列表
+     */
+    public static function creditLogos($type = '') {
+        $arr['credit_aaa'] = array(
+            'title' => 'AAA',
+            'desc' => '偿还债务的能力极强，基本不受不利经济环境的影响，违约风险极低。'
+        );
+        $arr['credit_aa'] = array(
+            'title' => 'AA',
+            'desc' => '偿还债务的能力很强，受不利经济环境的影响不大，违约风险很低。'
+        );
+        $arr['credit_a'] = array(
+            'title' => 'A',
+            'desc' => '偿还债务能力较强，较易受不利经济环境的影响，违约风险较低。'
+        );
+        $arr['credit_bbb'] = array(
+            'title' => 'BBB',
+            'desc' => '偿还债务能力一般，受不利经济环境影响较大，违约风险一般。'
+        );
+        $arr['credit_bb'] = array(
+            'title' => 'BB',
+            'desc' => '偿还债务能力较弱，受不利经济环境影响很大，有较高违约风险。'
+        );
+        $arr['credit_b'] = array(
+            'title' => 'B',
+            'desc' => '偿还债务的能力较大地依赖于良好的经济环境，违约风险很高。'
+        );
+        $arr['credit_ccc'] = array(
+            'title' => 'CCC',
+            'desc' => '偿还债务的能力极度依赖于良好的经济环境，违约风险极高。'
+        );
+        $arr['credit_cc'] = array(
+            'title' => 'CC',
+            'desc' => '在破产或重组时可获得保护较小，基本不能保证偿还债务。'
+        );
+        $arr['credit_c'] = array(
+            'title' => 'C',
+            'desc' => '不能偿还债务。'
+        );
+        $arr['lecturer_bronze'] = array(
+            'title' => '铜牌讲师',
+            'desc' => '铜牌讲师'
+        );
+        $arr['lecturer_silver'] = array(
+            'title' => '银牌讲师',
+            'desc' => '银牌讲师'
+        );
+        $arr['lecturer_gold'] = array(
+            'title' => '金牌讲师',
+            'desc' => '金牌讲师'
+        );
+        $arr['credit_v'] = array(
+            'title' => '个人加V',
+            'desc' => '个人加V'
+        );
+        $re = array();
+        foreach ($arr as $key => $val) {
+            if (!$type) {
+               $re[$key]=$val['title']; 
+            }elseif($key==$type){
+                $re=$val;
+                break;
+            }
+        }
+        return $re;
+//        $arr[''] = array(
+//            'title'=>'',
+//            'desc'=>''
+//        );
+    }
+
+    /**
+     * 栏目的滚动显示方式 
+     * @param type $return
+     * @return string
+     */
+    public static function rollstyle($return = '') {
+        $arr = array(
+            0 => '无',
+            'updown' => '上下',
+            'left' => '左右',
+        );
+        if ($return != '') {
+            return $arr[$return];
+        } else {
+            return $arr;
+        }
+    }
+
+    /**
+     * 
+     */
+    public static function city($params = array()) {
+        $dir = Yii::app()->basePath . '/data/city_data.json';
+        if (file_exists($dir)) {
+            $json = file_get_contents($dir);
+        } else {
+            return false;
+        }
+        $arr = json_decode($json, true);
+        $nameonly = true;
+        $first = false;
+        if (empty($params)) {
+            $first = 1;
+        } else {
+            $idstr = $params['idstr'];
+            $_arr = explode('#', $idstr);
+        }
+        if ($first) {
+            $name = array();
+            foreach ($arr as $val) {
+                $name[] = $val['name'];
+            }
+        } else {
+            $_len = count($_arr);
+            $re = array();
+            switch ($_len) {
+                case 1:
+                    $re = $arr[$_arr[0]];
+                    break;
+                case 2:
+                    $re = $arr[$_arr[0]];
+                    $re = $re['sub'][$_arr[1]];
+                    break;
+                case 3:
+                    $re = $arr[$_arr[0]];
+                    $re = $re['sub'][$_arr[1]];
+                    $re = $re['sub'][$_arr[2]];
+                    break;
+            }
+            //zmf::test($re);
+            if ($nameonly) {
+                $name = array();
+                if ($_len != 3) {
+                    $retmp = $re['sub'];
+                    if (!empty($retmp)) {
+                        foreach ($retmp as $val) {
+                            $name[] = $val['name'];
+                        }
+                    } else {
+                        if (!empty($re)) {
+                            //$name[] = '请选择';
+                            $name[] = $re['name'];
+                        }
+                    }
+                } else {
+                    if (!empty($re)) {
+                        $name[] = $re['name'];
+                    }
+                }
+            }
+        }
+        return $name;
     }
 
 }

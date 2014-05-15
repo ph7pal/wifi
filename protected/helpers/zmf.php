@@ -13,7 +13,7 @@ class zmf {
             return 'b93154b988e33fdf0d144fde73028b77';
         } elseif ($type == 'authorCode') {
             return '2014@zmf';
-        }elseif($type=='authorPre'){
+        } elseif ($type == 'authorPre') {
             return 'zmf_grantpower';
         } elseif (empty(Yii::app()->params['c'])) {
             $_c = Config::model()->findAll();
@@ -37,6 +37,10 @@ class zmf {
         } else {
             return $settings;
         }
+    }
+
+    public static function delUserConfig($uid) {
+        self::delFCache("userSettings{$uid}");
     }
 
     public static function subStr($string, $sublen = 20, $start = 0, $separater = '...') {
@@ -140,50 +144,83 @@ class zmf {
         return self::config('baseurl') . 'attachments/' . $type . '/' . $imgtype . '/' . $logid . '/' . $filepath;
     }
 
-    public static function noImg($type = '') {
-        return CHtml::image(self::config('baseurl') . 'common/images/noimg.png', '暂无图片');
+    public static function noImg($type = '', $altTitle = '暂无图片', $size = 124) {
+        if (!isset($size)) {
+            $size = 124;
+        }
+        $url = self::config('baseurl') . 'common/images/nopic_' . $size . '.gif';
+        if ($type == 'url') {
+            return $url;
+            exit();
+        }
+        return CHtml::image($url, $altTitle);
     }
-    
-    public static function avatar($uid,$type='small',$urlonly=false){
-        if(!$uid){
-            $_img=Yii::app()->baseUrl."/common/avatar/{$type}.gif";
-            if($urlonly){
+
+    public static function avatar($uid, $type = 'small', $urlonly = false) {
+        if (!$uid) {
+            $_img = Yii::app()->baseUrl . "/common/avatar/{$type}.gif";
+            if ($urlonly) {
                 return $_img;
-            }else{
+            } else {
                 return "<img src='{$_img}' class='thumbnail img-responsive'/>";
-            }  
-        }
-        $logo=self::userConfig($uid, 'logo');
-        $img=''; 
-        if($logo){
-            $attachinfo=  Attachments::getOne($logo);
-            if($attachinfo){
-                if($type=='small'){
-                    $_type=124;
-                }elseif($type=='big'){
-                    $_type=300;
-                }else{
-                    $_type=124;
-                }                
-                $img=zmf::imgurl($attachinfo['logid'],$attachinfo['filePath'],$_type,$attachinfo['classify']);
-            }else{
-                $img=''; 
             }
-        }        
-        if($img){
-            if($urlonly){
-                return $img;
-            }else{
-                return "<img src='{$img}' class='thumbnail img-responsive'/>";
-            }            
-        }else{
-            $_img=Yii::app()->baseUrl."/common/avatar/{$type}.gif";
-            if($urlonly){
-                return $_img;
-            }else{
-                return "<img src='{$_img}' class='thumbnail img-responsive'/>";
-            }            
         }
+        $logo = self::userConfig($uid, 'logo');
+        $img = '';
+        if ($logo) {
+            $attachinfo = Attachments::getOne($logo);
+            if ($attachinfo) {
+                if ($type == 'small') {
+                    $_type = 124;
+                } elseif ($type == 'big') {
+                    $_type = 600;
+                } else {
+                    $_type = 124;
+                }
+                $img = zmf::imgurl($attachinfo['logid'], $attachinfo['filePath'], $_type, $attachinfo['classify']);
+            } else {
+                $img = '';
+            }
+        }
+        if ($img) {
+            if ($urlonly) {
+                return $img;
+            } else {
+                return "<img src='{$img}' class='thumbnail img-responsive'/>";
+            }
+        } else {
+            $_img = Yii::app()->baseUrl . "/common/avatar/{$type}.gif";
+            if ($urlonly) {
+                return $_img;
+            } else {
+                return "<img src='{$_img}' class='thumbnail img-responsive'/>";
+            }
+        }
+    }
+
+    public static function creditIcon($uid, $return = '') {
+        if (!$uid) {
+            return false;
+        }
+        $creditlogo = zmf::userConfig($uid, 'creditlogo');
+        if (!$creditlogo) {
+            return false;
+        }
+        if ($return == 'type') {
+            return $creditlogo;
+        }
+        $info = tools::creditLogos($creditlogo);
+        if (!$info) {
+            return false;
+        }
+        
+        $url = self::config('baseurl') . 'common/images/credits/' . $creditlogo . '.png';
+        $_url=self::attachBase('app'). '../common/images/credits/' . $creditlogo . '.png';
+        if(file_exists($_url)){
+            return "<img src='{$url}' title='" . $info['desc'] . "' alt='" . $info['title'] . "'/>";
+        }else{
+            return "<span class='btn btn-primary btn-xs' title='" . $info['desc'] . "'>" . $info['title'] . "</span>";
+        }        
     }
 
     //fileCache
@@ -326,11 +363,11 @@ class zmf {
         echo "<ul style='font-size:12px;'>\n";
         while ($file = $mydir->read()) {
             $_len = strlen($file);
-            if ((is_dir("$directory/$file")) AND ($file != ".") AND ($file != "..")) {
+            if ((is_dir("$directory/$file")) AND ( $file != ".") AND ( $file != "..")) {
                 $_str = '';
                 echo "<li><font color=\"#ff00cc\"><b>$file</b></font></li>\n";
                 self::tree("$directory/$file", $dir, $field);
-            } elseif (($file != ".") AND ($file != "..")) {
+            } elseif (($file != ".") AND ( $file != "..")) {
                 $fileDir = $directory . '/' . $file;
                 $ext_arr = pathinfo($file);
                 $ext = $ext_arr['extension'];
@@ -388,11 +425,12 @@ class zmf {
         return $str;
     }
 
-    public static function text($logid, $content, $lazyload = true, $size = 600) {        
+    public static function text($logid, $content, $lazyload = true, $size = 600) {
         if (is_array($logid)) {
             $_width = $logid['imgwidth'];
             $tipid = $logid['tipid'];
             $altTitle = $logid['altTitle'];
+            $uid = $logid['uid'];
             $logid = $logid['keyid'];
         }
         if ($tipid) {
@@ -405,7 +443,6 @@ class zmf {
             $_detail = self::getFCache($cacheKey);
             if ($_detail) {
                 return $_detail;
-                exit();
             }
         }
         //$content = tools::addcontentlink($content);
@@ -421,36 +458,43 @@ class zmf {
         }
         if (empty($match[1])) {
             return $content;
-        }        
+        }
+        $_status = T::checkYesOrNo(array('uid' => Yii::app()->user->id, 'type' => 'user_seeattachments'));
         foreach ($match[1] as $key => $val) {
             //$thekey = tools::jieMi($match[1][$key]);
-            $thekey =$match[1][$key];
-            $src = Attachments::model()->findByPk($thekey);
-            if ($src) {
-                if ($src['status'] != Posts::STATUS_PASSED) {
-                    continue;
-                }
-                $url = $src['filePath'];
-                $imgurl = self::imgurl($logid, $url, $size, $src['classify']);
-                $_imgurl = self::imgurl($logid, $url, $size, $src['classify'], 'upload');
-                $imginfo = self::myGetImageSize($_imgurl);
-                if ($_width != '' AND $_width > 0 AND $_width < $size) {
-                    $rate = $_width / $size;
-                    $width = floor($imginfo['width'] * $rate) . 'px';
-                    $height = floor($imginfo['height'] * $rate) . 'px';
+            $thekey = $match[1][$key];
+            if ($_status || $uid == Yii::app()->user->id) {
+                $src = Attachments::model()->findByPk($thekey);
+                if ($src) {
+                    if ($src['status'] != Posts::STATUS_PASSED) {
+                        continue;
+                    }
+                    $url = $src['filePath'];
+                    $imgurl = self::imgurl($logid, $url, $size, $src['classify']);
+                    $_imgurl = self::imgurl($logid, $url, $size, $src['classify'], 'upload');
+                    $imginfo = self::myGetImageSize($_imgurl);
+                    if ($_width != '' AND $_width > 0 AND $_width < $size) {
+                        $rate = $_width / $size;
+                        $width = floor($imginfo['width'] * $rate) . 'px';
+                        $height = floor($imginfo['height'] * $rate) . 'px';
+                    } else {
+                        $width = $imginfo['width'] . 'px';
+                        $height = $imginfo['height'] . 'px';
+                    }
+                    if ($lazyload) {
+                        //$imginfo = getimagesize($_imgurl);                    
+                        $imgurl = "<img src='" . self::config('baseurl') . "common/images/grey.gif' class='lazy thumbnail img-responsive' data-original='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "'/>";
+                    } else {
+                        //$imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "' class='thumbnail img-responsive'/></a>";
+                        $imgurl = "<img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "' class='thumbnail img-responsive'/>";
+                    }
+                    $content = str_ireplace("{$match[0][$key]}", $imgurl, $content);
                 } else {
-                    $width = $imginfo['width'] . 'px';
-                    $height = $imginfo['height'] . 'px';
+                    $content = str_ireplace("{$match[0][$key]}", '', $content);
                 }
-                if ($lazyload) {
-                    //$imginfo = getimagesize($_imgurl);                    
-                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='" . self::config('baseurl') . "common/images/grey.gif' class='lazy thumbnail img-responsive' data-original='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "'/></a>";
-                } else {
-                    $imgurl = "<a href='" . self::imgurl($logid, $url, 'origin', $src['classify']) . "' target='_blank'><img src='{$imgurl}' width='" . $width . "' alt='" . $altTitle . "' data='" . $match[1][$key] . "' class='thumbnail img-responsive'/></a>";
-                }
-                $content = str_ireplace("{$match[0][$key]}", $imgurl, $content);
             } else {
-                $content = str_ireplace("{$match[0][$key]}", '', $content);
+                $_info = '<p class="alert alert-danger">您暂不能查看图片。</p>';
+                $content = str_ireplace("{$match[0][$key]}", $_info, $content);
             }
         }
         $_c = stripslashes($content);
@@ -464,7 +508,9 @@ class zmf {
         $positions = array(
             'topbar' => '导航条',
             'main' => '主页面',
-            'footer' => '页脚'
+            'footer' => '页脚',
+            'regpage' => '注册页面',
+            'logpage' => '登录页面',
         );
         if ($return != '') {
             return $positions[$return];
@@ -542,22 +588,22 @@ class zmf {
             }
         }
     }
-    
-    public static function checkRight($type,$code){
-        if(!$type || !$code){
+
+    public static function checkRight($type, $code) {
+        if (!$type || !$code) {
             return false;
         }
         //author
-        if($type=='a'){
-            if($code!='067e73ad3739f7e6a1fc68eb391fc5ba'){
+        if ($type == 'a') {
+            if ($code != '067e73ad3739f7e6a1fc68eb391fc5ba') {
                 return false;
-            }else{
+            } else {
                 return true;
             }
-        }elseif($type=='r'){//copyright
-            if($code!='acc869dee704131e9024decebb3ef0c3'){
+        } elseif ($type == 'r') {//copyright
+            if ($code != 'acc869dee704131e9024decebb3ef0c3') {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         }
@@ -579,8 +625,9 @@ class zmf {
                 'link' => '友链',
                 'users' => '用户',
                 'columns' => '栏目',
+                'credit' => '认证',
                 'questions' => '客服',
-                'user_action'=>'记录'
+                'user_action' => '记录'
             );
             foreach ($arr as $k => $v) {
                 if ($t == $k) {
@@ -600,7 +647,7 @@ class zmf {
             }
         } elseif ($c == 'config') {
             $arr = array(
-                'indexpage'=>'首页定制',
+                'indexpage' => '首页定制',
                 'baseinfo' => '基本设置',
                 'siteinfo' => '站点信息',
                 'upload' => '上传设置',
@@ -621,16 +668,16 @@ class zmf {
         } elseif ($c == 'users') {
             $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'users')) . '">列表</a></li>';
             $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/users/add') . '">新增</a></li>';
-        }elseif ($c == 'ads') {
+        } elseif ($c == 'ads') {
             $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'ads')) . '">列表</a></li>';
             $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/ads/add') . '">新增</a></li>';
-        }elseif ($c == 'posts') {
+        } elseif ($c == 'posts') {
             $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'posts')) . '">列表</a></li>';
             $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/posts/add') . '">新增</a></li>';
-        }elseif ($c == 'link') {
+        } elseif ($c == 'link') {
             $longstr.='<li><a class="list_btn" href="' . Yii::app()->createUrl('admin/all/list', array('table' => 'link')) . '">列表</a></li>';
             $longstr.='<li><a class="list_btn current" href="' . Yii::app()->createUrl('admin/link/add') . '">新增</a></li>';
-        }elseif ($c == 'tools') {
+        } elseif ($c == 'tools') {
             $arr = array(
                 'clearcache' => '清除缓存',
                 'db' => '数据库',
@@ -676,7 +723,7 @@ class zmf {
             $css = '';
         }
         $arr['商家'] = array(
-            'url' => CHtml::link('商家', array('all/list','table'=>'users','groupid'=>self::config('shopGroupId')), array('class' => 'list_btn' . $css)),
+            'url' => CHtml::link('商家', array('all/list', 'table' => 'users', 'groupid' => self::config('shopGroupId')), array('class' => 'list_btn' . $css)),
             'power' => ''
         );
         if ($c == 'tools') {
@@ -685,7 +732,7 @@ class zmf {
             $css = '';
         }
         $arr['工具'] = array(
-            'url' => CHtml::link('工具', array('tools/index','type'=>'clearcache'), array('class' => 'list_btn' . $css)),
+            'url' => CHtml::link('工具', array('tools/index', 'type' => 'clearcache'), array('class' => 'list_btn' . $css)),
             'power' => ''
         );
         if ($c == 'config') {
@@ -708,16 +755,16 @@ class zmf {
         );
         $longstr = '';
         foreach ($arr as $k => $v) {
-            $longstr.='<div class="col-xs-12 col-md-8">'.$v['url'].'</div>';
+            $longstr.='<div class="col-xs-12">' . $v['url'] . '</div>';
         }
         echo $longstr;
     }
-    
-    public static function adminCode($uid){
-        if(Yii::app()->user->isGuest || !$uid){
+
+    public static function adminCode($uid) {
+        if (Yii::app()->user->isGuest || !$uid) {
             return false;
         }
-        $code=tools::jiaMi("$uid#".time().'#067e73ad3739f7e6a1fc68eb391fc5ba');
+        $code = tools::jiaMi("$uid#" . time() . '#067e73ad3739f7e6a1fc68eb391fc5ba');
         return $code;
     }
 
@@ -831,90 +878,99 @@ class zmf {
             return $siteUrl . $filename;
         }
     }
-    
-    public static function userSkin($uid){
-        if(!$uid){
+
+    public static function userSkin($uid) {
+        if (!$uid) {
             return false;
         }
-        $skin=self::userConfig($uid,'skin');
-        if(!$skin){
-            $skin='default';
+        $skin = self::userConfig($uid, 'skin');
+        if (!$skin) {
+            $skin = 'default';
         }
-        return Yii::app()->baseUrl.'/skins/'.$skin.'/'.$skin.'.css';
+        return Yii::app()->baseUrl . '/skins/' . $skin . '/' . $skin . '.css';
     }
-    public static function indexPage($colStr='',$idsOnly=false){
-        if($colStr==''){
-            $colStr=self::config('indexpage');
+
+    public static function indexPage($colStr = '', $idsOnly = false) {
+        if ($colStr == '') {
+            $colStr = self::config('indexpage');
         }
-        if(!$colStr){
+        if (!$colStr) {
             return false;
         }
-        $arr1=  explode('#', $colStr);
-        $total=array();
-        if(!empty($arr1)){
-            foreach($arr1 as $v1){
-                $_tmparr=  explode('@', $v1);
-                $_tmptmp=array();
-                if(stripos($_tmparr[1],'ads')!==false){
-                    $_tmptmp= explode('|', $_tmparr[1]);
-                    if(!empty($_tmptmp) && count($_tmptmp)==2){
+        $arr1 = explode('#', $colStr);
+        $total = array();
+        if (!empty($arr1)) {
+            foreach ($arr1 as $v1) {
+                $_tmparr = explode('@', $v1);
+                $_tmptmp = array();
+                if (stripos($_tmparr[1], 'ads') !== false) {
+                    $_tmptmp = explode('|', $_tmparr[1]);
+                    if (!empty($_tmptmp) && count($_tmptmp) == 2) {
                         unset($_tmparr[1]);
                     }
+                } elseif (stripos($_tmparr[1], 'newcredit') !== false) {
+                    
                 }
-                $_tmparr=  array_merge($_tmparr,$_tmptmp);
-                if($idsOnly){
-                    $total[]=$_tmparr;
-                }else{
-                    $data=array();
-                    $data['colnum']=$_tmparr[0];    
-                    if($_tmparr[1]!='ads'){
-                        $data['colinfo']=  Columns::getOne($_tmparr[1]);
-                        $data['coltype']='column';
-                    }else{
-                        $data['coltype']='ads';
-                        if(is_numeric($_tmparr[2])){
-                            $data['colinfo']=Ads::getOne($_tmparr[2]);
-                        }else{
-                            $data['colinfo']='';
-                        }                        
+                $_tmparr = array_merge($_tmparr, $_tmptmp);
+                if ($idsOnly) {
+                    $total[] = $_tmparr;
+                } else {
+                    $data = array();
+                    $data['colnum'] = $_tmparr[0];
+                    if ($_tmparr[1] == 'ads') {
+                        $data['coltype'] = 'ads';
+                        if (is_numeric($_tmparr[2])) {
+                            $data['colinfo'] = Ads::getOne($_tmparr[2]);
+                        } else {
+                            $data['colinfo'] = '';
+                        }
+                    } elseif ($_tmparr[1] == 'newcredit') {
+                        $data['colinfo'] = '';
+                        $data['coltype'] = 'newcredit';
+                    } else {
+                        $data['colinfo'] = Columns::getOne($_tmparr[1]);
+                        $data['coltype'] = 'column';
                     }
-                    $total[]=$data;
-                }                
+                    $total[] = $data;
+                }
             }
         }
+        //zmf::test($total);
         return $total;
     }
-    
-    public static function userInfoDisplay($uid,$type){
-        $arr=array();
-        if($type=='info'){            
-            $arr[]=zmf::userConfig($uid,'company');
-            $arr[]=zmf::userConfig($uid,'address');
-            $arr[]=zmf::userConfig($uid,'phone');
-            $arr[]=zmf::userConfig($uid,'fax');
-            $arr[]=zmf::userConfig($uid,'email');
-            $arr=  array_filter($arr);            
-        }elseif($type=='credit'){
-            $uinfo=Users::getUserInfo($uid);
-            $ginfo=UserGroup::getInfo($uinfo['groupid'],'title');
-            $arr[]=array('title'=>$ginfo,'css'=>  tools::exStatusToClass(1, true));
-            $arr[]=array('title'=>'邮箱验证','css'=>  tools::exStatusToClass($uinfo['emailstatus'], true));
-        }elseif($type=='score'){
-            $total=134;
-            $arr[]=array(
-                'title'=>'经销商评价',
-                'css'=>  tools::calScoreCss(42),
-                'num'=>'42',
-                'width'=> 42 ,
-                'url'=>''
-                );
-            $arr[]=array(
-                'title'=>'用户评价',
-                'css'=>  tools::calScoreCss(92),
-                'num'=>'92',
-                'width'=>92,
-                'url'=>''
-                );
+
+    public static function userInfoDisplay($uid, $type) {
+        $arr = array();
+        if ($type == 'info') {
+            if (T::checkYesOrNo(array('uid' => Yii::app()->user->id, 'type' => 'user_seeinfo'))) {
+                $arr[] = zmf::creditIcon($uid);
+                $arr[] = zmf::userConfig($uid, 'company');
+                $arr[] = zmf::userConfig($uid, 'address');
+                $arr[] = zmf::userConfig($uid, 'phone');
+                $arr[] = zmf::userConfig($uid, 'fax');
+                $arr[] = zmf::userConfig($uid, 'email');
+            }
+            $arr = array_filter($arr);
+        } elseif ($type == 'credit') {
+            $uinfo = Users::getUserInfo($uid);
+            $ginfo = UserGroup::getInfo($uinfo['groupid'], 'title');
+            $_addedType = UserCredit::findOne($uid);
+            if ($_addedType['classify']) {
+                $typeinfo = tools::userCredits($_addedType['classify']);
+                $status = zmf::userConfig($uid, 'creditstatus');
+                $arr[] = array('title' => $typeinfo['title'], 'css' => tools::exStatusToClass($status, true));
+            }
+            $arr[] = array('title' => $ginfo, 'css' => tools::exStatusToClass(1, true));
+            $arr[] = array('title' => '邮箱验证', 'css' => tools::exStatusToClass($uinfo['emailstatus'], true));
+        } elseif ($type == 'score') {
+            $data = Favor::getScore($uid);
+            $arr[] = array(
+                'title' => '评价(' . $data['scorer'] . ')',
+                'css' => tools::calScoreCss($data['score']),
+                'num' => $data['score'],
+                'width' => $data['score'],
+                'url' => ''
+            );
         }
         return $arr;
     }

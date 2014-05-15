@@ -28,7 +28,50 @@ function ajaxAddColumn(table) {
     });
 
 }
+function ajaxCity(a,b,d,e) {
+    var c = $("#"+a).val();    
+    if (c == '0' || typeof c == 'undefined') {
+        alert('请选择');
+        return false;
+    }
+    var t=$("#"+b).val();
+    if (t == '' || typeof t == 'undefined' || e==1) {
+        t=c;
+    }else{
+        var arr=t.split('#');
+        var rt='';
+        for(var i=0;i<(e-1);i++){
+            if(typeof arr[i]!='undefined'){
+                if(rt==''){
+                    rt=arr[i];
+                }else{
+                    rt+='#'+arr[i];
+                }                 
+                 
+            }           
+        }
+        rt+='#'+c;
+        t=rt;
+    }    
+    $.ajax({
+        type: "POST",
+        url: selectCityUrl,
+        data: "c=" + t + "&e="+e+"&YII_CSRF_TOKEN=" + csrfToken,
+        success: function(result) {
+            result = eval('(' + result + ')');
+            if (result['status'] == 1) {                                
+                $("#"+d).html(result['msg']);
+                $("#"+b).val(t);
+            }else if (result['status'] == 2) {  
+                $("#"+b).val(t);
+                $("#"+d).html('');
+            } else {
+                alert(result['msg']);
+            }
+        }
+    });
 
+}
 function delUploadImg(attachid, clearid) {
     if (attachid == '') {
         dialog('请选择删除对象');
@@ -156,4 +199,45 @@ function clearDiv(divid) {
 }
 function openDiv(divid) {
     $("#" + divid).toggle();
+}
+function setStatus(a,b,c){
+    $.ajax({
+        type: "POST",
+        url: setStatusUrl,
+        data: "a="+a+"&b="+b+"&c="+c+"&YII_CSRF_TOKEN=" + csrfToken,
+        beforeSend: function() {
+            //loading("favorite"+logid,2,'');
+        },
+        success: function(result) {
+            result = eval('(' + result + ')');
+            if (result['status'] == 1) {
+                alert(result['msg']);                
+            } else if (result['status'] == 2) {
+                window.location.href = userLoginUrl + "&redirect=" + window.location.href;
+            } else {
+                //$("#favorite" + logid).html(tmp);
+                alert(result['msg']);
+            }
+        }
+    });
+}
+function changeOrder(){
+var ids='';
+    $('#sortable li').each(function(){
+        ids+=$(this).attr('id')+'#';
+    });    
+    $.ajax({
+    type: "POST",
+    url: changeOrderUrl,
+    data:"ids="+ids+"&YII_CSRF_TOKEN="+csrfToken,
+    success: function(result) {           
+        result = eval('('+result+')');  
+        if(result['status']=='1'){  
+            alert(result['msg']);
+            window.location.reload();
+        }else{
+            alert(result['msg']);
+        }
+    }
+});  
 }

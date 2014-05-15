@@ -8,13 +8,14 @@ class IndexController extends H {
         $posts = Posts::model()->count('status=' . $status);
         $commentsNum = Comments::model()->count('status=' . $status);
         $attachsNum = Attachments::model()->count('status=' . $status);
-        $infoNum = Questions::model()->count('status=' . $status);        
-        
+        $infoNum = Questions::model()->count('status=' . $status); 
+        $creditNum = UserInfo::model()->count('classify="addCredit" AND `name`="creditstatus" AND `value`=' . $status);
         $arr = array(
             'posts' => $posts,
             'infoNum' => $infoNum,            
             'commentsNum' => $commentsNum,
             'attachsNum' => $attachsNum,
+            'creditNum'=>$creditNum,
         );
 
 

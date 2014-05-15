@@ -5,22 +5,26 @@
     <?php echo $notice;?>
 </div>
 <?php }?>
-<?php if($this->noticeInfo!=''){?>
-<div class="alert alert-danger">
-    <?php echo $this->noticeInfo;?>
-</div>
-<?php }?>
 <?php if($this->validateEmail!=''){?>
 <div class="alert alert-danger">
     <?php echo $this->validateEmail;?>
 </div>
 <?php }?>
+<?php if($this->noticeInfo!=''){?>
+<div class="alert alert-danger">
+    <?php echo $this->noticeInfo;?>
+</div>
+<?php }?>
 <table class="table table-hover">
 <tr>
-    <td>这是您的第<?php echo $info['login_count'];?>次登陆，上次登陆<?php echo date('Y-m-d H:i:s',$info['last_login_time']);?>/<?php echo long2ip($info['last_login_ip']);?>。</td>    
+    <td>这是您的第<?php echo $info['login_count'];?>次登陆，登录信息：<?php echo date('Y-m-d H:i:s',$info['last_login_time']);?>/<?php echo long2ip($info['last_login_ip']);?>。</td>    
 </tr>
 <tr>
-    <td>当前用户组：<?php echo UserGroup::getInfo($info['groupid'],'title');?></td>    
+    <td>
+        当前用户组：
+        <?php echo UserGroup::getInfo($info['groupid'],'title');?>
+        <?php echo zmf::creditIcon($this->uid);?>
+    </td>    
 </tr>
 <tr>
     <td>邮箱：<?php echo $info['email'];?>
@@ -58,11 +62,12 @@
     <td>座机：<?php echo $info['telephone'];?></td>    
 </tr>
 </table>
-<h4>快捷功能</h4>
-<p>
-  <a href="<?php echo Yii::app()->createUrl('mobile/index',array('uid'=>$this->uid));?>"><button type="button" class="btn btn-danger btn-xs">查看手机效果</button></a>
-  <a href="<?php echo Yii::app()->createUrl('user/stat');?>"><button type="button" class="btn btn-info btn-xs">查看统计</button></a>
-  <a href="<?php echo Yii::app()->createUrl('user/config');?>"><button type="button" class="btn btn-primary btn-xs">系统设置</button></a>
-  <a href="<?php echo Yii::app()->createUrl('user/list',array('table'=>'questions'));?>"><button type="button" class="btn btn-warning btn-xs">意见反馈或咨询</button></a>
-</p>
+  <?php $userAside=Users::userAside($this->uid,array('user_homepage','user_stat','user_addquestion','user_setting'));if(!empty($userAside)){?>
+    <h4>快捷功能</h4>
+    <p>
+    <?php foreach($userAside as $ua){?>
+    <?php echo preg_replace("/class=\".*?\"/", "class=\"btn btn-info btn-xs\"", $ua['url']);?>
+    <?php }?>
+    </p>
+  <?php }?>
 </div>

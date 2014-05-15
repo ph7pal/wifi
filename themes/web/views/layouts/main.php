@@ -1,4 +1,4 @@
-<?php $this->beginContent('/layouts/common'); ?>    	
+<?php $this->beginContent('/layouts/common'); ?>
 <div id="header">
     <?php $this->renderPartial('/common/topnav');?>
     <div class="sp-nav">
@@ -10,25 +10,26 @@
             <div class="sp-search">
                 <form class="form-inline" role="form">
                     <div class="col-xs-10 row">
-                        <input type="text" class="form-control" placeholder="请输入关键词">                        
+                        <input type="text" class="form-control" placeholder="请输入关键词" name="keyword" id="keyword">
                     </div>
                     <div class="col-xs-2 row">
-                        <button type="button" class="btn btn-primary">搜索</button>
+                        <button type="button" class="btn btn-primary" id="search-btn">搜索</button>
+                    </div>
+                    <div class="col-xs-12 topkws">
+                        <?php $tops=  SearchRecords::setTops();if(!empty($tops)){?>
+                        <p>
+                            热门关键词：
+                                <?php foreach($tops as $tpkw){
+                                    //echo CHtml::link($tpkw,array('search/posts','keyword'=>$tpkw),array('class'=>'topkws'));
+                                    echo $tpkw;
+                                }?>
+                        </p>
+                        <?php }?>
                     </div>
                 </form>
-            </div>
-            
-        </div>
-        <style>
-            .sp-search{
-                width:480px;
-                height:30px;
-                margin:30px 0 0 0px; 
-                float: left;
-            }
-        </style>
-
-        <div class="navbar navbar-default" role="navigation">
+            </div>            
+        </div>       
+        <div class="navbar navbar-default bs-docs-nav" role="navigation">
               <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -39,13 +40,13 @@
               </div>
               <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class='active'><a href="<?php echo Yii::app()->baseUrl;?>">首页</a></li>
+                    <li><a href="<?php echo Yii::app()->baseUrl;?>">首页</a></li>
                     <?php 
                     $topcols=Columns::getColsByPosition('top',true);
                     if(!empty($topcols)){
                     foreach($topcols as $_t){
                     ?>          
-                    <li <?php if($this->currentColId==$_t['first']['id']){echo 'class="active"';}?>>
+                    <li <?php if(in_array($_t['first']['id'],$this->currentCol)){echo 'class="active"';}?>>
                       <?php echo CHtml::link($_t['first']['title'],array('posts/index','colid'=>$_t['first']['id']));?>           
                     </li>
                     <?php }}?>
@@ -53,11 +54,10 @@
                 <!--ul class="nav navbar-nav navbar-right">                  
                   <li class="active"><a href="./">管理</a></li>
                 </ul-->
-              </div><!--/.nav-collapse -->
-              
+              </div><!--/.nav-collapse -->              
             </div>
     </div>
-</div>
+</div>     
 <div id="content">
     <?php echo $content; ?>
     <?php //$this->renderPartial('/user/aside'); ?>  

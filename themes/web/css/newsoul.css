@@ -33,9 +33,8 @@ a:hover.move { background-position: 100% -44px; }
     margin-bottom: 10px;
 }
 #content {
-    min-height: 500px;
-    _height: 500px;
-    padding-bottom: 50px;
+    min-height: 400px;
+    _height: 400px;    
     background: #fff;
     margin-bottom: .8em;
 }
@@ -137,14 +136,6 @@ a:hover.move { background-position: 100% -44px; }
 .nav-items li.on a, .nav-items li.on a:link, .nav-items li.on a:visited {
     color: #4e4e4e;
     padding: 1px 14px 0;
-}
-
-/*content*/
-#content {
-    min-height: 500px;
-    _height: 500px;
-    padding-bottom: 50px;
-    background: #fff;
 }
 .main {
     float: left;
@@ -659,4 +650,117 @@ display: inline-block;
     margin-right: 0;
     font-size: 12px;
     
+}
+.errorSummary
+{
+    border:2px solid #C00;
+    background:#FEE;
+    font-size:.9em;
+    margin:0 0 20px;
+    padding:7px 7px 12px;
+}
+
+.errorSummary p
+{
+    margin:0;
+    padding:5px;
+}
+
+.errorSummary ul
+{
+    color:red;
+    margin:0;
+    padding:0 0 0 20px;
+}
+span.required,.errorMessage
+{
+    color:red;
+}
+/*
+*禁用响应
+*/
+.sp-search{
+    width:480px;
+    height:30px;
+    margin:30px 0 0 0px; 
+    float: left;
+    font-size: 12px;
+}
+.more,.more a{font-size: 12px}
+.topkws,.topkws a{font-size:12px;}
+.container .navbar-header,
+.container .navbar-collapse {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* Always float the navbar header */
+.navbar-header {
+  float: left;
+}
+
+/* Undo the collapsing navbar */
+.navbar-collapse {
+  display: block !important;
+  height: auto !important;
+  padding-bottom: 0;
+  overflow: visible !important;
+}
+
+.navbar-toggle {
+  display: none;
+}
+.navbar-collapse {
+  border-top: 0;
+}
+
+.navbar-brand {
+  margin-left: -15px;
+}
+
+/* Always apply the floated nav */
+.navbar-nav {
+  float: left;
+  margin: 0;
+}
+.navbar-nav > li {
+  float: left;
+}
+.navbar-nav > li > a {
+  padding: 15px;
+}
+
+/* Redeclare since we override the float above */
+.navbar-nav.navbar-right {
+  float: right;
+}
+
+/* Undo custom dropdowns */
+.navbar .navbar-nav .open .dropdown-menu {
+  position: absolute;
+  float: left;
+  background-color: #fff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-width: 0 1px 1px;
+  border-radius: 0 0 4px 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+  color: #333;
+}
+.navbar .navbar-nav .open .dropdown-menu > li > a:hover,
+.navbar .navbar-nav .open .dropdown-menu > li > a:focus,
+.navbar .navbar-nav .open .dropdown-menu > .active > a,
+.navbar .navbar-nav .open .dropdown-menu > .active > a:hover,
+.navbar .navbar-nav .open .dropdown-menu > .active > a:focus {
+  color: #fff !important;
+  background-color: #428bca !important;
+}
+.navbar .navbar-nav .open .dropdown-menu > .disabled > a,
+.navbar .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+.navbar .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+  color: #999 !important;
+  background-color: transparent !important;
 }

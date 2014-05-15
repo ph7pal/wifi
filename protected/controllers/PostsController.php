@@ -13,6 +13,7 @@ class PostsController extends T {
         } elseif ($colinfo['status'] < 1) {
             $this->message(0, '您要查看的栏目未通过审核');
         }
+        $this->currentCol[] = $keyid;
         $data = array();
         $data['info'] = $colinfo;
         $criteria = new CDbCriteria();
@@ -30,15 +31,12 @@ class PostsController extends T {
             $data['pages'] = $pages;
         } else {
             $render = 'lists';
-            $sql = "SELECT * FROM {{posts}} WHERE colid='{$keyid}' AND status=1 ORDER BY cTime DESC";
-            $db = Yii::app()->db->createCommand($sql)->queryAll();
-            $pages = new CPagination(count($db));
-            $pages->pageSize = 10;
-            $pages->applylimit($criteria);
-            $com = Yii::app()->db->createCommand($sql . " LIMIT :offset,:limit");
-            $com->bindValue(':offset', $pages->currentPage * $pages->pageSize);
-            $com->bindValue(':limit', $pages->pageSize);
-            $lists = $com->queryAll();
+            $colstr = Columns::getColIds($keyid);
+            if ($colstr) {
+                $_sql = "SELECT * FROM {{posts}} WHERE colid IN({$colstr}) AND status=" . Posts::STATUS_PASSED . " ORDER BY cTime DESC";
+                Posts::getAll(array('sql' => $_sql), $pages, $lists);
+            }
+
             $data['posts'] = $lists;
             $data['pages'] = $pages;
         }
@@ -76,8 +74,14 @@ class PostsController extends T {
         $this->comments($keyid, $coms, $pages);
         Posts::model()->updateCounters(array('hits' => 1), ':id=id', array(':id' => $keyid));
         $this->uid = $info['uid'];
-        $_sql='SELECT id,title FROM {{posts}} WHERE colid='.$colinfo['id'].' AND  id!='.$keyid.' AND status='.Posts::STATUS_PASSED;
-        Posts::getAll(array('sql'=>$_sql),$_page,$likes); 
+        $_sql = 'SELECT id,title FROM {{posts}} WHERE colid=' . $colinfo['id'] . ' AND  id!=' . $keyid . ' AND status=' . Posts::STATUS_PASSED;
+        Posts::getAll(array('sql' => $_sql), $_page, $likes);
+        $status = T::checkYesOrNo(array('uid' => Yii::app()->user->id, 'type' => 'user_seesecretinfo'));
+        if ($info['secretinfo'] != '' && $status) {
+            $info['secretinfo'] = tools::jieMi($info['secretinfo']);
+        }else{
+            $info['secretinfo']='';
+        }
         $data = array(
             'preInfo' => $preInfo,
             'nextInfo' => $nextInfo,
@@ -85,7 +89,7 @@ class PostsController extends T {
             'info' => $colinfo,
             'coms' => $coms,
             'pages' => $pages,
-            'likes'=>$likes
+            'likes' => $likes
         );
         $this->pageTitle = $info['title'] . ' - ' . $colinfo['title'] . ' - ' . zmf::config('sitename');
         $this->render('page', $data);
@@ -265,6 +269,39 @@ class PostsController extends T {
         $com->bindValue(':offset', $pages->currentPage * $pages->pageSize);
         $com->bindValue(':limit', $pages->pageSize);
         $coms = $com->queryAll();
+    }
+
+    public function actionSearch() {
+        $keyword = zmf::filterInput(Yii::app()->request->getParam('keyword'), 't', 1);
+        $info = '';
+        $pre='';
+        $next='';
+        $posts=array();
+        if (!$keyword) {
+            $info = '请输入关键词';
+        }
+        $_page = zmf::filterInput($_GET['page']);
+        if (!$info) {
+            $page = isset($_page) ? $_page : 1;
+            $pageNum = 30;
+            $start = ($page - 1) * $pageNum;
+            $items = Posts::suggestSearch($keyword, 0);
+            $total=count($items);
+            $posts=array_slice($items,$start,$pageNum);
+            if($page>1){
+                $pre=CHtml::link('上一页',array('posts/search','page'=>($page-1),'keyword'=>$keyword));
+            }
+            if(($start+count($posts))<$total){
+                $next=CHtml::link('下一页',array('posts/search','page'=>($page+1),'keyword'=>$keyword));
+            }
+        }
+        $data = array();
+        $data['info'] = $info;
+        $data['posts'] = $posts;
+        $data['keyword'] = $keyword;
+        $data['pre'] = $pre;
+        $data['next'] = $next;        
+        $this->render('search', $data);
     }
 
 }

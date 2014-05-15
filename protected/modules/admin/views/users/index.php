@@ -10,7 +10,7 @@
         <td><?php echo $row['truename']; ?></td>
         <td><?php $gtitle=UserGroup::getInfo($row['groupid'], 'title');echo tools::url($gtitle,'all/list',array('table'=>$table,'groupid'=>$row['groupid'])); ?></td>
         <td>
-            <?php $this->renderPartial('/common/manageBar',array('status'=>$row['status'],'keyname'=>'keyid','keyid'=>$row['id'],'table'=>$table));?>             
+            <?php if(!$row['system']){$this->renderPartial('/common/manageBar',array('status'=>$row['status'],'keyname'=>'keyid','keyid'=>$row['id'],'table'=>$table));}?>             
          </td>
     </tr>
 <?php endforeach; ?>

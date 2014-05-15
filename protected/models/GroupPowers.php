@@ -67,7 +67,7 @@ class GroupPowers extends CActiveRecord {
         $lang['config']['desc'] = '设置相关';
         $lang['config']['detail'] = array(
             'checksetting' => '查看设置',
-            'setting' => '更新设置',
+            'setting' => '更新设置',            
         );
         $lang['columns']['desc'] = '栏目相关';
         $lang['columns']['detail'] = array(
@@ -80,6 +80,7 @@ class GroupPowers extends CActiveRecord {
             'addposts' => '新增文章',
             'editposts' => '编辑文章',
             'delposts' => '删除文章',
+            'setstatus'=>'更改文章状态',
         );
         $lang['usergroup']['desc'] = '用户组相关';
         $lang['usergroup']['detail'] = array(
@@ -92,6 +93,7 @@ class GroupPowers extends CActiveRecord {
             'addusers' => '新增用户',
             'editusers' => '编辑用户',
             'delusers' => '删除用户',
+            'visitSthone'=>'以管理员查看用户'
         );
         $lang['link']['desc'] = '友链相关';
         $lang['link']['detail'] = array(
@@ -105,12 +107,12 @@ class GroupPowers extends CActiveRecord {
             'editads' => '新增展示',
             'delads' => '删除展示',
         );
-//        $lang['album']['desc'] = '相册相关';
-//        $lang['album']['detail'] = array(
-//            'addalbum' => '新增相册',
-//            'editalbum' => '编辑相册',
-//            'delalbum' => '删除相册',
-//        );
+        $lang['album']['desc'] = '相册相关';
+        $lang['album']['detail'] = array(
+            'addalbum' => '新增相册',
+            'editalbum' => '编辑相册',
+            'delalbum' => '删除相册',
+        );
         $lang['attachments']['desc'] = '附件相关';
         $lang['attachments']['detail'] = array(
             'upload' => '上传附件',
@@ -122,23 +124,75 @@ class GroupPowers extends CActiveRecord {
             //'edituseraction'=>'编辑',            
             'deluseraction' => '删除用户记录',
         );
-//        $lang['tags']['desc'] = '标签相关';
-//        $lang['tags']['detail'] = array(
-//            'edittags' => '编辑标签',
-//            'deltags' => '删除标签',
+        $lang['tags']['desc'] = '标签相关';
+        $lang['tags']['detail'] = array(
+            'edittags' => '编辑标签',
+            'deltags' => '删除标签',
+        );
+        $lang['comments']['desc'] = '评论相关';
+        $lang['comments']['detail'] = array(
+            'addcomments' => '新增评论',
+            'editcomments' => '编辑评论',
+            'delcomments' => '删除评论',
+        );
+        $lang['questions']['desc'] = '客服留言相关';
+        $lang['questions']['detail'] = array(
+            'addquestions' => '新增留言',
+            'editquestions' => '回复留言',
+            'delquestions' => '删除留言',
+        );
+        $lang['usermanage']['desc'] = '用户自管理相关';
+        $lang['usermanage']['detail'] = array(
+            'user_manage' => '进入自管理中心',
+            'user_setting' => '用户设置',
+            'user_addposts' => '用户新增文章',
+            'user_checkcomments' => '用户查看留言或评论',
+            'user_delcomments' => '用户删除留言或评论',
+            'user_ads'=>'用户新增展示',
+            'user_addquestion'=>'用户在线提问',
+            'user_stat' => '用户查看统计',
+            'user_credit' => '用户认证',
+            'user_addupload' => '用户上传',
+            'user_delupload' => '用户删除已上传',
+            'user_homepage' => '用户个人主页',
+            'user_addcomments' => '用户评论',
+            'user_seepostauthor'=>'查看文章作者',
+            'user_seesecretinfo' => '用户查看隐藏信息',            
+            'user_seeinfo' => '查看其他用户信息',
+            'user_addrate' => '用户评价',
+            'user_seeattachments'=>'用户查看图片'
+        );
+        
+//        
+//        $lang['']['desc'] = '';
+//        $lang['']['detail'] = array(
+//            '' => '',
+//            '' => '',
+//            '' => '',
 //        );
-//        $lang['comments']['desc'] = '评论相关';
-//        $lang['comments']['detail'] = array(
-//            'addcomments' => '新增评论',
-//            'editcomments' => '编辑评论',
-//            'delcomments' => '删除评论',
+//        $lang['']['desc'] = '';
+//        $lang['']['detail'] = array(
+//            '' => '',
+//            '' => '',
+//            '' => '',
 //        );
-//        $lang['questions']['desc'] = '客服留言相关';
-//        $lang['questions']['detail'] = array(
-//            'addquestions' => '新增留言',
-//            'editquestions' => '回复留言',
-//            'delquestions' => '删除留言',
+//        $lang['']['desc'] = '';
+//        $lang['']['detail'] = array(
+//            '' => '',
+//            '' => '',
+//            '' => '',
 //        );
+//        $lang['']['desc'] = '';
+//        $lang['']['detail'] = array(
+//            '' => '',
+//            '' => '',
+//            '' => '',
+//        );
+        
+        
+        
+        
+        
         if ($type === 'admin') {
             $items = array();
             foreach ($lang as $key => $val) {

@@ -1,52 +1,40 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>	
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="<?php echo $this->_baseUrl?>/common/admin/login.css" />
-<title><?php echo zmf::config('sitename');?> 管理中心</title>
-<script type="text/javascript" language="javascript">
-    //<![CDATA[
-    // show login form in top frame
-    if (top != self) {
-        window.top.location.href = location;
-    }
-    //]]>
-</script>
-</head>
-<body>
-<div id="login">
-  <div class="wrapper">
-    <div class="alert error" >&nbsp;</div>
-    <div class="logo"></div>
-    <div class="form">
-      <?php $form=$this->beginWidget('CActiveForm', array(
+<?php //$this->renderPartial('/common/topdesc');?>
+<div class="wrap clear">
+    <div class="col-md-8 col-xs-8">
+    <?php $this->renderPartial('//ads/ads',array('position'=>'logpage','type'=>'flash'));?>    
+    </div>
+    <div class="col-md-4 col-xs-4">
+        <div class="panel panel-primary row">
+            <div class="panel-heading">
+              <h3 class="panel-title">欢迎回来</h3>
+            </div>
+            <div class="panel-body">
+        <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'login-form',
-	'enableAjaxValidation'=>true,
+	'enableAjaxValidation'=>false,
         'enableClientValidation'=>true
 )); ?>
-      <dl>
-        <dt>用户名</dt>
-        <dd> <?php echo $form->textField($model,'username', array('class'=>'input-password')); ?> <?php echo $form->error($model,'username'); ?> </dd>
-        <dt>密&nbsp;&nbsp;&nbsp;&nbsp;码</dt>
-        <dd> <?php echo $form->passwordField($model,'password', array('class'=>'input-password')); ?> <?php echo $form->error($model,'password'); ?> </dd>
-        <dt>验证码</dt>
-        <dd> <?php echo $form->textField($model,'verifyCode', array('class'=>'input-password verify-code')); ?>
-          <?php $this->widget ( 'CCaptcha', array ('showRefreshButton' => true, 'clickableImage' => true, 'buttonType' => 'link', 'buttonLabel' => '换一张', 'imageOptions' => array ('alt' => '点击换图', 'align'=>'absmiddle'  ) ) );?>
-          <?php echo $form->error($model,'verifyCode'); ?> </dd>
-        <dd>
-          <input type="submit" name="login" class="input-login" value=""/>
-          <input type="reset" name="login" class="input-reset" value=""/>
-        </dd>
-      </dl>
+        <p>
+        <label>用户名</label>
+        <?php echo $form->textField($model,'username', array('class'=>'form-control')); ?> <?php echo $form->error($model,'username'); ?>
+        </p>
+        <p>
+        <label>密&nbsp;&nbsp;&nbsp;&nbsp;码</label>
+        <?php echo $form->passwordField($model,'password', array('class'=>'form-control')); ?> <?php echo $form->error($model,'password'); ?>
+        </p>
+        <p>
+        <label>验证码</label>
+        <?php echo $form->textField($model,'verifyCode', array('class'=>'form-control verify-code')); ?>
+        <?php echo $form->error($model,'verifyCode'); ?>
+        <?php $this->widget ( 'CCaptcha', array ('showRefreshButton' => true, 'clickableImage' => true, 'buttonType' => 'link', 'buttonLabel' => '换一张', 'imageOptions' => array ('alt' => '点击换图', 'align'=>'absmiddle'  ) ) );?>
+        </p>
+        <p>
+          <input type="submit" name="login" class="btn btn-primary" value="登录"/>
+          <input type="reset" name="login" class="btn btn-default" value="重填"/>
+          <?php echo CHtml::link('没有账号？免费注册',array('site/reg'));?>
+        </p>
       <?php $this->endWidget(); ?>
+          </div>
+        </div>
     </div>
-    <br class="clear-fix"/>
-    <div class="copyright">
-        <?php echo zmf::config('sitename');?>
-        <?php echo zmf::config('copyright');?>
-        <?php echo zmf::config('beian');?>
-    </div>
-  </div>
-</div>
-</body>
-</html>
+</div><!-- form -->

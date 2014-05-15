@@ -56,6 +56,9 @@ class PostsController extends H {
                 $colid =$_colid;
             }
             $_POST['Posts']['colid']=$colid;
+            if($_POST['Posts']['secretinfo']!=''){
+                $_POST['Posts']['secretinfo']=tools::jiaMi($_POST['Posts']['secretinfo']);
+            }
             $intoData =$_POST['Posts'];
             if (!empty($_POST['tagname'])) {
                 $tagNames = array_unique(array_filter($_POST['tagname']));
@@ -71,6 +74,9 @@ class PostsController extends H {
                 }
             }
         }
+        if($info['secretinfo']!=''){
+            $info['secretinfo']=tools::jieMi($info['secretinfo']);
+        }  
         $cols = Columns::allCols();
         $data = array(
             'keyid' => $keyid,

@@ -83,21 +83,10 @@ class ColumnsController extends H {
             if(!$columnid){
                 $colid =$_colid;
             }
-            $intoData = array(
-                'title' => $title,
-                'second_title' => zmf::filterInput($_POST['Columns']['second_title'], 't', 1),
-                'name' => $name,
-                'position' => zmf::filterInput($_POST['Columns']['position'], 't', 1),
-                'belongid' => $colid,
-                'classify' => zmf::filterInput($_POST['Columns']['classify'], 't', 1),
-                'attachid' => zmf::filterInput($_POST['Columns']['attachid']),
-                'order' => zmf::filterInput($_POST['Columns']['order']),
-                'url' => zmf::filterInput($_POST['Columns']['url'], 't', 1),
-                'status' => 1,
-                'system'=>zmf::filterInput($_POST['Columns']['system']),
-//            ''=>zmf::filterInput($_POST['']['']),
-//            ''=>zmf::filterInput($_POST['']['']),
-            );
+            $intoData = $_POST['Columns'];
+            $intoData['name']=$name;
+            $intoData['belongid']=$colid;
+            $intoData['status']=1;            
             $model->attributes = $intoData;
             if ($model->validate()) {
                 if ($model->updateByPk($thekeyid, $intoData)) {

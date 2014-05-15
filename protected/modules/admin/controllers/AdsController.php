@@ -70,13 +70,11 @@ class AdsController extends H {
             if (is_bool($info)) {
                 $this->redirect(array('all/list', 'table' => 'ads'));
             }            
-        }
-        $positions = zmf::colPositions();
+        }        
         $data = array(
             'info' => $info,
             'table' => 'ads',
-            'model' => $model,
-            'positions' => $positions
+            'model' => $model,            
         );
         $this->render('//ads/addAds', $data);
     }

@@ -15,7 +15,7 @@ class QuestionsController extends H {
         }
         if (isset($_POST['Questions'])) {
             $_POST['Questions']['answer_status']=1;
-            $info = Publish::addQuestions(Yii::app()->user->id);
+            $info = Publish::addQuestions($info['uid']);
             if (is_bool($info)) {
                 $url = Yii::app()->createUrl('user/list', array('table' => 'questions'));
                 $this->message(1, '问题已提交，我们会尽快回复您！');

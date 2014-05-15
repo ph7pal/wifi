@@ -3,6 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />                
         <meta name="robots" content="all" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
         <meta name="description" content="<?php if (!empty($this->pageDescription)){echo $this->pageDescription;}else{ echo zmf::config('siteDesc');}?>" />
         <link rel="stylesheet" href="<?php echo Yii::app()->baseUrl; ?>/common/css/bootstrap.css">
         <?php if(Yii::app()->getController()->id=='user'){?>
@@ -23,6 +24,10 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/m
         <?php if((Yii::app()->getController()->id=='posts' AND Yii::app()->getController()->getAction()->id=='index')){?>
         <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/lazyload.js", CClientScript::POS_END); ?> 
         <?php }?>
+        <!--[if lt IE 9]>
+<script src=”http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js”></script>
+<script src=”http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js”></script>
+<![endif]-->
     </head>
     <body>
         <div class="wrapper">

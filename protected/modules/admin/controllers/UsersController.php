@@ -4,8 +4,8 @@ class UsersController extends H {
 
     public function actionGroup() {
         $criteria = new CDbCriteria();
-        $criteria->order='id desc';   
-        $criteria->addCondition('status=1');  
+        $criteria->order = 'id desc';
+        $criteria->addCondition('status=1');
         $count = UserGroup::model()->count($criteria);
         $pager = new CPagination($count);
         $pager->pageSize = 10;
@@ -29,7 +29,7 @@ class UsersController extends H {
         $keyid = zmf::getFCache("notSaveUsers{$uid}");
         $forupdate = zmf::filterInput($_GET['edit'], 't', 1);
         $_keyid = zmf::filterInput($_GET['id']);
-        if (!$keyid AND !$_keyid) {
+        if (!$keyid AND ! $_keyid) {
             $_info = $model->findByAttributes(array('status' => 0));
             if (!$_info) {
                 $model->attributes = array(
@@ -57,27 +57,23 @@ class UsersController extends H {
         if (!$info) {
             $this->message(0, '非常抱歉，您查看的页面不存在');
         }
-
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'users-addUser-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
         if (isset($_POST['Users'])) {
             $thekeyid = zmf::filterInput($_POST['Users']['id']);
-            $intoData =$_POST['Users'];            
-            $pass=zmf::filterInput($_POST['Users']['password'], 't', 1);
-            if($pass!=''){
+            $intoData = $_POST['Users'];
+            $pass = zmf::filterInput($_POST['Users']['password'], 't', 1);
+            if ($pass != '') {
                 $intoData['password'] = md5($pass);
-            }else{
-                $intoData['password']=$info['password'];
+            } else {
+                $intoData['password'] = $info['password'];
             }
-            $model->attributes = $intoData;
-            if ($model->validate()) {
-                if ($model->updateByPk($thekeyid, $intoData)) {
-                    UserAction::record('editusers', $thekeyid);
-                    zmf::delFCache("notSaveUsers{$uid}");
-                    $this->redirect(array('all/list','table'=>'users'));
-                }
+            if ($model->updateByPk($thekeyid, $intoData)) {
+                UserAction::record('editusers', $thekeyid);
+                zmf::delFCache("notSaveUsers{$uid}");
+                $this->redirect(array('all/list', 'table' => 'users'));
             }
         }
         $groups = UserGroup::getGroups(true);
@@ -98,7 +94,7 @@ class UsersController extends H {
         $keyid = zmf::getFCache("notSaveGroup{$uid}");
         $forupdate = zmf::filterInput($_GET['edit'], 't', 1);
         $_keyid = zmf::filterInput($_GET['id']);
-        if (!$keyid AND !$_keyid) {
+        if (!$keyid AND ! $_keyid) {
             $_info = $model->findByAttributes(array('status' => 0));
             if (!$_info) {
                 $model->attributes = array(
@@ -154,13 +150,13 @@ class UsersController extends H {
                             $model->attributes = $_data;
                             $model->save();
                         }
-                    }else{
+                    } else {
                         GroupPowers::model()->deleteAll("gid=$thekeyid");
                     }
                     UserAction::record('editusergroup', $thekeyid);
                     zmf::delFCache("notSaveGroup{$uid}");
-                    $this->redirect(array('all/list','table'=>'user_group'));
-                }else{
+                    $this->redirect(array('all/list', 'table' => 'user_group'));
+                } else {
                     if (!empty($powers)) {
                         GroupPowers::model()->deleteAll("gid=$thekeyid");
                         foreach ($powers as $p) {
@@ -172,7 +168,7 @@ class UsersController extends H {
                             $model->attributes = $_data;
                             $model->save();
                         }
-                    }else{
+                    } else {
                         GroupPowers::model()->deleteAll("gid=$thekeyid");
                     }
                     UserAction::record('editusergroup', $thekeyid);
@@ -204,44 +200,113 @@ class UsersController extends H {
 
         $this->render('records', $data);
     }
-    
-    public function actionUpdate(){
-        $id=zmf::filterInput($_GET['id']);
-        if(!$id){
+
+    public function actionUpdate() {
+        $id = zmf::filterInput($_GET['id']);
+        if (!$id) {
             $this->message(0, '用户不存在');
         }
-        if($id!=Yii::app()->user->id){
+        if ($id != Yii::app()->user->id) {
             $this->message(0, '请操作自己的账号');
         }
-        $info=  Users::model()->findByPk($id);
-        if(!$info){
+        $info = Users::model()->findByPk($id);
+        if (!$info) {
             $this->message(0, '用户不存在');
         }
-        $model=new Users();
+        $model = new Users();
         if (isset($_POST['Users'])) {
-            $old=zmf::filterInput($_POST['old_password'],'t',1);
-            if(!$old){
+            $old = zmf::filterInput($_POST['old_password'], 't', 1);
+            if (!$old) {
                 $this->message(0, '请输入原始密码');
-            }elseif(md5($old)!=$info['password']){
+            } elseif (md5($old) != $info['password']) {
                 $this->message(0, '原始密码不正确');
             }
-            if(!$_POST['Users']['password']){
+            if (!$_POST['Users']['password']) {
                 $this->message(0, '数据不全，请重新输入');
-            }elseif(strlen($_POST['Users']['password'])<5){
+            } elseif (strlen($_POST['Users']['password']) < 5) {
                 $this->message(0, '新密码过短，请重新输入');
-            }     
-            $intoData['password']=md5($_POST['Users']['password']);
-            if ($model->updateByPk($id, $intoData)) {                    
-                $this->message(1, '新密码设置成功',Yii::app()->createUrl('admin/index/index'));
+            }
+            $intoData['password'] = md5($_POST['Users']['password']);
+            $model->setScenario('update');
+            if ($model->updateByPk($id, $intoData)) {
+                $this->message(1, '新密码设置成功', Yii::app()->createUrl('admin/index/index'));
             }
         }
-        
-        
-        $data=array(
-            'model'=>$model,
-            'info'=>$info,
+
+
+        $data = array(
+            'model' => $model,
+            'info' => $info,
         );
-        $this->render('update',$data);
+        $this->render('update', $data);
+    }
+
+    public function actionListCredit() {
+        $uid = zmf::filterInput($_GET['uid']);
+        $type = zmf::filterInput($_GET['type'], 't', 1);
+        if (!$uid || !$type) {
+            $this->message(0, '数据不全');
+        }
+        $configs = UserCredit::model()->findAllByAttributes(array('classify' => $type, 'uid' => $uid));
+        $_c = CHtml::listData($configs, 'name', 'value');
+        $reason = zmf::userConfig($uid, 'creditreason');
+        $status = zmf::userConfig($uid, 'creditstatus');
+        $creditlogo=zmf::userConfig($uid,'creditlogo');
+        $uinfo = Users::getUserInfo($uid);
+        $data = array(
+            'type' => $type,
+            'blocked' => TRUE,
+            'info' => $_c,
+            'uid' => $uid,
+            'imgSize' => 600,
+            'fromAdmin' => 'yes',
+            'status' => $status,
+            'reason' => $reason,
+            'groupid' => $uinfo['groupid'],
+            'creditlogo'=>$creditlogo,
+        );
+        $this->render('//credit/' . $type, $data);
+    }
+
+    public function actionDocredit() {
+        if (!Yii::app()->request->isAjaxRequest) {
+            $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
+        }
+        if (Yii::app()->user->isGuest) {
+            $this->jsonOutPut(0, Yii::t('default', 'loginfirst'));
+        }
+        $reason = zmf::filterInput($_POST['reason'], 't', 1);
+        $atype = zmf::filterInput($_POST['yesorno']);
+        $type = zmf::filterInput($_GET['type'], 't', 1);
+        $groupid = zmf::filterInput($_POST['groupid']);
+        $creditlogo=zmf::filterInput($_POST['creditlogo'],'t',1);
+        if (!$atype) {
+            $this->jsonOutPut(0, '请选择');
+        }
+        if ($atype != 1) {
+            if (!$reason) {
+                $this->jsonOutPut(0, '请填写理由');
+            }
+        }
+        $touid = zmf::filterInput($_GET['uid']);
+        if (!$touid) {
+            $this->jsonOutPut(0, '缺少用户字段');
+        }
+        if ($atype == 1) {
+            if(!$creditlogo){
+                $this->jsonOutPut(0, '请选择认证图标');
+            }
+            UserInfo::addAttr($touid, 'addCredit', 'lock', 'yes');
+            UserInfo::addAttr($touid, 'userCredit', 'userCredit', $type);
+            UserInfo::addAttr($touid, 'userCredit', 'creditlogo', $creditlogo);
+            Users::model()->updateByPk($touid, array('groupid' => $groupid));
+        } else {
+            UserInfo::addAttr($touid, 'addCredit', 'lock', 'no');
+        }
+        UserInfo::addAttr($touid, 'addCredit', 'creditreason', $reason);
+        UserInfo::addAttr($touid, 'addCredit', 'creditstatus', $atype);
+        zmf::delUserConfig($touid);
+        $this->jsonOutPut(1, '操作成功');
     }
 
 }

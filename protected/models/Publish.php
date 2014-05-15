@@ -7,7 +7,7 @@ class Publish extends CFormModel {
         $colid = zmf::filterInput($_POST['Posts']['colid']);
         $_colid = zmf::filterInput($_POST['colid']);
         $columnid = zmf::filterInput($_POST['columnid']);
-        if ($colid == '0' OR !$colid) {
+        if ($colid == '0' OR ! $colid) {
             $colid = $columnid;
         }
         if (!$columnid) {
@@ -46,6 +46,9 @@ class Publish extends CFormModel {
 //        }
         $intoData['content'] = $content;
         $intoData['attachid'] = $attachid;
+        if ($_POST['Posts']['secretinfo'] != '') {
+            $_POST['Posts']['secretinfo'] = tools::jiaMi($_POST['Posts']['secretinfo']);
+        }
         $model->attributes = $intoData;
         if ($model->validate()) {
             if ($model->updateByPk($intoKeyid, $intoData)) {
@@ -81,12 +84,12 @@ class Publish extends CFormModel {
         $intoData['attachid'] = $attachid;
         $intoData['status'] = 1;
         $intoData['uid'] = $uid;
-        if(isset($intoData['start_time'])){
+        if (isset($intoData['start_time'])) {
             $intoData['start_time'] = strtotime($intoData['start_time']);
         }
-        if(isset($intoData['expired_time'])){
+        if (isset($intoData['expired_time'])) {
             $intoData['expired_time'] = strtotime($intoData['expired_time']);
-        }        
+        }
         $model->attributes = $intoData;
         if ($model->validate()) {
             if ($model->updateByPk($thekeyid, $intoData)) {

@@ -83,7 +83,7 @@ class DelController extends H {
                     if ($multi) {
                         return false;
                     } else {
-                        $this->message(0, '该用户会系统用户，禁止删除！');
+                        $this->message(0, '该用户为系统用户，禁止操作！');
                     }
                 }
             }

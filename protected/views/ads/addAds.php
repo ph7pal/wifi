@@ -49,7 +49,7 @@
 			    'htmlOptions'=>array(
         			'readonly'=>'readonly',
                                 'class'=>'form-control',
-                                'value'=>date('Y/m/d',$info['start_time'])
+                                'value'=>date('Y/m/d',($info['start_time'])?$info['start_time']:time())
     			),		    
 			));
             	?>
@@ -69,7 +69,7 @@
                     'htmlOptions'=>array(
                         'readonly'=>'readonly',
                         'class'=>'form-control',
-                        'value'=>date('Y/m/d',$info['expired_time'])
+                        'value'=>date('Y/m/d',($info['start_time'])?$info['start_time']:time())
                 ),			    
                 ));
     ?>            	
@@ -92,7 +92,7 @@
 </div>         
 <div class="form-group">
     <?php echo $form->labelEx($model,'position'); ?>
-    <?php echo $form->dropDownList($model,'position',$positions,array('options' => array($info['position']=>array('selected'=>true)))); ?>
+    <?php echo $form->dropDownList($model,'position',zmf::colPositions(),array('options' => array($info['position']=>array('selected'=>true)))); ?>
      <p class="help-block"><?php echo $form->error($model,'position'); ?></p>
 </div>       
 <div class="form-group">

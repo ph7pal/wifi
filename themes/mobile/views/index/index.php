@@ -23,7 +23,7 @@
             }
             echo '<p>'.$page['intro'].'</p>';
         }else{?>  
-        <?php $colitems=  Posts::allPosts($mc['first']['id']);?>  
+        <?php $colitems=  Posts::allPosts(array('colid'=>$mc['first']['id'],'condition'=>$mc['first']['listcondition']),$mc['first']['listnum']);?>  
         <ul>
           <?php if(!empty($colitems)){foreach($colitems as $ci){?>  
           <li>

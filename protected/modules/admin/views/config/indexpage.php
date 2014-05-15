@@ -27,10 +27,12 @@
         <input type="hidden" name="indexCols[]" value="<?php echo $ic['colnum'];?>"/>
         <span type="button" class="btn btn-success btn-xs">对应栏目：</span>
         <?php $rand_id=  uniqid();?>
-        <?php if($ic['coltype']!='ads'){?>
-            <?php echo CHtml::dropDownList('colIds[]',$ic['colinfo']['id'],Columns::indexPageCols(),array('value' => $ic['colinfo']['id'],'onclick'=>'selected("'.$rand_id.'")','id'=>'colIds'.$rand_id)); ?>   
-        <?php }else{?>
+        <?php if($ic['coltype']=='ads'){?>
             <?php echo CHtml::dropDownList('colIds[]',$ic['coltype'],Columns::indexPageCols(),array('value' => $ic['coltype'],'onclick'=>'selected("'.$rand_id.'")','id'=>'colIds'.$rand_id)); ?>
+        <?php }elseif($ic['coltype']=='newcredit'){?>
+            <?php echo CHtml::dropDownList('colIds[]',$ic['coltype'],Columns::indexPageCols(),array('value' => $ic['coltype'],'onclick'=>'selected("'.$rand_id.'")','id'=>'colIds'.$rand_id)); ?>
+        <?php }else{?>
+            <?php echo CHtml::dropDownList('colIds[]',$ic['colinfo']['id'],Columns::indexPageCols(),array('value' => $ic['colinfo']['id'],'onclick'=>'selected("'.$rand_id.'")','id'=>'colIds'.$rand_id)); ?>
         <?php }?>
         <span id="selected<?php echo $rand_id;?>">
         <?php if($ic['coltype']=='ads'){?>
@@ -45,8 +47,7 @@
         <button type="button" class="btn btn-danger btn-xs" style="float:right" onclick="removeThis('<?php echo $holderId;?>');">删除本栏</button>
     </div>
     <?php }?>    
-    <?php }?>
-    
+    <?php }?>    
   <?php }?>
 </div>    
 <hr/>

@@ -14,6 +14,10 @@ class UserController extends T {
     public $validateEmail;
     public $noticeInfo;
     private $seekey;
+    //显示边侧导航
+    public $showNavs = false;
+    //个人管理主页
+    public $homeUrl;
 
     public function actions() {
         return array(
@@ -33,8 +37,8 @@ class UserController extends T {
     public function init() {
         parent::init();
         $code = zmf::filterInput($_GET['code'], 't', 1);
-        $this->seekey=zmf::config('authorPre');        
-        if ($code != '' || isset(Yii::app()->session[$this->seekey])) {
+        $this->seekey = zmf::config('authorPre');
+        if ($code != '' || isset(Yii::app()->session[$this->seekey])) {            
             if ($code == '') {
                 $code = Yii::app()->session[$this->seekey];
             }
@@ -46,7 +50,7 @@ class UserController extends T {
                         $this->message(0, Yii::t('default', 'loginfirst'), Yii::app()->createUrl('site/login'));
                     } else {
                         if ($arr[0] != Yii::app()->user->id) {
-                            H::checkPower('visitSthone');
+                            $this->checkPower('visitSthone');
                             $this->uid = $arr[0];
                             Yii::app()->session[$this->seekey] = $code;
                         } else {
@@ -70,36 +74,36 @@ class UserController extends T {
                 $this->renderPartial('/error/close', array('message' => '您的账号暂不能访问，如有疑问请咨询' . zmf::config('phone') . '或者' . zmf::config('email')));
                 Yii::app()->end();
             }
-            $logo = zmf::userConfig($this->uid, 'logo');
-            if ($logo) {
-                $attachinfo = Attachments::getOne($logo);
-                if ($attachinfo) {
-                    $this->logoImg = zmf::imgurl($attachinfo['logid'], $attachinfo['filePath'], 124, $attachinfo['classify']);
-                }
-            }
             $this->checkUser(true);
-        } else {
-            
-        }
+        }        
+        $this->homeUrl = Yii::app()->createUrl('user/index');
     }
 
     public function checkUser($from = false) {
         $redirect = false;
+        $nolimit = 0;
         $a = Yii::app()->getController()->getAction()->id;
-        if ($this->userInfo['groupid'] != zmf::config('shopGroupId')) {
+        if (!T::checkYesOrNo(array('uid' => $this->uid, 'type' => 'user_manage'))) {            
             if (isset(Yii::app()->session[$this->seekey])) {
                 $this->noticeInfo = '您正在以管理员身份查看该用户';
                 return true;
             } else {
                 if (zmf::config('forbidnotshop')) {
-                    $this->message(0, '该页面仅商家可访问哦', Yii::app()->baseUrl);
+                    $nolimit+=1;
+                    $this->message(0, '您所在用户组暂不能访问个人管理中心', Yii::app()->baseUrl);
                 } else {
                     $gids = zmf::config('adminGroupIds');
                     $arr = explode(',', $gids);
                     if (in_array($this->userInfo['groupid'], $arr)) {
                         $info = '管理本站与成为商家不能兼得';
+                        $nolimit+=1;
                     } else {
-                        $info = '您还不是商家，欲使用所有功能请联系：' . zmf::config('phone') . '或者' . zmf::config('email');
+                        //$info = '您还不是商家，欲使用所有功能请联系：' . zmf::config('phone') . '或者' . zmf::config('email');
+                        $_creditstatus = zmf::userConfig($this->uid, 'creditstatus');
+                        if($_creditstatus!=Posts::STATUS_PASSED){
+                            $info = '您还未认证，' . CHtml::link('点此进行认证', array('user/credit'), array('class' => 'btn btn-danger btn-xs'));
+                            $nolimit+=1;
+                        }                        
                     }
                     $this->noticeInfo = $info;
                     $redirect = true;
@@ -110,25 +114,30 @@ class UserController extends T {
             if (zmf::config('validateEmail')) {
                 $this->validateEmail = '欲使用所有功能，请验证您的邮箱';
                 $redirect = true;
+                $nolimit+=1;
             }
         }
         if ($redirect && !$from) {
             $this->redirect(array('user/index'));
+        }
+        if ($nolimit < 1) {
+            $this->showNavs = true;
         }
     }
 
     public function actionIndex() {
         $data = array(
             'info' => $this->userInfo,
-        );
+        );        
         $this->render('index', $data);
     }
 
     public function actionConfig() {
         $this->checkUser();
+        $this->checkPower(array('uid' => $this->uid, 'type' => 'user_setting', 'url' => $this->homeUrl));
         $this->layout = 'config';
         $type = zmf::filterInput($_GET['type'], 't', 1);
-        if ($type == '' OR !in_array($type, array('template', 'upload', 'page', 'siteinfo', 'base', 'column'))) {
+        if ($type == '' OR ! in_array($type, array('template', 'upload', 'page', 'siteinfo', 'base', 'column'))) {
             $type = 'base';
         }
         $this->selectType = $type;
@@ -137,7 +146,7 @@ class UserController extends T {
         if ($type == 'column') {
 //            $configs = Columns::model()->findAll();
             $configs = Columns::model()->findAll(array(
-                'condition' => 'system=0',
+                'condition' => 'groupid=' . $this->userInfo['groupid'],
             ));
             $items = CHtml::listData($configs, 'id', 'title');
         }
@@ -152,8 +161,9 @@ class UserController extends T {
 
     public function actionSetConfig() {
         $this->checkUser();
+        $this->checkPower(array('uid' => $this->uid, 'type' => 'user_setting', 'url' => $this->homeUrl));
         $type = zmf::filterInput($_POST['type'], 't', 1);
-        if ($type == '' OR !in_array($type, array('template', 'page', 'siteinfo', 'base', 'column'))) {
+        if ($type == '' OR ! in_array($type, array('template', 'page', 'siteinfo', 'base', 'column'))) {
             $this->message(0, '不允许的操作');
         }
         unset($_POST['type']);
@@ -200,16 +210,21 @@ class UserController extends T {
         $this->layout = 'user';
         $colid = zmf::filterInput($_GET['colid']);
         $table = zmf::filterInput($_GET['table'], 't', 1);
-        $where = 'WHERE uid='.$this->uid.' AND status='.Posts::STATUS_PASSED;
+        if ($table == '' || !in_array($table, array('posts', 'ads', 'questions', 'comments'))) {
+            $table = 'posts';
+        }
+        if ($table == 'comments') {
+            $this->checkPower(array('uid' => $this->uid, 'type' => 'user_checkcomments', 'url' => $this->homeUrl));
+        } else {
+            $this->checkPower(array('uid' => $this->uid, 'type' => 'user_addposts', 'url' => $this->homeUrl));
+        }
+        $where = 'WHERE uid=' . $this->uid . ' AND status=' . Posts::STATUS_PASSED;
         if ($colid) {
             $colinfo = Columns::getOne($colid);
             $this->listTableTitle = $colinfo['title'];
             $_d = tools::columnDesc($colinfo['classify']);
             $this->columnDesc = '【' . $colinfo['title'] . '】' . $_d;
             $where.=' AND colid=' . $colid;
-        }        
-        if ($table == '' || !in_array($table, array('posts', 'ads', 'questions', 'comments'))) {
-            $table = 'posts';
         }
         if ($table == 'ads') {
             $this->listTableTitle = '轮播展示';
@@ -218,7 +233,11 @@ class UserController extends T {
         } elseif ($table == 'comments') {
             $this->listTableTitle = '用户评论或留言';
         }
-        $sql = "SELECT * FROM {{{$table}}} {$where} ORDER BY id DESC";
+        if ($table == 'comments') {
+            $sql = "SELECT * FROM {{comments}} WHERE logid IN(SELECT DISTINCT(id) FROM {{posts}} WHERE uid={$this->uid} AND status=" . Posts::STATUS_PASSED . ") AND status=" . Posts::STATUS_PASSED . " ORDER BY id DESC";
+        } else {
+            $sql = "SELECT * FROM {{{$table}}} {$where} ORDER BY id DESC";
+        }
         Posts::getAll(array('sql' => $sql), $pages, $items);
         $data = array(
             'colid' => $colid,
@@ -231,21 +250,34 @@ class UserController extends T {
 
     public function actionAdd() {
         $this->checkUser();
+        $this->checkPower(array('uid' => $this->uid, 'type' => 'user_addposts', 'url' => $this->homeUrl));
         $uid = $this->uid;
         $colid = zmf::filterInput($_GET['colid']);
         if (!$colid) {
             $this->message(0, '请选择栏目', Yii::app()->createUrl('user/index'));
         }
-        if(!Columns::checkWritable($colid, $uid)){
-            T::message(0, '当前板块已不能再写，您可以去操作或修改');
-            exit();
-        }
-        $model = new Posts();
-        $_info = $model->findByAttributes(array('uid' => $uid, 'colid' => $colid), 'status=0');
-        $keyid = zmf::getFCache("notSavePosts{$uid}");
-        $_keyid = zmf::filterInput($_GET['id']);
+        $colinfo = Columns::getOne($colid);
+        if(!$colinfo){
+            T::message(0, '该版块不存在，请核实');
+                exit();
+        }else{
+            if($colinfo['groupid']!=$this->userInfo['groupid']){
+                T::message(0, '您无权在该版块写文章，请核实');
+                exit();
+            }
+        }        
         $forupdate = zmf::filterInput($_GET['edit'], 't', 1);
-        if (!$keyid AND !$_keyid) {
+        if ($forupdate != 'yes') {
+            if (!Columns::checkWritable($colid, $uid)) {
+                T::message(0, '当前板块已不能再写，您可以去操作或修改');
+                exit();
+            }
+        }
+        
+        $model = new Posts();
+        $keyid = zmf::getFCache("notSavePosts-{$uid}-{$colid}");
+        $_keyid = zmf::filterInput($_GET['id']);
+        if (!$keyid AND ! $_keyid) {
             $_info = $model->findByAttributes(array('uid' => $uid, 'colid' => $colid), 'status=:status', array(':status' => '0'));
             if (!$_info) {
                 $model->attributes = array(
@@ -260,11 +292,11 @@ class UserController extends T {
             } else {
                 $keyid = $_info['id'];
             }
-            zmf::setFCache("notSavePosts{$uid}", $keyid, 3600);
+            zmf::setFCache("notSavePosts-{$uid}-{$colid}", $keyid, 3600);
             $this->redirect(array('user/add', 'id' => $keyid, 'colid' => $colid));
         } elseif ($keyid != $_keyid AND $forupdate != 'yes') {
             if (!$keyid) {
-                zmf::delFCache("notSavePosts{$uid}");
+                zmf::delFCache("notSavePosts-{$uid}-{$colid}");
                 $this->message(0, '操作有误，正在为您重新跳转至发布页', Yii::app()->createUrl('user/add', array('colid' => $colid)));
             } else {
                 $this->redirect(array('user/add', 'id' => $keyid, 'colid' => $colid));
@@ -290,9 +322,8 @@ class UserController extends T {
 //            if ($info['attachid']) {
 //                $info['attachid'] = tools::jiaMi($info['attachid']);
 //            }
-            $info['content'] = zmf::text(array('keyid' => $keyid, 'imgwidth' => '530'), $info['content'], false, 600);
-        }
-        $colinfo = Columns::getOne($colid);
+            $info['content'] = zmf::text(array('keyid' => $keyid, 'imgwidth' => '530','uid'=>$this->uid), $info['content'], false, 600);
+        }        
         $this->listTableTitle = '新增【' . $colinfo['title'] . '】';
         $data = array(
             'keyid' => $keyid,
@@ -308,17 +339,18 @@ class UserController extends T {
 
     public function actionAddAds() {
         $this->checkUser();
+        $this->checkPower(array('uid' => $this->uid, 'type' => 'user_ads', 'url' => $this->homeUrl));
         $model = new Ads();
         $uid = $this->uid;
-        $_info = $model->findByAttributes(array('status' => 0,'uid'=>$this->uid), 'classify=:classify', array(':classify' => 'empty'));
+        $_info = $model->findByAttributes(array('status' => 0, 'uid' => $this->uid), 'classify=:classify', array(':classify' => 'empty'));
         $keyid = zmf::getFCache("notSaveAds{$uid}");
         $forupdate = zmf::filterInput($_GET['edit'], 't', 1);
         $_keyid = zmf::filterInput($_GET['id']);
-        if (!$keyid AND !$_keyid) {
-            $_info = $model->findByAttributes(array('status' => 0,'uid'=>$this->uid), 'classify=:classify', array(':classify' => 'empty'));
+        if (!$keyid AND ! $_keyid) {
+            $_info = $model->findByAttributes(array('status' => 0, 'uid' => $this->uid), 'classify=:classify', array(':classify' => 'empty'));
             if (!$_info) {
                 $model->attributes = array(
-                    'uid'=>$this->uid,
+                    'uid' => $this->uid,
                     'status' => 0,
                     'classify' => 'empty',
                     'cTime' => time()
@@ -351,6 +383,8 @@ class UserController extends T {
             Yii::app()->end();
         }
         if (isset($_POST['Ads'])) {
+            $_POST['Ads']['position'] = 'topbar';
+            $_POST['Ads']['classify'] = 'flash';
             $info = Publish::addAds($this->uid);
             if (is_bool($info)) {
                 $this->redirect(array('user/list', 'table' => 'ads'));
@@ -370,6 +404,7 @@ class UserController extends T {
     }
 
     public function actionAddQuestions() {
+        $this->checkPower(array('uid' => $this->uid, 'type' => 'user_addquestion', 'url' => $this->homeUrl));
         $model = new Questions;
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'questions-addQuestions-form') {
             echo CActiveForm::validate($model);
@@ -387,7 +422,7 @@ class UserController extends T {
     }
 
     public function actionUpdate() {
-        if (isset($_POST) AND !empty($_POST)) {
+        if (isset($_POST) AND ! empty($_POST)) {
             $type = zmf::filterInput($_POST['type'], 't', 1);
             $model = new Users();
             if ($type == 'info') {
@@ -395,9 +430,9 @@ class UserController extends T {
                 unset($_POST['type']);
                 unset($_POST['csrfToken']);
                 $intoData = $_POST;
-                if($intoData['email']!=$this->userInfo['email']){
-                    $intoData['emailstatus']=  Posts::STATUS_NOTPASSED;
-                }                
+                if ($intoData['email'] != $this->userInfo['email']) {
+                    $intoData['emailstatus'] = Posts::STATUS_NOTPASSED;
+                }
             } elseif ($type == 'passwd') {
                 $old = zmf::filterInput($_POST['old_password'], 't', 1);
                 $info = Users::model()->findByPk($this->uid);
@@ -425,6 +460,7 @@ class UserController extends T {
 
     public function actionStat() {
         $this->checkUser();
+        $this->checkPower(array('uid' => $this->uid, 'type' => 'user_stat', 'url' => $this->homeUrl));
         $posts = Posts::model()->count('uid=' . $this->uid);
         $images = Attachments::model()->count('uid=' . $this->uid);
         //过去一周访问
@@ -443,46 +479,58 @@ class UserController extends T {
         $this->render('stat', $data);
     }
 
-    public function actionProfile() {
-        $code = zmf::filterInput($_GET['code'], 't', 1);
-        if (!$code) {
-            $this->message(0, '数据格式有误');
+    public function actionCredit() {
+        $this->checkUser();
+        $this->checkPower(array('uid' => $this->uid, 'type' => 'user_credit', 'url' => $this->homeUrl));
+        $type = zmf::filterInput($_GET['type'], 't', 1);
+        $_info = zmf::userConfig($this->uid, 'lock');
+        if ($_info == 'yes') {
+            $blocked = true;
+        } else {
+            $blocked = false;
         }
-        $code = tools::jieMi($code);
-        $arr = explode('#', $code);
-        if (empty($arr)) {
-            //数据格式有误
-            $this->message(0, '数据格式有误');
-        }
-        if ($arr[0] != $this->uid) {
-            //请操作自己的
-            $this->message(0, '请操作自己的');
-        }
-        if ((time() - $arr[2]) > 86400) {
-            //链接已经过时
-            $this->message(0, '链接已经过时');
-        }
-        //验证邮箱
-        if ($arr[1] == 'validate') {
-            $code = zmf::userConfig($this->uid, 'code');
-            if (!$code) {
-                //未检测到曾经有过该操作
-                $this->message(0, '未检测到曾经有过该操作');
-            } elseif ($arr[3] != $code) {
-                //数据验证错误
-                $this->message(0, '数据验证错误');
-            } else {
-                $info = Users::model()->updateByPk($this->uid, array('emailstatus' => 1));
-                if ($info) {
-                    $this->message(1, '验证成功', Yii::app()->createUrl('user/index'));
-                } else {
-                    $this->message(0, '验证失败');
+        $_c = array();
+        if (!empty($_POST) && !$blocked) {
+            $type = $_POST['type'];
+            unset($_POST['type']);
+            unset($_POST['btn']);
+            $configs = $_POST;
+            UserCredit::model()->deleteAll('uid=' . $this->uid);
+            foreach ($configs as $k => $v) {
+                $data = array(
+                    'uid' => $this->uid,
+                    'name' => zmf::filterInput($k, 't'),
+                    'value' => zmf::filterInput($v, 't'),
+                    'classify' => zmf::filterInput($type, 't')
+                );
+                $model = new UserCredit;
+                $model->attributes = $data;
+                if (!$model->save()) {
+                    //$this->message(0, $content);
                 }
             }
-        } else {
-            //不允许的操作
-            $this->message(0, '不允许的操作');
+            UserInfo::addAttr($this->uid, 'addCredit', 'lock', 'yes');
+            UserInfo::addAttr($this->uid, 'addCredit', 'creditstatus', Posts::STATUS_STAYCHECK);
+            $redirect = Yii::app()->createUrl('user/credit');
+            $this->message(1, '您的资料已提交。', $redirect);
         }
+        $_addedType = UserCredit::findOne($this->uid);
+        if ($_addedType['classify'])
+            $type = $_addedType['classify'];
+        $reason = zmf::userConfig($this->uid, 'creditreason');
+        $status = zmf::userConfig($this->uid, 'creditstatus');
+        if ($type) {
+            $configs = UserCredit::model()->findAllByAttributes(array('classify' => $type, 'uid' => $this->uid));
+            $_c = CHtml::listData($configs, 'name', 'value');
+        }
+        $data = array(
+            'type' => $type,
+            'blocked' => $blocked,
+            'info' => $_c,
+            'status' => $status,
+            'reason' => $reason,
+        );
+        $this->render('credit', $data);
     }
 
 }

@@ -1,26 +1,25 @@
-<tr>
-    <td>标题</td>
-    <td>位置</td>
-    <td>展示方式</td>
-    <td>操作</td>
-</tr>
-<?php foreach ($posts as $row): ?> 
-    <tr <?php tools::exStatusToClass($row['status']);?>>
-        <td><label class="checkbox-inline"><?php echo CHtml::checkBox('ids[]', '', array('value' => $row['id'])); ?></label><?php echo $row['title']; ?></td>
-        <td><?php echo zmf::colPositions($row['position']); ?></td>
-        <td><?php echo zmf::colClassify($row['classify']); ?></td>
-        <td>
-            <?php $this->renderPartial('/common/manageBar',array('status'=>$row['status'],'keyname'=>'keyid','keyid'=>$row['id'],'table'=>$table));?>
-        </td>
-    </tr>
-<?php endforeach; ?>
-<tr>
-    <td colspan="4">
-        <?php $this->renderPartial('/common/submitBar',array('pages'=>$pages));?>
-    </td>                      
-</tr>
-<tr>
-    <td colspan="5">
-        <?php echo CHtml::link('新增', array('columns/add'), array('class' => 'btn btn-default')); ?>
-    </td>
-</tr>
+<?php 
+$items=array();
+if(!empty($posts)){
+    foreach ($posts as $k=>$row){
+        $tm='<label class="checkbox-inline">'.CHtml::checkBox('ids[]', '', array('value' => $row['id'])).'</label>'.$row['title'].'<span class="pull-right">'.tools::url(zmf::colPositions($row['position']),'all/list',array('table'=>$table,'position'=>$row['position'])).'&nbsp;&nbsp;'.tools::url(zmf::colClassify($row['classify']),'all/list',array('table'=>$table,'listtype'=>$row['classify'])).'&nbsp;&nbsp;'.$this->renderPartial('/common/manageBar',array('status'=>$row['status'],'keyname'=>'keyid','keyid'=>$row['id'],'table'=>$table),true).'</span>';
+        $items[$row['id']]=$tm;
+    }
+}
+$this->widget('zii.widgets.jui.CJuiSortable', array(
+    'id'=>'sortable',
+    'items'=>$items,
+    'itemTemplate'=>'<li class="list-group-item" id="{id}">{content}</li>',
+    //'tagName'=>'tr',
+    // additional javascript options for the accordion plugin
+    'options'=>array(
+        'delay'=>'300',
+    ),
+    'htmlOptions'=>array(
+        'class'=>'list-group'
+    )
+));
+?>
+ <?php $this->renderPartial('/common/submitBar',array('pages'=>$pages));?>
+<a href="javascript:;" class="btn btn-primary" onclick="changeOrder();">确认排序</a>
+<?php echo CHtml::link('新增', array('columns/add'), array('class' => 'btn btn-default')); ?>

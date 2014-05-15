@@ -4,6 +4,7 @@
 <tr><td>待审核评论：<?php if($siteinfo['commentsNum']){ echo CHtml::link($siteinfo['commentsNum'],array('all/list','comments'=>'posts','type'=>'staycheck'),array('class'=>'btn btn-xs btn-danger'));}else{echo $siteinfo['commentsNum'];}?></td></tr>
 <tr><td>待审核图片：<?php if($siteinfo['attachsNum']){ echo CHtml::link($siteinfo['attachsNum'],array('all/list','table'=>'attachments','type'=>'staycheck'),array('class'=>'btn btn-xs btn-danger'));}else{echo $siteinfo['attachsNum'];}?></td></tr>
 <tr><td>待回答咨询：<?php if($siteinfo['infoNum']){ echo CHtml::link($siteinfo['infoNum'],array('all/list','table'=>'questions','type'=>'staycheck'),array('class'=>'btn btn-xs btn-danger'));}else{echo $siteinfo['infoNum'];}?></td></tr>
+<tr><td>待认证信息：<?php if($siteinfo['creditNum']){ echo CHtml::link($siteinfo['creditNum'],array('all/list','table'=>'credit','type'=>'staycheck'),array('class'=>'btn btn-xs btn-danger'));}else{echo $siteinfo['creditNum'];}?></td></tr>
 </table>
 <hr/>
 

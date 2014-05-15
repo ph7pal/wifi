@@ -8,6 +8,10 @@ Yii::app()->clientScript->registerCoreScript('jquery',CClientScript::POS_END);
 Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/common/uploadify/jquery.uploadify-3.1.min.js', CClientScript::POS_END);
 Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/myfunc.js", CClientScript::POS_END);
 ?>
+<!--[if lt IE 9]>
+<script src=”http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js”></script>
+<script src=”http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js”></script>
+<![endif]-->
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->baseUrl?>/common/css/bootstrap.css">
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->baseUrl?>/common/admin/manage.css">
 </head>
@@ -24,22 +28,20 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/m
   <div class="nav">
       <div class="container main">
           <div class="row">
-              <div class="col-md-10 col-md-push-2">
+              <div class="col-xs-2 col-md-2"></div>
+              <div class="col-xs-10 col-md-10">
                   <ul>
                       <?php zmf::miniTopBar();?>
                   </ul>
               </div>
-              <div class="col-md-2 col-md-pull-10"></div>
+              
           </div>
       </div>
   </div>  
 </div>
 <div class="main container" id="main">
     <div class="row">
-        <div class="col-md-10 col-md-push-2">
-            <?php echo $content;?>
-        </div>
-        <div class="col-md-2 col-md-pull-10">
+        <div class="col-xs-2 col-md-2">
            <div class="aside">
               <div class="logo">
                   <a href="<?php echo Yii::app()->createUrl('admin/index/index');?>">
@@ -51,6 +53,9 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/common/js/m
               </div>
           </div>
         </div>
+        <div class="col-xs-10 col-md-10">
+            <?php echo $content;?>
+        </div>        
   </div>
 </div>
     <div id="footer">

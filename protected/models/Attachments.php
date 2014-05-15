@@ -140,4 +140,12 @@ class Attachments extends CActiveRecord
             }
             return $_title;
         }
+        public static function getCreditImgs($keyid,$classify){
+            if(!$keyid || !$classify){
+                return false;
+            }
+            $sql = "SELECT * FROM {{attachments}} WHERE logid='$keyid' AND classify='credit' AND fileDesc='{$classify}' AND status=1 ORDER BY `cTime` DESC";
+            $info=Yii::app()->db->createCommand($sql)->queryAll();
+            return $info;
+        }
 }

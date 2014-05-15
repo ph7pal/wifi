@@ -37,6 +37,11 @@
      <p class="help-block"><?php echo $form->error($model,'system'); ?></p>
     </div>
     <div class="form-group">
+    <?php echo $form->labelEx($model,'rollstyle'); ?>
+    <?php echo $form->dropDownList($model,'rollstyle',  tools::rollstyle(),array('options' => array($info['rollstyle']=>array('selected'=>true)))); ?>
+     <p class="help-block"><?php echo $form->error($model,'rollstyle'); ?></p>
+    </div>
+    <div class="form-group">
     <?php echo $form->labelEx($model,'order'); ?>
     <?php echo $form->textField($model,'order',array('class'=>'form-control','value'=>$info['order'])); ?>
      <p class="help-block"><?php echo $form->error($model,'order'); ?></p>
@@ -51,7 +56,11 @@
     <?php echo $form->textField($model,'listcondition',array('class'=>'form-control','value'=>$info['listcondition'])); ?>
      <p class="help-block"><?php echo $form->error($model,'listcondition'); ?></p>
     </div>
+    <div class="form-group">
+    <?php echo $form->labelEx($model,'groupid'); ?>
+    <?php echo $form->dropDownList($model,'groupid',UserGroup::getGroups(true),array('class'=>'form-control','options' => array($info['groupid']=>array('selected'=>true)))); ?>
+     <p class="help-block"><?php echo $form->error($model,'groupid'); ?></p>
+    </div>
     <?php echo CHtml::submitButton('提交',array('class'=>'btn btn-default')); ?>
 <?php $this->endWidget(); ?>
-
 </div><!-- form -->

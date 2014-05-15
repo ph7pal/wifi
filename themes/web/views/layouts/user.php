@@ -25,4 +25,5 @@
     <?php $this->renderPartial('/user/aside'); ?>  
     <div class="extra"></div>
 </div>
+<div class="bg"></div>
 <?php $this->endContent(); ?>            

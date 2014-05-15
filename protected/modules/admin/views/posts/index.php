@@ -15,6 +15,12 @@
         <td><?php echo tools::url(zmf::exStatus($row['status']),'all/list',array('table'=>$table,'type'=>tools::exStatus($row['status']))); ?></td>
         <td>
              <?php $this->renderPartial('/common/manageBar',array('status'=>$row['status'],'keyname'=>'keyid','keyid'=>$row['id'],'table'=>$table));?>
+            <?php if($row['top']!='1'){?>
+                <?php echo CHtml::link('推荐', 'javascript:;',array('onclick'=>'setStatus('.$row['id'].',"'.$table.'","top");')); ?>
+            <?php }else{?>
+                <?php echo CHtml::link('取消推荐', 'javascript:;',array('onclick'=>'setStatus('.$row['id'].',"'.$table.'","canceltop");')); ?>
+            <?php }?>
+            
         </td>
     </tr>
 <?php endforeach; ?>

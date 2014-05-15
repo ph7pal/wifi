@@ -43,7 +43,7 @@ class SiteController extends T {
             }
         }
         $this->_noColButOther = 'login';
-        $this->renderPartial('login', array('model' => $model));
+        $this->render('login', array('model' => $model));
     }
 
     public function actionLogout() {
@@ -67,10 +67,11 @@ class SiteController extends T {
             $username = zmf::filterInput($_POST['Users']['username'], 't', 1);
             $truename = zmf::filterInput($_POST['Users']['truename'], 't', 1);
             $ip = Yii::app()->request->userHostAddress;
+            $hash=tools::randMykeys(6);
             $inputData = array(
                 'username' => $username,
                 'truename' => $truename,
-                'password' => md5($_POST['Users']['password']),
+                'password' => md5($_POST['Users']['password'].$hash),
                 'email' => zmf::filterInput($_POST['Users']['email'], 't', 1),
                 'qq' => zmf::filterInput($_POST['Users']['qq'], 't', 1),
                 'telephone' => zmf::filterInput($_POST['Users']['telephone'], 't', 1),
@@ -81,7 +82,7 @@ class SiteController extends T {
                 'last_login_ip' => ip2long($ip),
                 'last_login_time' => time(),
                 'login_count' => 1,
-                //'hash'=>tools::randMykeys(6),
+                'hash'=>$hash,
             );
             $model->attributes = $inputData;
             if ($model->validate()) {
@@ -90,7 +91,7 @@ class SiteController extends T {
                     $_model->username = $username;
                     $_model->password = $_POST['Users']['password'];
                     $_model->login();
-                    $this->redirect(Yii::app()->baseUrl);
+                    $this->redirect(Yii::app()->createUrl('user/index'));
                 }
             }
         }

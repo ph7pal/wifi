@@ -24,7 +24,7 @@ class EmailController extends T {
                 $valicode = md5(uniqid());
                 $code = $uid . '#' . $type . '#' . time() . '#' . $valicode;
                 $code = tools::jiaMi($code);
-                $url = zmf::config('domain') . Yii::app()->createUrl('user/profile', array('code' => $code));
+                $url = zmf::config('domain') . Yii::app()->createUrl('email/profile', array('code' => $code));
                 //$message = '请验证您的邮箱：' . CHtml::link($url, $url);
                 $this->codeurl=$url;
                 $message = $this->template();
@@ -40,6 +40,53 @@ class EmailController extends T {
             }
         } else {
             $this->jsonOutPut(0, '不允许的类型');
+        }
+    }
+    
+    public function actionProfile() {
+        $code = zmf::filterInput($_GET['code'], 't', 1);
+        if (!$code) {
+            $this->message(0, '数据格式有误');
+        }
+        $code = tools::jieMi($code);
+        $arr = explode('#', $code);
+        if (empty($arr)) {
+            //数据格式有误
+            $this->message(0, '数据格式有误');
+        }
+//        if ($arr[0] != $this->uid) {
+//            //请操作自己的
+//            $this->message(0, '请操作自己的');
+//        }
+        if ((time() - $arr[2]) > 86400) {
+            //链接已经过时
+            $this->message(0, '链接已经过时');
+        }
+        //验证邮箱
+        if ($arr[1] == 'validate') {
+            $code = zmf::userConfig($arr[0], 'code');
+            if (!$code) {
+                //未检测到曾经有过该操作
+                $this->message(0, '未检测到曾经有过该操作');
+            } elseif ($arr[3] != $code) {
+                //数据验证错误
+                $this->message(0, '数据验证错误');
+            } else {
+                $info = Users::model()->updateByPk($arr[0], array('emailstatus' => 1));
+                if(Yii::app()->user->isGuest){
+                    $url=Yii::app()->createUrl('site/login');
+                }else{
+                    $url=Yii::app()->createUrl('user/index');
+                }                
+                if ($info) {
+                    $this->message(1, '验证成功', $url);
+                } else {
+                    $this->message(0, '验证失败',$url);
+                }
+            }
+        } else {
+            //不允许的操作
+            $this->message(0, '不允许的操作');
         }
     }
 

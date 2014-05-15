@@ -63,7 +63,7 @@ if(!empty($topads)){?>
     <h3 class="panel-title"><?php echo $colinfo['title'];?></h3>
   </div>
   <div class="panel-body">
-<?php $posts=Posts::allPosts($col['id'],10,$this->uid); foreach($posts as $post){?>    
+<?php $posts=Posts::allPosts(array('colid'=>$col['id'],'condition'=>$col['listcondition']),$col['listnum'],$this->uid); foreach($posts as $post){?>    
 <?php $this->renderPartial('/mobile/'.$colinfo['classify'],array('colinfo'=>$colinfo,'data'=>$post));?> 
 <?php }?>
   </div>
@@ -74,7 +74,7 @@ if(!empty($topads)){?>
     <h3 class="panel-title"><?php echo $colinfo['title'];?></h3>
   </div>
   <div class="panel-body">
-    <?php $posts=Posts::allPosts($col['id'],10,$this->uid); foreach($posts as $post){?>  
+    <?php $posts=Posts::allPosts(array('colid'=>$col['id'],'condition'=>$col['listcondition']),$col['listnum'],$this->uid); foreach($posts as $post){?>  
     <?php $this->renderPartial('/mobile/'.$colinfo['classify'],array('colinfo'=>$colinfo,'data'=>$post));?>
     <?php }?>
   </div>
@@ -85,7 +85,7 @@ if(!empty($topads)){?>
     <h3 class="panel-title"><?php echo $colinfo['title'];?></h3>
   </div>
   <div class="panel-body">    
-    <?php $this->renderPartial('/mobile/miniPage',array('colid'=>$colinfo['id']));?>
+    <?php $this->renderPartial('//common/miniPage',array('colid'=>$colinfo['id']));?>
   </div>
 </div>
 <?php }?>    

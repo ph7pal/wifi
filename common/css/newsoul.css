@@ -408,6 +408,7 @@ vertical-align: middle;
     border: 1px solid #eee;
     background: #fff;
     margin-bottom: 2px;
+    max-width: 210px;
 }
 .site_action {
     margin-bottom: 15px;

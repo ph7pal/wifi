@@ -55,6 +55,11 @@
      <p class="help-block"><?php echo $form->error($model,'copy_url'); ?></p>
     </div>
     <div class="form-group">
+    <?php echo $form->labelEx($model,'author'); ?>
+    <?php echo $form->textField($model,'author',array('class'=>'form-control','value'=>$info['author'])); ?>
+     <p class="help-block"><?php echo $form->error($model,'author'); ?></p>
+    </div>
+    <div class="form-group">
     <?php echo $form->labelEx($model,'reply_allow'); ?>
     <?php echo $form->dropDownList($model,'reply_allow',tools::allowOrNot(),array('class'=>'form-control','options' => array($info['reply_allow']=>array('selected'=>true)))); ?>
      <p class="help-block"><?php echo $form->error($model,'reply_allow'); ?></p>
@@ -63,6 +68,11 @@
     <?php echo $form->labelEx($model,'intro'); ?>
     <?php echo $form->textArea($model,'intro',array('class'=>'form-control','value'=>$info['intro'])); ?>
      <p class="help-block"><?php echo $form->error($model,'intro'); ?></p>
+    </div>
+    <div class="form-group">
+    <?php echo $form->labelEx($model,'secretinfo'); ?>
+    <?php echo $form->textArea($model,'secretinfo',array('class'=>'form-control','value'=>$info['secretinfo'])); ?>
+     <p class="help-block">(本项仅有相关权限的用户可见)<?php echo $form->error($model,'secretinfo'); ?></p>
     </div>
     <div class="form-group">
     <?php echo $form->labelEx($model,'content'); ?>

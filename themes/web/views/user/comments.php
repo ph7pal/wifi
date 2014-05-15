@@ -3,21 +3,28 @@
 <table class="table table-hover table-condensed">
 <?php foreach ($posts as $row): ?> 
     <tr>
-        <td><label class="checkbox-inline"><?php echo CHtml::checkBox('ids[]', '', array('value' => $row['id'])); ?></label>
-           <?php echo Posts::getOne($row['logid'], 'title'); ?>
+        <td>            
+           <?php 
+           $pre='';
+           if($row['uid']==$this->uid){
+              $pre='我评论'; 
+           }else{
+               $_uname=  Users::getUserInfo($row['uid'],'truename');
+               $pre=CHtml::link($_uname,array('mobile/index','uid'=>$row['uid']),array('target'=>'_blank')).'评论'; 
+           }
+           echo $pre.'【'.Posts::getOne($row['logid'], 'title').'】：'; 
+           ?>
            <?php echo $row['content']; ?>
            <?php echo date('Y-m-d H:i', $row['cTime']); ?>            
-           <?php echo CHtml::link('删除', array('del/sth', 'table' => $table, 'id' => $row['id'], 'single' => 'yes')); ?>
+           <?php 
+           $status = T::checkYesOrNo(array('uid' => $this->uid, 'type' => 'user_delcomments'));
+           if($status){
+               echo CHtml::link('删除', array('del/sth', 'table' => $table, 'id' => $row['id'], 'single' => 'yes')); 
+           }           
+           ?>
         </td>
     </tr>
 <?php endforeach; ?>
-<tr>
-    <td>
-        <span style='float:left'><label class="checkbox-inline"><?php echo CHtml::checkBox('checkAll', '', array('class' => 'checkAll')); ?></label></span>
-        <span><?php echo CHtml::dropDownList('type','', tools::multiManage(),array('empty'=>'请选择')); ?></span>
-        <?php echo CHtml::submitButton('操作'); ?>
-    </td>
-</tr>
 <tr>
     <div class="manu"><?php $this->widget('CLinkPager', array('pages' => $pages)); ?> </div>
 </tr>

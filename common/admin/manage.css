@@ -19,7 +19,6 @@ html,body
 
 body
 {
-    overflow:hidden;
     min-width:950px;
 }
 
@@ -36,6 +35,7 @@ body
 
 .main .logo
 {
+    max-width: 250px;
 }
 .main .logo img{
     max-width: 150px;
@@ -141,7 +141,8 @@ body
     text-align: center;
     padding:10px 0 0 0;
     display: block;
-    float:right
+    max-width: 250px;
+    
 }
 .aside .list_btn {
     border-radius: 5px;
@@ -161,13 +162,6 @@ body
     background: #0baf57;
     color:#FFF;
 }
-.main .container
-{
-    height:100%;
-
-
-}
-
 
 .errorSummary
 {

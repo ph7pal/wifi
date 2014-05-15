@@ -14,6 +14,12 @@
         <option value="1" <?php if($c['mobile']=='1'){?>selected="selected"<?php }?>>开启</option>
     </select>
 </p>
+<p><label>仅显示置顶：</label>
+    <select name="orderByTop" id="orderByTop">
+        <option value="0" <?php if($c['orderByTop']=='0'){?>selected="selected"<?php }?>>关闭</option>
+        <option value="1" <?php if($c['orderByTop']=='1'){?>selected="selected"<?php }?>>开启</option>
+    </select>
+</p>
 <p><label>新用户默认组别：</label>
     <?php echo CHtml::dropDownList('userDefaultGroup',$c['userDefaultGroup'],UserGroup::getGroups(true),array('options' => array($info['userDefaultGroup']=>array('selected'=>true)))); ?>
 </p>
@@ -45,3 +51,4 @@
         <option value="1" <?php if($c['validateEmail']=='1'){?>selected="selected"<?php }?>>是</option>
     </select>
 </p>
+<p><label>搜索关键词("#"隔开)：</label><textarea class="form-control" name="hotsearchs"><?php echo $c['hotsearchs'];?></textarea></p>

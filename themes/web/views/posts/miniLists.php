@@ -1,4 +1,5 @@
-<?php $colitems = Posts::allPosts($colid); ?>
+<?php 
+$colitems = Posts::allPosts(array('colid'=>$colinfo['id'],'condition'=>$colinfo['listcondition'],'top'=>zmf::config('orderByTop')),$colinfo['listnum']); ?>
 <ul>
     <?php if (!empty($colitems)) {
         foreach ($colitems as $ci) { ?>  

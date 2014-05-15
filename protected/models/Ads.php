@@ -96,7 +96,7 @@ class Ads extends CActiveRecord {
         return parent::model($className);
     }
 
-    public function getAllByPo($po, $type = 'img', $uid, $limit = 10) {
+    public function getAllByPo($po, $type = 'img', $uid='', $limit = 10) {
         if(!$po || !$type){
             return false;
         }

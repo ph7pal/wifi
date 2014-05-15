@@ -16,12 +16,10 @@ class U extends CUserIdentity
 	public function authenticate()
 	{
 		$user=Users::model()->find('LOWER(username)=?',array(strtolower($this->username)));             
-		//echo '<pre>';  
-		//print_r($user);
-		//echo '</pre>';   
+		//zmf::test($user);exit();
 		if($user===null)
 			$this->errorCode=self::ERROR_USERNAME_INVALID;
-		else if(!$this->validatePassword($user->password))
+		else if(!$this->validatePassword($user->password,$user['hash']))
 			$this->errorCode=self::ERROR_PASSWORD_INVALID;
 		else
 		{
@@ -39,10 +37,10 @@ class U extends CUserIdentity
 	{
 		return $this->_id;
 	}
-        public function validatePassword($password)
+        public function validatePassword($password,$hash='')
 	{
             //echo $password.'@####@'.$this->password;
             
-		return md5($this->password)==$password ? true:false;
+		return md5($this->password.$hash)==$password ? true:false;
 	}
 }

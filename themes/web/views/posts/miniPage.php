@@ -1,4 +1,5 @@
 <?php
+$colid=$colinfo['id'];
 $page = Posts::getPage($colid);
 if ($page['attachid'] > 0) {
     $faceimg = Attachments::getOne($page['attachid']);

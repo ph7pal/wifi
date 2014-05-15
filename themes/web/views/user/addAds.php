@@ -44,69 +44,6 @@
     ?>        
     <?php echo $form->hiddenField($model,'attachid',array('class'=>'form-control','value'=>$info['attachid'])); ?> <input type="hidden" id="file_upload_input"/>      
     <p class="help-block"><?php echo $form->error($model,'attachid'); ?></p>
-    </div>
-    <div class="form-group">
-    <?php echo $form->labelEx($model,'width'); ?>
-    <?php echo $form->textField($model,'width',array('class'=>'form-control','value'=>$info['width'])); ?>
-     <p class="help-block"><?php echo $form->error($model,'width'); ?></p>
-    </div>
-    <div class="form-group">
-    <?php echo $form->labelEx($model,'height'); ?>
-    <?php echo $form->textField($model,'height',array('class'=>'form-control','value'=>$info['height'])); ?>
-     <p class="help-block"><?php echo $form->error($model,'height'); ?></p>
-    </div>    
-    <div class="form-group">
-    <?php echo $form->labelEx($model,'start_time'); ?>
-    <?php 
-        $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-        'model'=>$model,
-        'attribute'=>'start_time',
-        'language'=>'zh-cn',
-        'value'=>date('Y/m/d',$info['start_time']),			    
-                    'options'=>array(
-                        'showAnim'=>'fadeIn',
-                    ),	
-                    'htmlOptions'=>array(
-                        'readonly'=>'readonly',
-                        'class'=>'form-control'
-                ),		    
-                ));
-        ?>
-     <p class="help-block"><?php echo $form->error($model,'start_time'); ?></p>
-    </div> 
-    <div class="form-group">
-    <?php echo $form->labelEx($model,'expired_time'); ?>
-    <?php 
-        $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-        'model'=>$model,
-        'attribute'=>'expired_time',
-        'language'=>'zh-cn',
-        'value'=>date('Y/m/d',$info['expired_time']),			    
-                    'options'=>array(
-                        'showAnim'=>'fadeIn',
-                    ),	
-                    'htmlOptions'=>array(
-                        'readonly'=>'readonly',
-                        'class'=>'form-control'
-                ),		    
-                ));
-        ?>
-     <p class="help-block"><?php echo $form->error($model,'expired_time'); ?></p>
-    </div> 
-    <div class="form-group">
-    <?php echo $form->labelEx($model,'order'); ?>
-    <?php echo $form->textField($model,'order',array('class'=>'form-control','value'=>$info['order'])); ?>
-     <p class="help-block"><?php echo $form->error($model,'order'); ?></p>
-    </div>
-    <div class="form-group">
-    <?php echo $form->labelEx($model,'position'); ?>
-    <?php echo $form->dropDownList($model,'position',zmf::colPositions(),array('options' => array($info['position']=>array('selected'=>true)))); ?>
-     <p class="help-block"><?php echo $form->error($model,'position'); ?></p>
-    </div>     
-    <div class="form-group">
-    <?php echo $form->labelEx($model,'classify'); ?>
-    <?php echo $form->dropDownList($model,'classify',tools::adsStyles(),array('options' => array($info['classify']=>array('selected'=>true)))); ?>
-     <p class="help-block"><?php echo $form->error($model,'classify'); ?></p>
     </div>    
     <?php echo CHtml::submitButton('提交',array('class'=>'btn btn-default')); ?>    
 <?php $this->endWidget(); ?>

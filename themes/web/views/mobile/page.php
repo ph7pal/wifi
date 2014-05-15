@@ -2,32 +2,19 @@
     <?php $this->renderPartial('/common/bread',array('info'=>$colinfo));?>
 <?php if($from!='show'){?>
 <h3><?php echo $data['title'];?></h3>
-<?php }?>
-<?php if($from=='show'){?>
-    <h3><?php echo $data['title'];?></h3>
-    <div class="col-12 col-sm-12 col-lg-12">
-        <blockquote>        
-        <p><?php echo $data['intro'];?></p>
-        <?php if($data['attachid']>0){?>
-        <?php $attachinfo=  Attachments::getOne($data['attachid']);if($attachinfo){?>
-        <p><?php echo '<img src="'.zmf::imgurl($data['id'],$attachinfo['filePath'],'600',$attachinfo['classify']).'" alt="'.$data['title'].'的封面" title="'.$data['title'].'" class="img-responsive"/>';?></p>
-        <?php }?>
-        <?php }else{?>
-        <p><img src="http://localhost/acopy/common/images/noimg.png" class="thumbnail"/></p>
-        <?php }?>
-        <p><button class="btn btn-warning" href="#" role="button">￥12</button></p>
-        </blockquote>
-    </div>
-    <div class="clearfix"></div>
-<?php }if($data['content']!=''){?>
+<?php if($data['content']!=''){?>
 <div class="well">
     <?php echo zmf::text($data['id'],$data['content'],false);?>
 </div>
+<?php }?>
+<?php }?>
+<?php if($from=='show'){?>
+<?php $this->renderPartial('//common/page',array('page'=>$data));?>
 <?php }?>
 <div class="clearfix"></div> 
 <?php $this->renderPartial('/common/comments',array('keyid'=>$data['id'],'type'=>'posts','coms'=>$coms,'pages'=>$pages));?>
 </div>
 <div class="col-4 col-sm-4 col-lg-4 floatR row">
-<?php $this->renderPartial('aside',array('likes'=>$likes));?>
+<?php $this->renderPartial('aside',array('likes'=>$likes,'others'=>$others));?>
 </div>
 <div class="clearfix"></div>
