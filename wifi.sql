@@ -19,25 +19,20 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- 表的结构 `pre_ads`
 -- 
 
-CREATE TABLE `pre_ads` (
+CREATE TABLE `pre_weibo` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `title` varchar(50) NOT NULL,
-  `url` varchar(255) NOT NULL default '',
-  `attachid` varchar(255) NOT NULL default '',
-  `width` varchar(10) NOT NULL default '',
-  `height` varchar(10) NOT NULL default '',
+  `shopid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL default '',
+  `name` varchar(50) NOT NULL default '',
+  `domain` varchar(50) NOT NULL default '',
+  `faceurl` varchar(255) NOT NULL default '',
   `description` varchar(255) NOT NULL,
-  `hits` int(10) unsigned NOT NULL default '0',
-  `start_time` int(10) unsigned NOT NULL default '0',
   `expired_time` int(10) unsigned NOT NULL default '0',
-  `position` char(40) NOT NULL default '',
-  `order` int(10) unsigned NOT NULL default '0',
-  `status` tinyint(1) NOT NULL,
+  `token` varchar(255) NOT NULL default '',
+  `hits` int(10) unsigned NOT NULL default '0',
   `cTime` int(10) unsigned NOT NULL default '0',
-  `classify` char(16) NOT NULL,
-  `uid` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- 
 -- 导出表中的数据 `pre_ads`

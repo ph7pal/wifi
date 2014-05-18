@@ -106,7 +106,7 @@ class MobileController extends T {
     }
     
     public function actionLogin(){
-        $this->renderPartial('//common/login');
+        $this->redirect(Yii::app()->createUrl('auth/login'));
     }
 
     public function indexBak() {

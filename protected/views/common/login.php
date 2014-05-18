@@ -19,7 +19,7 @@
     </head>
     <body>
     <p>
-        <img src="http://192.168.1.104/wifi/attachments/ads/origin/12/53590b524bc4c.jpg" class="img-responsive">
+        <img src="http://112.124.57.128/wifi/attachments/ads/origin/18/5370eaaa3ed66.jpg" class="img-responsive">
     </p>    
         <div class="jumbotron">
             <h3>微世界，大不同</h3>    
@@ -29,7 +29,7 @@
             <div class="thumbnail">
                 <img src="common/images/weibo_logo.png" class="img-responsive">
                 <div class="caption">
-                    <p><?php echo CHtml::link('新浪微博',array('weibo/index'),array('class'=>'btn btn-danger center-block'));?></p>                  
+                    <p><a href="#" class="btn btn-danger center-block" role="button">新浪微博</a><?php //echo CHtml::link('新浪微博',array('weibo/index','hash'=>$hash),array('class'=>'btn btn-danger center-block'));?></p>                  
                 </div>
               </div>
             </div>
@@ -42,12 +42,20 @@
                   </div>
             </div>
             <div class="col-xs-12 col-md-12 col-lg-12">
-                <div class="input-group">
-                    <input type="text" class="form-control">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">手机号认证</button>
-                    </span>
-                  </div><!-- /input-group -->
+                <?php $form=$this->beginWidget('CActiveForm', array(
+                        'id'=>'user-auth-login',
+                )); ?>
+                    <input type="hidden" name="authlogin[gw_address]" value="<?php echo $gw_address;?>">
+                    <input type="hidden" name="authlogin[gw_port]" value="<?php echo $gw_port;?>">
+                    <input type="hidden" name="authlogin[gw_id]" value="<?php echo $gw_id;?>">
+                    <input type="hidden" name="authlogin[url]" value="<?php echo $url;?>">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="phone" name="authlogin[phone]">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">手机号认证</button>
+                        </span>
+                    </div><!-- /input-group -->
+                <?php $this->endWidget(); ?>
             </div>
         </div>
         <div class="clearfix"></div> 
@@ -55,7 +63,7 @@
         <div class="clearfix"></div>        
 <nav class="navbar navbar-default navbar-static-bottom" role="navigation">
     <div class="container">
-        <h4>哈哈，这里是店铺的名字</h4>
+        <h4>店铺的名字</h4>
     </div>
 </nav> 
     <!--script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script-->

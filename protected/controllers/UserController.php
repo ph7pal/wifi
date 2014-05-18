@@ -102,7 +102,7 @@ class UserController extends T {
                         $_creditstatus = zmf::userConfig($this->uid, 'creditstatus');
                         if($_creditstatus!=Posts::STATUS_PASSED){
                             $info = '您还未认证，' . CHtml::link('点此进行认证', array('user/credit'), array('class' => 'btn btn-danger btn-xs'));
-                            $nolimit+=1;
+                            //$nolimit+=1;
                         }                        
                     }
                     $this->noticeInfo = $info;
